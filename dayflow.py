@@ -17,14 +17,44 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageTk
 
+
+def install_accent_spotlight(window, accent, background="#101012"):
+    """Paint a restrained, blurred accent-colour glow behind the glass workspace."""
+    try:
+        if not isinstance(accent, str) or len(accent) != 7 or not accent.startswith("#"):
+            return
+        window.update_idletasks()
+        width = max(900, int(window.winfo_width()))
+        height = max(620, int(window.winfo_height()))
+        rgb = tuple(int(accent[index:index + 2], 16) for index in (1, 3, 5))
+        glow = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(glow)
+        draw.ellipse((int(width * .50), -int(height * .35), int(width * 1.25), int(height * .58)), fill=(*rgb, 34))
+        draw.ellipse((-int(width * .30), int(height * .55), int(width * .35), int(height * 1.20)), fill=(*rgb, 12))
+        glow = glow.filter(ImageFilter.GaussianBlur(max(72, int(min(width, height) * .17))))
+        photo = ImageTk.PhotoImage(glow)
+        previous = getattr(window, "_accent_spotlight_canvas", None)
+        if previous is not None:
+            previous.destroy()
+        canvas = tk.Canvas(window, width=width, height=height, highlightthickness=0, borderwidth=0, bg=background)
+        canvas.place(x=0, y=0, relwidth=1, relheight=1)
+        canvas.create_image(0, 0, anchor="nw", image=photo)
+        canvas.lower()
+        window._accent_spotlight_canvas = canvas
+        window._accent_spotlight_photo = photo
+    except Exception:
+        pass
+
 try:
     import customtkinter as ctk
 except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.4.6"
+APP_VERSION = "1.4.7"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
+PERSONAL_SITE = "https://adrianvaleitl-debug.github.io/"
+KOFI = "https://ko-fi.com/marketinsight"
 GITHUB_SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 DATA_DIR = Path(os.getenv("APPDATA", str(Path.home()))) / "DayFlow"
 DATA_FILE = DATA_DIR / "dayflow_data.json"
@@ -201,6 +231,7 @@ class DayFlow(ctk.CTk):
         DATA_FILE.write_text(json.dumps(self.data, indent=2, ensure_ascii=False), encoding="utf-8")
 
     def build_shell(self):
+        install_accent_spotlight(self, self.accent_colors()[str(self.data["settings"].get("accent", "black")).lower()][0], "#EDEDED" if ctk.get_appearance_mode()=="Light" else "#101012")
         self.grid_columnconfigure(0, weight=0)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=0)
@@ -232,7 +263,9 @@ class DayFlow(ctk.CTk):
         side_footer = ctk.CTkFrame(self.sidebar, fg_color=("#29292E", "#29292E"), corner_radius=22, border_width=0)
         side_footer.pack(fill="x", padx=14, pady=15)
         ctk.CTkLabel(side_footer, text="MAKE ROOM FOR WHAT MATTERS", font=ctk.CTkFont(size=8, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(11,3))
-        ctk.CTkLabel(side_footer, text="A little progress, every day.", font=self.ui_font(10)).pack(anchor="w", padx=12, pady=(0,11))
+        ctk.CTkLabel(side_footer, text="A little progress, every day.", font=self.ui_font(10)).pack(anchor="w", padx=12, pady=(0,7))
+        ctk.CTkButton(side_footer, text="My website ↗", height=30, corner_radius=10, fg_color="transparent", hover_color=("#E9E9E9","#383838"), text_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][0], command=lambda:webbrowser.open(PERSONAL_SITE)).pack(fill="x", padx=9, pady=2)
+        ctk.CTkButton(side_footer, text="Donate · Ko-fi ↗", height=30, corner_radius=10, fg_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][0], hover_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][1], text_color="#202020", command=lambda:webbrowser.open(KOFI)).pack(fill="x", padx=9, pady=(2,10))
         self.topbar = ctk.CTkFrame(self, height=68, corner_radius=25, fg_color=("#202024", "#202024"), border_width=1, border_color=("#38383E", "#38383E"))
         self.topbar.grid(row=0, column=1, sticky="ew", padx=(8, 14), pady=(14, 8))
         self.topbar.grid_propagate(False)
@@ -722,6 +755,7 @@ class DayFlow(ctk.CTk):
         self.data["settings"]["transparency"]=value
         if label: label.configure(text=f"{value}%")
         self.attributes("-alpha",1-value/100)
+        self.apply_glass_effect()
         self.save()
 
     def set_accent(self, value):
@@ -733,6 +767,7 @@ class DayFlow(ctk.CTk):
         self.sidebar.configure(fg_color=("#202024", "#202024"))
         self.topbar.configure(fg_color=("#202024", "#202024"))
         self.apply_glass_effect()
+        install_accent_spotlight(self, self.accent_colors()[value][0], "#EDEDED" if ctk.get_appearance_mode()=="Light" else "#101012")
         self.show_page(self.active_page)
 
     def delete_item(self, key, item, page):
