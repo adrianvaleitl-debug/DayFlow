@@ -7,6 +7,7 @@ import urllib.request
 import webbrowser
 import subprocess
 import tempfile
+import winreg
 import tkinter as tk
 from tkinter import messagebox
 from datetime import date, datetime, timedelta
@@ -364,8 +365,8 @@ class DayFlow(ctk.CTk):
             request = urllib.request.Request(url, headers={"User-Agent": "DayFlow-Updater"})
             with urllib.request.urlopen(request, timeout=60) as response, open(path, "wb") as output:
                 output.write(response.read())
-            subprocess.Popen([path], shell=False)
-            self.destroy()
+            subprocess.Popen([path, "/SILENT", "/CLOSEAPPLICATIONS", "/NORESTART"], shell=False, close_fds=True)
+            self.after(500, self.close_app)
         except Exception as exc:
             messagebox.showerror("Update failed", f"Couldn't download or launch the update.\\n{exc}")
 
@@ -405,6 +406,52 @@ class DayFlow(ctk.CTk):
     def update_setting(self, key, value):
         self.data["settings"][key] = value
         self.save()
+
+    def desktop_folder(self):
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders") as key:
+                value, _ = winreg.QueryValueEx(key, "Desktop")
+            return Path(os.path.expandvars(value))
+        except Exception:
+            return Path.home() / "Desktop"
+
+    def create_shortcut(self, remove=False):
+        if sys.platform != "win32":
+            messagebox.showinfo("Windows shortcut", "Desktop shortcuts are available in the Windows app.")
+            return
+        shortcut = self.desktop_folder() / "DayFlow.lnk"
+        try:
+            if remove:
+                if shortcut.exists(): shortcut.unlink()
+                messagebox.showinfo("Shortcut", "DayFlow desktop shortcut removed.")
+                return
+            target = Path(sys.executable)
+            args = "" if getattr(sys, "frozen", False) else '"' + str(Path(__file__).resolve()) + '"'
+            icon = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent)) / "dayflow.ico"
+            shortcut.parent.mkdir(parents=True, exist_ok=True)
+            ps = "$w=New-Object -ComObject WScript.Shell; $s=$w.CreateShortcut(" + repr(str(shortcut)) + "); $s.TargetPath=" + repr(str(target)) + "; $s.Arguments=" + repr(args) + "; $s.WorkingDirectory=" + repr(str(target.parent)) + "; $s.Description='DayFlow personal planner'; $s.IconLocation=" + repr(str(icon) + ",0") + "; $s.Save()"
+            encoded = __import__("base64").b64encode(ps.encode("utf-16le")).decode("ascii")
+            subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-EncodedCommand", encoded], check=True, capture_output=True)
+            messagebox.showinfo("Shortcut", "DayFlow desktop shortcut created.")
+        except Exception as exc:
+            messagebox.showerror("Shortcut error", str(exc))
+
+    def set_startup(self, enabled):
+        if sys.platform != "win32":
+            messagebox.showinfo("Windows startup", "This option is available in the Windows app.")
+            return
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Run", 0, winreg.KEY_SET_VALUE) as key:
+                if enabled:
+                    command = '"' + sys.executable + '"' if getattr(sys, "frozen", False) else '"' + sys.executable + '" "' + str(Path(__file__).resolve()) + '"'
+                    winreg.SetValueEx(key, "DayFlow", 0, winreg.REG_SZ, command)
+                else:
+                    try: winreg.DeleteValue(key, "DayFlow")
+                    except FileNotFoundError: pass
+            self.data["settings"]["launch_at_startup"] = bool(enabled)
+            self.save()
+        except Exception as exc:
+            messagebox.showerror("Startup setting", str(exc))
 
     def set_appearance(self, value):
         self.data["settings"]["appearance"]=value; self.save(); ctk.set_appearance_mode(value)
