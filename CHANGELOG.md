@@ -1,19 +1,20 @@
 # Changelog
 
+## 1.4.9 — 11 November 2026
+- Rebuilt the Windows glass host using colour-key transparency so acrylic can appear behind DayFlow without fading text or controls.
+- Expanded the transparency control's tint range and reapply timing.
+- Moved the accent-colour nebula spotlight onto the transparent host layer.
+- Added a dedicated What's New page with a featured release and previous-version history.
+- Preserved tasks, notes, habits, goals, focus sessions and settings.
+
 ## 1.4.8 — 11 November 2026
-- Fixed accent-colour spotlight rendering with a multi-layer, softly blurred nebula effect that redraws on resize.
-- Improved Windows 11 acrylic/transient backdrop handling and retained a legacy acrylic fallback.
-- Kept app content crisp by avoiding whole-window opacity changes for transparency adjustments.
-- Preserved existing tasks, notes, habits, goals and settings.
+- Added the accent-colour spotlight and persistent Adrian Vale / Ko-fi shortcuts.
+- Introduced the initial Windows transparency integration; the backdrop implementation is refined in 1.4.9.
 
 ## 1.4.7 — 11 November 2026
-- Added persistent Adrian Vale website and Donate · Ko-fi links to the desktop sidebar.
-- Added a soft, blurred spotlight that follows the selected accent colour.
-- Reapplied Windows acrylic blur whenever the transparency slider changes.
-- Preserved existing tasks, notes, habits, goals and settings.
+- Added persistent creator links to the desktop sidebar.
+- Refined accent-colour presentation and retained local-first data storage.
 
 ## 1.4.6 — 11 November 2026
-- Restored six optional accent choices, with Black as the default and neutral dark glass surfaces retained.
-- Improved spacing inside panels to keep text clear of borders and outlines.
-- Refined Windows application icon assignment for the app window and taskbar.
-- Preserved existing tasks, notes, habits, goals and settings.
+- Restored six optional accent choices and refined spacing inside panels.
+- Improved Windows application icon assignment for the app window and taskbar.
