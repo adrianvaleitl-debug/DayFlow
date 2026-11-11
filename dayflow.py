@@ -768,7 +768,21 @@ class DayFlow(ctk.CTk):
         ctk.CTkLabel(history,
                      text="Added the accent-colour spotlight and persistent Adrian Vale / Ko-fi shortcuts. The Windows backdrop and transparency implementation is refined in 1.4.9.",
                      font=self.ui_font(11), text_color=("gray45", "gray70"),
-                     justify="left", anchor="w", wraplength=900).pack(fill="x", padx=18, pady=(0, 16))
+                     justify="left", anchor="w", wraplength=900).pack(fill="x", padx=18, pady=(0, 12))
+        earlier = self.panel(body, "Earlier versions")
+        earlier.pack(fill="x", pady=5)
+        for version, title, detail in [
+            ("1.4.7", "Creator shortcuts", "Added persistent website and Ko-fi links to the desktop sidebar."),
+            ("1.4.6", "Accent and spacing refinements", "Restored six accent choices, refined panel spacing and improved Windows icon handling.")
+        ]:
+            row = ctk.CTkFrame(earlier, fg_color="transparent")
+            row.pack(fill="x", padx=18, pady=(8, 2))
+            ctk.CTkLabel(row, text=version, font=self.ui_font(12, True),
+                         text_color=self.accent_colors()[self.data["settings"].get("accent", "black")][0]).pack(side="left")
+            ctk.CTkLabel(row, text=title, font=self.ui_font(12, True)).pack(side="left", padx=12)
+            ctk.CTkLabel(earlier, text=detail, font=self.ui_font(10),
+                         text_color=("gray45", "gray70"), anchor="w", justify="left",
+                         wraplength=900).pack(fill="x", padx=18, pady=(0, 7))
 
     def page_settings(self):
         self.header("Settings", "Make DayFlow feel like your workspace.")
