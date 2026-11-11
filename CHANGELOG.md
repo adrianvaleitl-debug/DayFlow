@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.0 — 11 November 2026
+- Reworked the main shell with a right-hand navigation rail and a wider left-side content canvas.
+- Rebuilt the shell on accent changes so navigation, sidebar links and page controls use the selected theme consistently.
+- Removed expensive spotlight bitmap regeneration during window resizing.
+- Preserved all locally stored tasks, notes, habits, goals, focus sessions and preferences.
+
+
 ## 1.4.9 — 11 November 2026
 - Rebuilt the Windows glass host using colour-key transparency so acrylic can appear behind DayFlow without fading text or controls.
 - Expanded the transparency control's tint range and reapply timing.
