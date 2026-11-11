@@ -18,7 +18,7 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.1.0"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 DATA_DIR = Path(os.getenv("APPDATA", str(Path.home()))) / "DayFlow"
 DATA_FILE = DATA_DIR / "dayflow_data.json"
@@ -78,27 +78,28 @@ class DayFlow(ctk.CTk):
         DATA_FILE.write_text(json.dumps(self.data, indent=2, ensure_ascii=False), encoding="utf-8")
 
     def build_shell(self):
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_rowconfigure(0, weight=1)
-        self.sidebar = ctk.CTkFrame(self, width=220, corner_radius=0, fg_color=("#E9EDF3", "#171D28"))
-        self.sidebar.grid(row=0, column=0, sticky="nsew")
-        self.sidebar.grid_propagate(False)
-        brand = ctk.CTkFrame(self.sidebar, fg_color="transparent")
-        brand.pack(fill="x", padx=20, pady=(26, 30))
-        ctk.CTkLabel(brand, text="◈  DAYFLOW", font=self.ui_font(22, True), text_color=("#172235", "#F4F7FC")).pack(anchor="w")
-        ctk.CTkLabel(brand, text="YOUR DAY, UNDER CONTROL", font=ctk.CTkFont(size=9, weight="bold"), text_color=("#718096", "#8492A6")).pack(anchor="w", pady=(5, 0))
-        self.nav_buttons = {}
-        for name, glyph in [("Overview","⌂"),("Tasks","✓"),("Calendar","▦"),("Notes","▤"),("Habits","↗"),("Goals","◎"),("Focus","◷"),("Settings","⚙")]:
-            b = ctk.CTkButton(self.sidebar, text=f"  {glyph}    {name}", anchor="w", height=42, corner_radius=10,
-                fg_color="transparent", hover_color=("#DCE4EF", "#252F40"), text_color=("#344054", "#C7D0DE"),
-                font=self.ui_font(13, True), command=lambda n=name: self.show_page(n))
-            b.pack(fill="x", padx=12, pady=3)
-            self.nav_buttons[name] = b
-        ctk.CTkLabel(self.sidebar, text=f"DAYFLOW  v{APP_VERSION}", text_color=("#98A2B3", "#667085"), font=ctk.CTkFont(size=10)).pack(side="bottom", pady=18)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+        topbar = ctk.CTkFrame(self, height=66, corner_radius=0, fg_color=("#FFFFFF", "#171D28"))
+        topbar.grid(row=0, column=0, sticky="ew")
+        topbar.grid_propagate(False)
+        ctk.CTkLabel(topbar, text="◈  DAYFLOW", font=self.ui_font(21, True), text_color=("#172235", "#F4F7FC")).pack(side="left", padx=28)
+        ctk.CTkLabel(topbar, text="YOUR PERSONAL SPACE  /  TODAY", font=ctk.CTkFont(size=10, weight="bold"), text_color=("#718096", "#8492A6")).pack(side="left", padx=18)
+        ctk.CTkLabel(topbar, text=date.today().strftime("%A  ·  %d %B %Y"), font=ctk.CTkFont(size=11, weight="bold"), text_color=("#718096", "#A2AFC2")).pack(side="right", padx=28)
         self.main = ctk.CTkFrame(self, fg_color="transparent", corner_radius=0)
-        self.main.grid(row=0, column=1, sticky="nsew", padx=28, pady=24)
+        self.main.grid(row=1, column=0, sticky="nsew", padx=34, pady=(24, 10))
         self.main.grid_columnconfigure(0, weight=1)
         self.main.grid_rowconfigure(1, weight=1)
+        self.nav_dock = ctk.CTkFrame(self, height=72, corner_radius=22, fg_color=("#E8EDF5", "#1A2433"), border_width=1, border_color=("#DCE4EF", "#2B3A50"))
+        self.nav_dock.grid(row=2, column=0, sticky="ew", padx=210, pady=(0, 16))
+        self.nav_dock.grid_propagate(False)
+        self.nav_buttons = {}
+        for name, glyph in [("Overview","⌂"),("Tasks","✓"),("Calendar","▦"),("Notes","▤"),("Habits","↗"),("Goals","◎"),("Focus","◷"),("Settings","⚙")]:
+            b = ctk.CTkButton(self.nav_dock, text=f"{glyph}  {name}", height=43, corner_radius=14,
+                fg_color="transparent", hover_color=("#D7E5F7", "#263B58"), text_color=("#344054", "#C7D0DE"),
+                font=self.ui_font(12, True), command=lambda n=name: self.show_page(n))
+            b.pack(side="left", expand=True, fill="both", padx=4, pady=6)
+            self.nav_buttons[name] = b
 
     def clear_main(self):
         for child in self.main.winfo_children():
