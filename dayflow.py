@@ -27,7 +27,7 @@ DATA_FILE = DATA_DIR / "dayflow_data.json"
 
 DEFAULT_DATA = {
     "tasks": [], "notes": [], "habits": [], "goals": [], "focus_sessions": [],
-    "settings": {"appearance": "dark", "accent": "blue", "focus_minutes": 25, "font": "Segoe UI", "bold": True, "tutorial_seen": False, "auto_updates": True}
+    "settings": {"appearance": "dark", "accent": "euro", "focus_minutes": 25, "font": "Segoe UI", "bold": True, "tutorial_seen": False, "auto_updates": True}
 }
 
 def load_data():
@@ -62,6 +62,7 @@ class DayFlow(ctk.CTk):
             pass
         ctk.set_appearance_mode(self.data["settings"].get("appearance", "dark"))
         ctk.set_default_color_theme("blue")
+        self.apply_accent_theme()
         super().__init__()
         self.title(f"{APP_NAME}  •  Your day, under control")
         try:
@@ -93,6 +94,29 @@ class DayFlow(ctk.CTk):
         self.after(15000, self.check_reminders)
         if self.data["settings"].get("auto_updates", True):
             self.after(2500, lambda: self.check_updates(silent=True))
+
+    def accent_colors(self):
+        return {"dollar":("#E8C98F","#C9A96D"),"euro":("#9E B C E9".replace(" ",""),"#7396C8"),
+                "pound":("#C4AFE7","#9B83C7"),"yen":("#E9AEBC","#C98294"),
+                "franc":("#9FCBD0","#69AAB1")}
+
+    def apply_accent_theme(self):
+        accent=str(self.data.get("settings",{}).get("accent","euro")).lower()
+        if accent not in self.accent_colors(): accent="euro"
+        self.data["settings"]["accent"]=accent
+        primary,hover=self.accent_colors()[accent]
+        theme=ctk.ThemeManager.theme
+        updates={
+            "CTkButton":{"fg_color":[primary,primary],"hover_color":[hover,hover]},
+            "CTkCheckBox":{"fg_color":[primary,primary],"hover_color":[hover,hover]},
+            "CTkSwitch":{"progress_color":[primary,primary]},
+            "CTkSlider":{"progress_color":[primary,primary],"button_color":[primary,primary],"button_hover_color":[hover,hover]},
+            "CTkProgressBar":{"progress_color":[primary,primary]},
+            "CTkRadioButton":{"fg_color":[primary,primary],"hover_color":[hover,hover]},
+            "CTkOptionMenu":{"fg_color":[primary,primary],"button_color":[primary,primary],"button_hover_color":[hover,hover]}
+        }
+        for widget,values in updates.items():
+            if widget in theme: theme[widget].update(values)
 
     def ui_font(self, size=12, force_bold=False):
         settings = self.data.get("settings", {})
@@ -448,9 +472,12 @@ class DayFlow(ctk.CTk):
         self.header("Settings", "Make DayFlow feel like your workspace.")
         body=self.body()
         card=self.panel(body,"Appearance"); card.pack(fill="x",pady=(0,12))
-        ctk.CTkLabel(card,text="Theme").pack(anchor="w",padx=18,pady=(0,5))
+        ctk.CTkLabel(card,text="Appearance").pack(anchor="w",padx=18,pady=(0,5))
         appearance=ctk.CTkOptionMenu(card,values=["dark","light","system"],command=self.set_appearance)
-        appearance.set(self.data["settings"].get("appearance","dark")); appearance.pack(anchor="w",padx=18,pady=(0,16))
+        appearance.set(self.data["settings"].get("appearance","dark")); appearance.pack(anchor="w",padx=18,pady=(0,12))
+        ctk.CTkLabel(card,text="Pastel colour theme").pack(anchor="w",padx=18,pady=(0,5))
+        accent=ctk.CTkOptionMenu(card,values=["dollar","euro","pound","yen","franc"],command=self.set_accent)
+        accent.set(self.data["settings"].get("accent","euro")); accent.pack(anchor="w",padx=18,pady=(0,16))
         focus=self.panel(body,"Focus timer"); focus.pack(fill="x")
         ctk.CTkLabel(focus,text="Default focus session (minutes)").pack(anchor="w",padx=18,pady=(0,5))
         value=ctk.CTkEntry(focus,width=100); value.insert(0,str(self.data["settings"].get("focus_minutes",25))); value.pack(anchor="w",padx=18,pady=(0,8))
@@ -534,6 +561,12 @@ class DayFlow(ctk.CTk):
 
     def set_appearance(self, value):
         self.data["settings"]["appearance"]=value; self.save(); ctk.set_appearance_mode(value)
+
+    def set_accent(self, value):
+        self.data["settings"]["accent"]=value.lower()
+        self.apply_accent_theme()
+        self.save()
+        self.show_page(self.active_page)
 
     def delete_item(self, key, item, page):
         if messagebox.askyesno("Delete item","Are you sure you want to delete this?"):
