@@ -1,6 +1,11 @@
 # DayFlow
 
-**Version 1.3.0 — Your day, under control.**
+**Version 1.3.1 — Your day, under control.**
+
+## What's new in 1.3.1
+- **Windows taskbar identity:** set a stable Windows AppUserModelID and apply the bundled ICO/PNG assets to the app window and taskbar.
+- **Safer in-app updates:** validate the downloaded Windows installer, use a unique temporary installer file and hand off installation more reliably.
+- **One-time tutorial:** persist the welcome state before the guide opens; closing it counts as seen, and the guide can still be replayed from Settings.
 
 ## What's new in 1.3.0
 - **Weekly Review:** see completed tasks, focus sessions, focus time and habit check-ins over the last seven days.
