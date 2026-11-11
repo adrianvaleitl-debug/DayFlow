@@ -175,9 +175,12 @@ class DayFlow(ctk.CTk):
 
     def show_page(self, name):
         self.active_page = name
+        accent_name = self.data.get("settings", {}).get("accent", "euro")
+        accent_color = self.accent_colors().get(accent_name, self.accent_colors()["euro"])[0]
         for n, b in self.nav_buttons.items():
-            b.configure(fg_color=("#D7E5F7", "#263B58") if n == name else "transparent",
-                        text_color=("#1456A0", "#8FC0FF") if n == name else ("#344054", "#C7D0DE"))
+            b.configure(fg_color=(accent_color, accent_color) if n == name else "transparent",
+                        hover_color=(accent_color, accent_color),
+                        text_color=("#344054", "#20212A") if n == name else ("#344054", "#C7D0DE"))
         self.clear_main()
         getattr(self, f"page_{name.lower().replace(chr(32), chr(95))}")()
         if name == "Focus" and self.timer_running:
