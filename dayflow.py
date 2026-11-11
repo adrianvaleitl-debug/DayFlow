@@ -20,7 +20,7 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.3.0"
+APP_VERSION = "1.3.1"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 DATA_DIR = Path(os.getenv("APPDATA", str(Path.home()))) / "DayFlow"
 DATA_FILE = DATA_DIR / "dayflow_data.json"
@@ -85,6 +85,10 @@ class DayFlow(ctk.CTk):
         self.build_shell()
         self.show_page("Overview")
         if not self.data["settings"].get("tutorial_seen", False):
+            # Persist the first-launch flag before opening the dialog so closing
+            # the window or an interrupted first run cannot trigger it forever.
+            self.data["settings"]["tutorial_seen"] = True
+            self.save()
             self.after(500, self.show_tutorial)
         self.after(15000, self.check_reminders)
         if self.data["settings"].get("auto_updates", True):
@@ -391,7 +395,9 @@ class DayFlow(ctk.CTk):
             try:
                 update_dir = Path(tempfile.gettempdir()) / "AdrianVale" / "DayFlow"
                 update_dir.mkdir(parents=True, exist_ok=True)
-                path = update_dir / f"DayFlow-Setup-{APP_VERSION}-update.exe"
+                fd, temp_path = tempfile.mkstemp(prefix="DayFlow-Setup-", suffix="-update.exe", dir=str(update_dir))
+                os.close(fd)
+                path = Path(temp_path)
                 request = urllib.request.Request(url, headers={"User-Agent": "DayFlow-Updater"})
                 with urllib.request.urlopen(request, timeout=90) as response:
                     payload = response.read()
