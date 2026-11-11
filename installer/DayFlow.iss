@@ -30,10 +30,11 @@ Name: "desktopicon"; Description: "Create a &desktop shortcut"; GroupDescription
 
 [Files]
 Source: "..\dist\DayFlow.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\assets\dayflow.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\Uninstall DayFlow"; Filename: "{uninstallexe}"; WorkingDir: "{app}"
-Name: "{group}\DayFlow"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppExeName}"; AppUserModelID: "AdrianVale.DayFlow"
+Name: "{group}\DayFlow"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\dayflow.ico"; AppUserModelID: "AdrianVale.DayFlow"
 Name: "{autodesktop}\DayFlow"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppExeName}"; AppUserModelID: "AdrianVale.DayFlow"; Tasks: desktopicon
 
 [Run]
