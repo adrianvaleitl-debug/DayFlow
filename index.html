@@ -339,6 +339,14 @@ main>.footer{flex:0 0 300px;width:300px;padding:140px 0 40px}
 body>footer.footer{left:50%!important;right:auto!important;transform:translateX(-50%)!important;justify-content:center!important;align-items:center!important;text-align:center!important;gap:clamp(18px,3vw,38px)!important}
 @media(max-width:700px){.nav{left:50%!important;transform:translateX(-50%)!important;justify-content:center!important}body>footer.footer{left:50%!important;right:auto!important;transform:translateX(-50%)!important;justify-content:center!important}}
 </style>
+<style id="final-viewport-centering">
+/* Centre the full header group and fixed footer against the viewport, not their text contents. */
+body>header.nav{left:50%!important;right:auto!important;transform:translateX(-50%)!important;width:min(1160px,calc(100vw - 32px))!important;box-sizing:border-box!important;justify-content:center!important;align-content:center!important}
+body>header.nav>.brand{flex:0 0 auto!important}
+body>header.nav>.navlinks{flex:0 1 auto!important;justify-content:center!important}
+body>footer.footer{left:50%!important;right:auto!important;transform:translateX(-50%)!important;width:min(1160px,calc(100vw - 32px))!important;box-sizing:border-box!important;display:flex!important;flex-wrap:wrap!important;justify-content:center!important;align-items:center!important;text-align:center!important;gap:10px 28px!important}
+@media(max-width:700px){body>header.nav{left:50%!important;transform:translateX(-50%)!important;width:calc(100vw - 16px)!important}body>footer.footer{left:50%!important;transform:translateX(-50%)!important;width:calc(100vw - 16px)!important}}
+</style>
 </head><body><div class="wrap">
 <header class="nav"><a class="brand" href="#">◈ DAY<span>FLOW</span></a><nav class="navlinks"><a href="#features">Features</a><a href="#daily-rhythm">Your day</a><a href="#download">Download</a><a href="https://github.com/adrianvaleitl-debug/DayFlow">GitHub ↗</a></nav></header>
 <main><section class="hero"><div><div class="eyebrow">A clearer way to get things done</div><h1>Your day.<br><span class="gradient">Under control.</span></h1><p class="lead">Bring tasks, routines, notes and goals into one calm workspace. DayFlow helps you make a plan, focus on what matters and see your progress — with weekly reviews, habit streaks and a smoother Windows update experience.</p><div class="actions"><a class="btn" id="downloadButton" href="https://github.com/adrianvaleitl-debug/DayFlow/releases/latest">Download for Windows</a><a class="btn secondary" href="#features">Explore features</a></div><div class="small" id="releaseNote">DayFlow 1.3.2 · Windows desktop · Free · Your data stays on your device</div></div>
