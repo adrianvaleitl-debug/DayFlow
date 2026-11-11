@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.8 — 11 November 2026
+- Fixed accent-colour spotlight rendering with a multi-layer, softly blurred nebula effect that redraws on resize.
+- Improved Windows 11 acrylic/transient backdrop handling and retained a legacy acrylic fallback.
+- Kept app content crisp by avoiding whole-window opacity changes for transparency adjustments.
+- Preserved existing tasks, notes, habits, goals and settings.
+
 ## 1.4.7 — 11 November 2026
 - Added persistent Adrian Vale website and Donate · Ko-fi links to the desktop sidebar.
 - Added a soft, blurred spotlight that follows the selected accent colour.
