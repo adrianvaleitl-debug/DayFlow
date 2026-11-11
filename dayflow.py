@@ -337,7 +337,7 @@ class DayFlow(ctk.CTk):
             ("YOUR DAY", [("Overview","⌂"),("Inbox","↳"),("Tasks","✓"),("Calendar","▦")]),
             ("PERSONAL SPACE", [("Notes","▤"),("Habits","↗"),("Goals","◎")]),
             ("PRODUCTIVITY", [("Focus","◷"),("Insights","◌"),("Weekly Review","▥")]),
-            ("PREFERENCES", [("What's New","✦"),("Settings","⚙")])]
+            ("PREFERENCES", [("Updates","✦"),("Settings","⚙")])]
         for group, items in groups:
             ctk.CTkLabel(nav_area, text=group, font=ctk.CTkFont(size=9, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(15,7))
             for name, glyph in items:
@@ -735,8 +735,8 @@ class DayFlow(ctk.CTk):
                 streak+=1; cursor-=timedelta(days=1)
             ctk.CTkLabel(habits,text=f"{habit.get('name','Habit')}   ·   {streak}-day current streak   ·   {sum(1 for x in dates if x>=since)} this week",anchor="w").pack(fill="x",padx=18,pady=6)
 
-    def page_whats_new(self):
-        self.header("What's new", "A release history for DayFlow, with the latest changes up front.")
+    def page_updates(self):
+        self.header("Updates", "A release history for DayFlow, with the latest changes up front.")
         body = self.body()
         latest = self.panel(body)
         latest.pack(fill="x", pady=(0, 14))
