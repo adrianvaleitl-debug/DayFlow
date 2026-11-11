@@ -400,6 +400,11 @@ class DayFlow(ctk.CTk):
         ctk.CTkButton(updates_card,text="Check for updates",command=lambda:self.check_updates(silent=False)).pack(anchor="w",padx=18,pady=(0,8))
         ctk.CTkButton(updates_card,text="Replay welcome tutorial",fg_color="transparent",
             command=self.show_tutorial).pack(anchor="w",padx=18,pady=(0,14))
+        shortcuts=self.panel(body,"Windows shortcuts"); shortcuts.pack(fill="x",pady=12)
+        ctk.CTkButton(shortcuts,text="Create desktop shortcut",command=lambda:self.create_shortcut(False)).pack(anchor="w",padx=18,pady=(12,6))
+        ctk.CTkButton(shortcuts,text="Remove desktop shortcut",fg_color="transparent",command=lambda:self.create_shortcut(True)).pack(anchor="w",padx=18,pady=(0,8))
+        startup_var=ctk.BooleanVar(value=self.data["settings"].get("launch_at_startup",False))
+        ctk.CTkSwitch(shortcuts,text="Launch DayFlow when Windows starts",variable=startup_var,command=lambda:self.set_startup(startup_var.get())).pack(anchor="w",padx=18,pady=(0,14))
         info=self.panel(body,"Your data"); info.pack(fill="x",pady=12)
         ctk.CTkLabel(info,text=f"Your information is stored locally on this device:\n{DATA_FILE}",justify="left",text_color=("gray55","gray65")).pack(anchor="w",padx=18,pady=16)
 
