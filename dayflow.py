@@ -22,7 +22,7 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.4.0"
+APP_VERSION = "1.4.1"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 GITHUB_SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 DATA_DIR = Path(os.getenv("APPDATA", str(Path.home()))) / "DayFlow"
@@ -82,7 +82,7 @@ class DayFlow(ctk.CTk):
         screen_h = self.winfo_screenheight()
         self.geometry(f"{min(1380, max(1080, screen_w - 80))}x{min(900, max(720, screen_h - 100))}")
         self.minsize(1020, 680)
-        self.configure(fg_color=("#F3F5F8", "#11151D"))
+        self.configure(fg_color=("#EAF0F8", "#0C1422"))
         self.timer_running = False
         self.timer_end = None
         self.timer_job = None
@@ -137,8 +137,8 @@ class DayFlow(ctk.CTk):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=1)
-        self.sidebar = ctk.CTkFrame(self, width=238, corner_radius=0, fg_color=("#F7F8FC", "#151B27"))
-        self.sidebar.grid(row=0, column=0, rowspan=2, sticky="nsew")
+        self.sidebar = ctk.CTkFrame(self, width=238, corner_radius=24, fg_color=("#F7FAFF", "#142236"), border_width=1, border_color=("#DCE6F3", "#263B55"))
+        self.sidebar.grid(row=0, column=0, rowspan=2, sticky="nsew", padx=(14, 8), pady=14)
         self.sidebar.grid_propagate(False)
         brand = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         brand.pack(fill="x", padx=20, pady=(25, 28))
@@ -161,19 +161,19 @@ class DayFlow(ctk.CTk):
                 button = ctk.CTkButton(nav_area, text=f"{glyph}   {name}", height=42, corner_radius=12, anchor="w", fg_color="transparent", hover_color=("#E8EDF6","#263449"), text_color=("#465267","#C7D0DE"), font=self.ui_font(12), command=lambda n=name: self.show_page(n))
                 button.pack(fill="x", padx=2, pady=2)
                 self.nav_buttons[name] = button
-        side_footer = ctk.CTkFrame(self.sidebar, fg_color=("#EDF0F6","#1D2736"), corner_radius=14)
+        side_footer = ctk.CTkFrame(self.sidebar, fg_color=("#EAF1FA","#1D3048"), corner_radius=18, border_width=1, border_color=("#D9E4F2","#304966"))
         side_footer.pack(fill="x", padx=14, pady=15)
         ctk.CTkLabel(side_footer, text="MAKE ROOM FOR WHAT MATTERS", font=ctk.CTkFont(size=8, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(11,3))
         ctk.CTkLabel(side_footer, text="A little progress, every day.", font=self.ui_font(10)).pack(anchor="w", padx=12, pady=(0,11))
-        self.topbar = ctk.CTkFrame(self, height=66, corner_radius=0, fg_color=("white","#171F2D"))
-        self.topbar.grid(row=0, column=1, sticky="ew")
+        self.topbar = ctk.CTkFrame(self, height=66, corner_radius=22, fg_color=("#FFFFFF","#17263A"), border_width=1, border_color=("#DCE6F3","#263B55"))
+        self.topbar.grid(row=0, column=1, sticky="ew", padx=(8, 14), pady=(14, 8))
         self.topbar.grid_propagate(False)
         self.page_title = ctk.CTkLabel(self.topbar, text="Overview", font=self.ui_font(16, True))
         self.page_title.pack(side="left", padx=27)
         self.date_label = ctk.CTkLabel(self.topbar, text=date.today().strftime("%A  ·  %d %B %Y"), font=ctk.CTkFont(size=11), text_color=("gray55","gray65"))
         self.date_label.pack(side="right", padx=28)
         self.main = ctk.CTkFrame(self, fg_color="transparent", corner_radius=0)
-        self.main.grid(row=1, column=1, sticky="nsew", padx=28, pady=(22,18))
+        self.main.grid(row=1, column=1, sticky="nsew", padx=(16, 14), pady=(10, 14))
         self.main.grid_columnconfigure(0, weight=1)
         self.main.grid_rowconfigure(1, weight=1)
 
@@ -194,7 +194,7 @@ class DayFlow(ctk.CTk):
         return body
 
     def panel(self, parent, title=None):
-        frame = ctk.CTkFrame(parent, corner_radius=16, fg_color=("white", "#1A2230"), border_width=1, border_color=("#E4E9F0", "#263244"))
+        frame = ctk.CTkFrame(parent, corner_radius=22, fg_color=("#FFFFFF", "#17263A"), border_width=1, border_color=("#DCE6F3", "#2A405B"))
         if title:
             ctk.CTkLabel(frame, text=title, font=self.ui_font(15, True)).pack(anchor="w", padx=18, pady=(16, 10))
         return frame
@@ -670,6 +670,33 @@ class DayFlow(ctk.CTk):
         self.save()
         self.destroy()
 
-if __name__ == "__main__":
+_DAYFLOW_MUTEX = None
+
+def acquire_single_instance():
+    """Keep one DayFlow window; clicking its shortcut activates the existing window."""
+    global _DAYFLOW_MUTEX
+    if sys.platform != "win32":
+        return True
+    try:
+        kernel32 = ctypes.windll.kernel32
+        kernel32.CreateMutexW.argtypes = [ctypes.c_void_p, ctypes.c_bool, ctypes.c_wchar_p]
+        kernel32.CreateMutexW.restype = ctypes.c_void_p
+        handle = kernel32.CreateMutexW(None, False, "Local\\AdrianVale.DayFlow.Singleton")
+        if not handle:
+            return True
+        if kernel32.GetLastError() == 183:
+            kernel32.CloseHandle(handle)
+            user32 = ctypes.windll.user32
+            hwnd = user32.FindWindowW(None, "DayFlow  •  Your day, under control")
+            if hwnd:
+                user32.ShowWindow(hwnd, 9)
+                user32.SetForegroundWindow(hwnd)
+            return False
+        _DAYFLOW_MUTEX = handle
+        return True
+    except Exception:
+        return True
+
+if __name__ == "__main__" and acquire_single_instance():
     app = DayFlow()
     app.mainloop()
