@@ -479,8 +479,8 @@ class DayFlow(ctk.CTk):
         appearance=ctk.CTkOptionMenu(card,values=["dark","light","system"],command=self.set_appearance)
         appearance.set(self.data["settings"].get("appearance","dark")); appearance.pack(anchor="w",padx=18,pady=(0,12))
         ctk.CTkLabel(card,text="Pastel colour theme").pack(anchor="w",padx=18,pady=(0,5))
-        accent=ctk.CTkOptionMenu(card,values=["dollar","euro","pound","yen","franc"],command=self.set_accent)
-        accent.set(self.data["settings"].get("accent","euro")); accent.pack(anchor="w",padx=18,pady=(0,16))
+        accent=ctk.CTkOptionMenu(card,values=["Focus","Flow","Growth","Energy","Balance"],command=self.set_accent)
+        accent.set({"dollar":"Focus","euro":"Flow","pound":"Growth","yen":"Energy","franc":"Balance"}.get(self.data["settings"].get("accent","euro"),"Flow")); accent.pack(anchor="w",padx=18,pady=(0,16))
         focus=self.panel(body,"Focus timer"); focus.pack(fill="x")
         ctk.CTkLabel(focus,text="Default focus session (minutes)").pack(anchor="w",padx=18,pady=(0,5))
         value=ctk.CTkEntry(focus,width=100); value.insert(0,str(self.data["settings"].get("focus_minutes",25))); value.pack(anchor="w",padx=18,pady=(0,8))
@@ -566,7 +566,8 @@ class DayFlow(ctk.CTk):
         self.data["settings"]["appearance"]=value; self.save(); ctk.set_appearance_mode(value)
 
     def set_accent(self, value):
-        self.data["settings"]["accent"]=value.lower()
+        value={"Focus":"dollar","Flow":"euro","Growth":"pound","Energy":"yen","Balance":"franc"}.get(value,value.lower())
+        self.data["settings"]["accent"]=value
         self.apply_accent_theme()
         self.save()
         self.show_page(self.active_page)
