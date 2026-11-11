@@ -1,5 +1,5 @@
 #define MyAppName "DayFlow"
-#define MyAppVersion "1.4.6"
+#define MyAppVersion "1.4.7"
 #define MyAppPublisher "Adrian Vale"
 #define MyAppExeName "DayFlow.exe"
 
