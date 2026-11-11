@@ -1,12 +1,12 @@
 # DayFlow
 
-**Version 1.4.9 — Your day, under control.**
+**Version 1.5.0 — Your day, under control.**
 
-## What's new in 1.4.9
-- Rebuilt the Windows glass host using colour-key transparency so acrylic can show through without fading text or controls.
-- Expanded the transparency slider's acrylic tint range and apply timing.
-- Moved the accent-colour nebula spotlight onto the transparent host layer.
-- Added a dedicated Updates page with a featured release and previous-version timeline.
+## What's new in 1.5.0
+- Fixed accent-theme refresh so the sidebar, navigation, footer and page content all update together.
+- Moved the navigation rail to the right to create a wider, uninterrupted working canvas.
+- Removed expensive spotlight image regeneration during window resizing for smoother window movement.
+- Preserved tasks, notes, habits, goals, focus sessions and settings.
 - Existing tasks, notes, habits, goals, focus sessions and settings are preserved.
 
 ## Previous release highlights
