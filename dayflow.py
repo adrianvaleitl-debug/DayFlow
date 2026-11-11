@@ -80,8 +80,8 @@ class DayFlow(ctk.CTk):
             pass
         screen_w = self.winfo_screenwidth()
         screen_h = self.winfo_screenheight()
-        self.geometry(f"{min(1240, max(900, screen_w - 80))}x{min(820, max(640, screen_h - 100))}")
-        self.minsize(min(980, max(880, screen_w - 80)), min(680, max(600, screen_h - 100)))
+        self.geometry(f"{min(1380, max(1080, screen_w - 80))}x{min(900, max(720, screen_h - 100))}")
+        self.minsize(1020, 680)
         self.configure(fg_color=("#F3F5F8", "#11151D"))
         self.timer_running = False
         self.timer_end = None
@@ -133,31 +133,49 @@ class DayFlow(ctk.CTk):
         DATA_FILE.write_text(json.dumps(self.data, indent=2, ensure_ascii=False), encoding="utf-8")
 
     def build_shell(self):
-        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=0)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=1)
-        topbar = ctk.CTkFrame(self, height=66, corner_radius=0, fg_color=("#FFFFFF", "#171D28"))
-        topbar.grid(row=0, column=0, sticky="ew")
-        topbar.grid_propagate(False)
-        ctk.CTkLabel(topbar, text="◈  DAYFLOW", font=self.ui_font(21, True), text_color=("#172235", "#F4F7FC")).pack(side="left", padx=28)
-        ctk.CTkLabel(topbar, text="YOUR PERSONAL SPACE  /  TODAY", font=ctk.CTkFont(size=10, weight="bold"), text_color=("#718096", "#8492A6")).pack(side="left", padx=18)
-        ctk.CTkLabel(topbar, text=date.today().strftime("%A  ·  %d %B %Y"), font=ctk.CTkFont(size=11, weight="bold"), text_color=("#718096", "#A2AFC2")).pack(side="right", padx=28)
+        self.sidebar = ctk.CTkFrame(self, width=238, corner_radius=0, fg_color=("#F7F8FC", "#151B27"))
+        self.sidebar.grid(row=0, column=0, rowspan=2, sticky="nsew")
+        self.sidebar.grid_propagate(False)
+        brand = ctk.CTkFrame(self.sidebar, fg_color="transparent")
+        brand.pack(fill="x", padx=20, pady=(25, 28))
+        ctk.CTkLabel(brand, text="◈", font=self.ui_font(30, True), text_color=self.accent_colors()[self.data["settings"].get("accent","euro")][0]).pack(side="left", padx=(0,10))
+        brand_text = ctk.CTkFrame(brand, fg_color="transparent")
+        brand_text.pack(side="left")
+        ctk.CTkLabel(brand_text, text="DayFlow", font=self.ui_font(20, True)).pack(anchor="w")
+        ctk.CTkLabel(brand_text, text="PERSONAL WORKSPACE", font=ctk.CTkFont(size=8, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w")
+        self.nav_buttons = {}
+        nav_area = ctk.CTkScrollableFrame(self.sidebar, fg_color="transparent", corner_radius=0)
+        nav_area.pack(fill="both", expand=True, padx=12, pady=(0,8))
+        groups = [
+            ("YOUR DAY", [("Overview","⌂"),("Inbox","↳"),("Tasks","✓"),("Calendar","▦")]),
+            ("PERSONAL SPACE", [("Notes","▤"),("Habits","↗"),("Goals","◎")]),
+            ("PRODUCTIVITY", [("Focus","◷"),("Insights","◌"),("Weekly Review","▥")]),
+            ("PREFERENCES", [("Settings","⚙")])]
+        for group, items in groups:
+            ctk.CTkLabel(nav_area, text=group, font=ctk.CTkFont(size=9, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(15,7))
+            for name, glyph in items:
+                button = ctk.CTkButton(nav_area, text=f"{glyph}   {name}", height=42, corner_radius=12, anchor="w", fg_color="transparent", hover_color=("#E8EDF6","#263449"), text_color=("#465267","#C7D0DE"), font=self.ui_font(12), command=lambda n=name: self.show_page(n))
+                button.pack(fill="x", padx=2, pady=2)
+                self.nav_buttons[name] = button
+        side_footer = ctk.CTkFrame(self.sidebar, fg_color=("#EDF0F6","#1D2736"), corner_radius=14)
+        side_footer.pack(fill="x", padx=14, pady=15)
+        ctk.CTkLabel(side_footer, text="MAKE ROOM FOR WHAT MATTERS", font=ctk.CTkFont(size=8, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(11,3))
+        ctk.CTkLabel(side_footer, text="A little progress, every day.", font=self.ui_font(10)).pack(anchor="w", padx=12, pady=(0,11))
+        self.topbar = ctk.CTkFrame(self, height=66, corner_radius=0, fg_color=("white","#171F2D"))
+        self.topbar.grid(row=0, column=1, sticky="ew")
+        self.topbar.grid_propagate(False)
+        self.page_title = ctk.CTkLabel(self.topbar, text="Overview", font=self.ui_font(16, True))
+        self.page_title.pack(side="left", padx=27)
+        self.date_label = ctk.CTkLabel(self.topbar, text=date.today().strftime("%A  ·  %d %B %Y"), font=ctk.CTkFont(size=11), text_color=("gray55","gray65"))
+        self.date_label.pack(side="right", padx=28)
         self.main = ctk.CTkFrame(self, fg_color="transparent", corner_radius=0)
-        self.main.grid(row=1, column=0, sticky="nsew", padx=34, pady=(24, 10))
+        self.main.grid(row=1, column=1, sticky="nsew", padx=28, pady=(22,18))
         self.main.grid_columnconfigure(0, weight=1)
         self.main.grid_rowconfigure(1, weight=1)
-        self.nav_dock = ctk.CTkFrame(self, height=108, corner_radius=22, fg_color=("#E8EDF5", "#1A2433"), border_width=1, border_color=("#DCE4EF", "#2B3A50"))
-        self.nav_dock.grid(row=2, column=0, sticky="ew", padx=50, pady=(0, 12))
-        self.nav_dock.grid_propagate(False)
-        self.nav_buttons = {}
-        for column in range(5):
-            self.nav_dock.grid_columnconfigure(column, weight=1, uniform="dock")
-        for index, (name, glyph) in enumerate([("Overview","⌂"),("Tasks","✓"),("Calendar","▦"),("Notes","▤"),("Habits","↗"),("Goals","◎"),("Focus","◷"),("Weekly Review","▥"),("Settings","⚙")]):
-            b = ctk.CTkButton(self.nav_dock, text=f"{glyph}  {name}", height=43, corner_radius=14,
-                fg_color="transparent", hover_color=("#D7E5F7", "#263B58"), text_color=("#344054", "#C7D0DE"),
-                font=self.ui_font(12, True), command=lambda n=name: self.show_page(n))
-            b.configure(height=38, corner_radius=12)
-            b.grid(row=index // 5, column=index % 5, sticky="ew", padx=5, pady=4)
-            self.nav_buttons[name] = b
 
     def clear_main(self):
         for child in self.main.winfo_children():
@@ -183,12 +201,11 @@ class DayFlow(ctk.CTk):
 
     def show_page(self, name):
         self.active_page = name
-        accent_name = self.data.get("settings", {}).get("accent", "euro")
-        accent_color = self.accent_colors().get(accent_name, self.accent_colors()["euro"])[0]
-        for n, b in self.nav_buttons.items():
-            b.configure(fg_color=(accent_color, accent_color) if n == name else "transparent",
-                        hover_color=(accent_color, accent_color),
-                        text_color=("#344054", "#20212A") if n == name else ("#344054", "#C7D0DE"))
+        accent_color = self.accent_colors().get(self.data.get("settings", {}).get("accent", "euro"), self.accent_colors()["euro"])[0]
+        self.page_title.configure(text=name)
+        for nav_name, button in self.nav_buttons.items():
+            active = nav_name == name
+            button.configure(fg_color=(accent_color, accent_color) if active else "transparent", hover_color=(accent_color, accent_color) if active else ("#E8EDF6","#263449"), text_color=("#202B3B","#17202D") if active else ("#465267","#C7D0DE"), font=self.ui_font(12, active))
         self.clear_main()
         getattr(self, f"page_{name.lower().replace(chr(32), chr(95))}")()
         if name == "Focus" and self.timer_running:
@@ -228,6 +245,60 @@ class DayFlow(ctk.CTk):
             self.data["tasks"].append({"id": str(time.time_ns()), "title": title, "due": date.today().isoformat(), "priority": "Normal", "done": False, "remind": ""})
             self.save()
             self.show_page("Overview")
+
+    def page_inbox(self):
+        self.header("Inbox", "A landing place for loose thoughts and things to do.")
+        body = self.body()
+        capture = self.panel(body, "Quick capture")
+        capture.pack(fill="x", pady=(0, 14))
+        entry = ctk.CTkEntry(capture, height=42, placeholder_text="Drop something here to remember it…")
+        entry.pack(fill="x", padx=18, pady=(0, 9))
+        def capture_item():
+            value = entry.get().strip()
+            if value:
+                self.data["tasks"].insert(0, {"id":str(time.time_ns()),"title":value,"due":"","priority":"Normal","done":False,"remind":"","inbox":True})
+                self.save()
+                self.show_page("Inbox")
+        ctk.CTkButton(capture, text="Add to inbox", command=capture_item).pack(anchor="e", padx=18, pady=(0, 16))
+        loose = [t for t in self.data["tasks"] if not t.get("done") and (t.get("inbox") or not t.get("due"))]
+        listing = self.panel(body, f"Unsorted · {len(loose)}")
+        listing.pack(fill="x")
+        if not loose:
+            ctk.CTkLabel(listing, text="All clear. Your inbox is empty.", text_color=("gray55","gray65")).pack(anchor="w", padx=18, pady=18)
+        for task in loose:
+            line = ctk.CTkFrame(listing, fg_color="transparent")
+            line.pack(fill="x", padx=14, pady=5)
+            ctk.CTkLabel(line, text=task.get("title",""), anchor="w").pack(side="left", fill="x", expand=True, padx=5)
+            ctk.CTkButton(line, text="Move to tasks", width=105, command=lambda t=task:self._promote_inbox_task(t)).pack(side="right", padx=4)
+            ctk.CTkButton(line, text="×", width=30, fg_color="transparent", command=lambda t=task:self.delete_item("tasks",t,"Inbox")).pack(side="right")
+
+    def _promote_inbox_task(self, task):
+        task["inbox"] = False
+        if not task.get("due"):
+            task["due"] = date.today().isoformat()
+        self.save()
+        self.show_page("Tasks")
+
+    def page_insights(self):
+        self.header("Insights", "A quick look at the habits and momentum behind your week.")
+        body = self.body()
+        cards = ctk.CTkFrame(body, fg_color="transparent")
+        cards.pack(fill="x")
+        done = [t for t in self.data["tasks"] if t.get("done")]
+        open_tasks = [t for t in self.data["tasks"] if not t.get("done")]
+        sessions = self.data.get("focus_sessions", [])
+        habits = self.data.get("habits", [])
+        for title, value, hint in [("TASKS COMPLETED",len(done),"All-time completed"),("STILL IN MOTION",len(open_tasks),"Open tasks"),("FOCUS SESSIONS",len(sessions),"Recorded sessions"),("HABITS IN PLAY",len(habits),"Routines you're tracking")]:
+            card = self.panel(cards)
+            card.pack(side="left", fill="both", expand=True, padx=(0,10), pady=4)
+            ctk.CTkLabel(card, text=title, font=ctk.CTkFont(size=9,weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=15, pady=(14,3))
+            ctk.CTkLabel(card, text=str(value), font=self.ui_font(27,True)).pack(anchor="w", padx=15)
+            ctk.CTkLabel(card, text=hint, font=ctk.CTkFont(size=10), text_color=("gray55","gray65")).pack(anchor="w", padx=15, pady=(0,13))
+        focus_minutes = sum(int(item.get("minutes",0)) for item in sessions)
+        summary = self.panel(body, "Your momentum")
+        summary.pack(fill="x", pady=(15,0))
+        ctk.CTkLabel(summary, text=f"{focus_minutes // 60}h {focus_minutes % 60}m of recorded focus time", font=self.ui_font(19,True)).pack(anchor="w", padx=18, pady=(17,5))
+        ctk.CTkLabel(summary, text="Progress isn't only about doing more. It's about making the important things easier to return to.", wraplength=760, justify="left", text_color=("gray55","gray65")).pack(anchor="w", padx=18, pady=(0,18))
 
     def page_tasks(self):
         self.header("Tasks", "Capture it, prioritise it, and move it forward.")
