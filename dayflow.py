@@ -63,6 +63,8 @@ class DayFlow(ctk.CTk):
         if not self.data["settings"].get("forest_glass_migrated"):
             self.data["settings"]["accent"] = "dollar"
             self.data["settings"]["forest_glass_migrated"] = True
+            DATA_DIR.mkdir(parents=True, exist_ok=True)
+            DATA_FILE.write_text(json.dumps(self.data, indent=2, ensure_ascii=False), encoding="utf-8")
         try:
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("AdrianVale.DayFlow")
         except Exception:
