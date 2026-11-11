@@ -29,7 +29,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "Create a &desktop shortcut"; GroupDescription: "Additional shortcuts:"
 
 [Files]
-Source: "..\\assets\\dayflow.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\dist\DayFlow.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
