@@ -129,6 +129,8 @@ class DayFlow(ctk.CTk):
                         text_color=("#1456A0", "#8FC0FF") if n == name else ("#344054", "#C7D0DE"))
         self.clear_main()
         getattr(self, f"page_{name.lower()}")()
+        if name == "Focus" and self.timer_running:
+            self.tick_timer()
 
     def page_overview(self):
         self.header("Good " + ("morning" if datetime.now().hour < 12 else "afternoon" if datetime.now().hour < 18 else "evening") + ".", date.today().strftime("%A, %d %B %Y"))
