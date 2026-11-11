@@ -3,6 +3,10 @@ import os
 import sys
 import time
 import threading
+import urllib.request
+import webbrowser
+import subprocess
+import tempfile
 import tkinter as tk
 from tkinter import messagebox
 from datetime import date, datetime, timedelta
@@ -14,13 +18,14 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "0.1.0"
+APP_VERSION = "1.0.0"
+GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 DATA_DIR = Path(os.getenv("APPDATA", str(Path.home()))) / "DayFlow"
 DATA_FILE = DATA_DIR / "dayflow_data.json"
 
 DEFAULT_DATA = {
     "tasks": [], "notes": [], "habits": [], "goals": [],
-    "settings": {"appearance": "dark", "accent": "blue", "focus_minutes": 25}
+    "settings": {"appearance": "dark", "accent": "blue", "focus_minutes": 25, "font": "Segoe UI", "bold": True, "tutorial_seen": False, "auto_updates": True}
 }
 
 def load_data():
@@ -57,7 +62,16 @@ class DayFlow(ctk.CTk):
         self.protocol("WM_DELETE_WINDOW", self.close_app)
         self.build_shell()
         self.show_page("Overview")
+        if not self.data["settings"].get("tutorial_seen", False):
+            self.after(500, self.show_tutorial)
         self.after(15000, self.check_reminders)
+        if self.data["settings"].get("auto_updates", True):
+            self.after(2500, lambda: self.check_updates(silent=True))
+
+    def ui_font(self, size=12, force_bold=False):
+        settings = self.data.get("settings", {})
+        return ctk.CTkFont(family=settings.get("font", "Segoe UI"), size=size,
+                           weight="bold" if force_bold or settings.get("bold", True) else "normal")
 
     def save(self):
         DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -71,13 +85,13 @@ class DayFlow(ctk.CTk):
         self.sidebar.grid_propagate(False)
         brand = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         brand.pack(fill="x", padx=20, pady=(26, 30))
-        ctk.CTkLabel(brand, text="◈  DAYFLOW", font=ctk.CTkFont(size=22, weight="bold"), text_color=("#172235", "#F4F7FC")).pack(anchor="w")
+        ctk.CTkLabel(brand, text="◈  DAYFLOW", font=self.ui_font(22, True), text_color=("#172235", "#F4F7FC")).pack(anchor="w")
         ctk.CTkLabel(brand, text="YOUR DAY, UNDER CONTROL", font=ctk.CTkFont(size=9, weight="bold"), text_color=("#718096", "#8492A6")).pack(anchor="w", pady=(5, 0))
         self.nav_buttons = {}
         for name, glyph in [("Overview","⌂"),("Tasks","✓"),("Calendar","▦"),("Notes","▤"),("Habits","↗"),("Goals","◎"),("Focus","◷"),("Settings","⚙")]:
             b = ctk.CTkButton(self.sidebar, text=f"  {glyph}    {name}", anchor="w", height=42, corner_radius=10,
                 fg_color="transparent", hover_color=("#DCE4EF", "#252F40"), text_color=("#344054", "#C7D0DE"),
-                font=ctk.CTkFont(size=13, weight="bold"), command=lambda n=name: self.show_page(n))
+                font=self.ui_font(13, True), command=lambda n=name: self.show_page(n))
             b.pack(fill="x", padx=12, pady=3)
             self.nav_buttons[name] = b
         ctk.CTkLabel(self.sidebar, text=f"DAYFLOW  v{APP_VERSION}", text_color=("#98A2B3", "#667085"), font=ctk.CTkFont(size=10)).pack(side="bottom", pady=18)
@@ -93,7 +107,7 @@ class DayFlow(ctk.CTk):
     def header(self, title, subtitle):
         top = ctk.CTkFrame(self.main, fg_color="transparent")
         top.grid(row=0, column=0, sticky="ew", pady=(0, 20))
-        ctk.CTkLabel(top, text=title, font=ctk.CTkFont(size=28, weight="bold")).pack(anchor="w")
+        ctk.CTkLabel(top, text=title, font=self.ui_font(28, True)).pack(anchor="w")
         ctk.CTkLabel(top, text=subtitle, font=ctk.CTkFont(size=12), text_color=("gray55", "gray65")).pack(anchor="w", pady=(4, 0))
         return top
 
@@ -105,7 +119,7 @@ class DayFlow(ctk.CTk):
     def panel(self, parent, title=None):
         frame = ctk.CTkFrame(parent, corner_radius=16, fg_color=("white", "#1A2230"), border_width=1, border_color=("#E4E9F0", "#263244"))
         if title:
-            ctk.CTkLabel(frame, text=title, font=ctk.CTkFont(size=15, weight="bold")).pack(anchor="w", padx=18, pady=(16, 10))
+            ctk.CTkLabel(frame, text=title, font=self.ui_font(15, True)).pack(anchor="w", padx=18, pady=(16, 10))
         return frame
 
     def show_page(self, name):
@@ -127,7 +141,7 @@ class DayFlow(ctk.CTk):
             card = self.panel(top)
             card.pack(side="left", fill="x", expand=True, padx=(0, 12), pady=4)
             ctk.CTkLabel(card, text=title, font=ctk.CTkFont(size=10, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=18, pady=(16, 3))
-            ctk.CTkLabel(card, text=str(value), font=ctk.CTkFont(size=30, weight="bold")).pack(anchor="w", padx=18)
+            ctk.CTkLabel(card, text=str(value), font=self.ui_font(30, True)).pack(anchor="w", padx=18)
             ctk.CTkLabel(card, text=hint, font=ctk.CTkFont(size=11), text_color=("gray55","gray65")).pack(anchor="w", padx=18, pady=(0, 16))
         lower = ctk.CTkFrame(body, fg_color="transparent")
         lower.pack(fill="both", expand=True, pady=(16, 0))
@@ -255,7 +269,7 @@ class DayFlow(ctk.CTk):
         body=self.body()
         card=self.panel(body,"Focus session"); card.pack(fill="x")
         minutes=int(self.data["settings"].get("focus_minutes",25))
-        self.timer_label=ctk.CTkLabel(card,text=f"{minutes:02d}:00",font=ctk.CTkFont(size=64,weight="bold"))
+        self.timer_label=ctk.CTkLabel(card,text=f"{minutes:02d}:00",font=self.ui_font(64, True))
         self.timer_label.pack(pady=(18,8))
         ctk.CTkLabel(card,text="Work in one focused block. Take a break when the timer ends.",text_color=("gray55","gray65")).pack(pady=(0,16))
         controls=ctk.CTkFrame(card,fg_color="transparent"); controls.pack(pady=(0,20))
@@ -287,6 +301,70 @@ class DayFlow(ctk.CTk):
         if self.active_page=="Focus":
             self.timer_label.configure(text=f'{int(self.data["settings"].get("focus_minutes",25)):02d}:00')
 
+    def show_tutorial(self):
+        dialog = ctk.CTkToplevel(self)
+        dialog.title("Welcome to DayFlow")
+        dialog.geometry("560x440")
+        dialog.transient(self)
+        dialog.grab_set()
+        dialog.resizable(False, False)
+        ctk.CTkLabel(dialog, text="Welcome to DayFlow", font=self.ui_font(26, True)).pack(anchor="w", padx=28, pady=(28, 6))
+        ctk.CTkLabel(dialog, text="A calmer way to get your day under control.", font=self.ui_font(13)).pack(anchor="w", padx=28, pady=(0, 20))
+        for heading, detail in [
+            ("1. Plan your day", "Add tasks, choose a priority and set a due date."),
+            ("2. Build your routines", "Track habits and keep your goals moving."),
+            ("3. Make space to focus", "Use the focus timer to work in distraction-free blocks."),
+            ("4. Keep everything together", "Save notes and see upcoming work in your calendar.")
+        ]:
+            row = ctk.CTkFrame(dialog, fg_color=("gray92", "#202A39"), corner_radius=12)
+            row.pack(fill="x", padx=24, pady=5)
+            ctk.CTkLabel(row, text=heading, font=self.ui_font(13, True)).pack(anchor="w", padx=14, pady=(10, 2))
+            ctk.CTkLabel(row, text=detail, font=self.ui_font(11), text_color=("gray40", "gray70")).pack(anchor="w", padx=14, pady=(0, 10))
+        def finish():
+            self.data["settings"]["tutorial_seen"] = True
+            self.save()
+            dialog.destroy()
+        ctk.CTkButton(dialog, text="Let's get started", command=finish, height=40).pack(anchor="e", padx=24, pady=18)
+
+    def check_updates(self, silent=False):
+        def worker():
+            try:
+                request = urllib.request.Request(GITHUB_RELEASES_API, headers={"User-Agent": "DayFlow-Updater"})
+                with urllib.request.urlopen(request, timeout=8) as response:
+                    release = json.loads(response.read().decode("utf-8"))
+                latest = str(release.get("tag_name", "")).lstrip("v")
+                current = APP_VERSION.lstrip("v")
+                def version_tuple(value):
+                    return tuple(int(part) for part in value.split(".") if part.isdigit())
+                if latest and version_tuple(latest) > version_tuple(current):
+                    assets = release.get("assets", [])
+                    installer = next((a for a in assets if a.get("name", "").lower().endswith(".exe")), None)
+                    def prompt():
+                        if messagebox.askyesno("DayFlow update", f"Version {latest} is available. Install it now?"):
+                            if installer:
+                                self.install_update(installer["browser_download_url"])
+                            else:
+                                webbrowser.open(release.get("html_url", "https://github.com/adrianvaleitl-debug/DayFlow/releases"))
+                    self.after(0, prompt)
+                elif not silent:
+                    self.after(0, lambda: messagebox.showinfo("DayFlow", "You're already using the latest version."))
+            except Exception as exc:
+                if not silent:
+                    self.after(0, lambda: messagebox.showwarning("Update check", f"Couldn't check for updates.\\n{exc}"))
+        threading.Thread(target=worker, daemon=True).start()
+
+    def install_update(self, url):
+        try:
+            fd, path = tempfile.mkstemp(prefix="DayFlow-Update-", suffix=".exe")
+            os.close(fd)
+            request = urllib.request.Request(url, headers={"User-Agent": "DayFlow-Updater"})
+            with urllib.request.urlopen(request, timeout=60) as response, open(path, "wb") as output:
+                output.write(response.read())
+            subprocess.Popen([path], shell=False)
+            self.destroy()
+        except Exception as exc:
+            messagebox.showerror("Update failed", f"Couldn't download or launch the update.\\n{exc}")
+
     def page_settings(self):
         self.header("Settings", "Make DayFlow feel like your workspace.")
         body=self.body()
@@ -302,8 +380,27 @@ class DayFlow(ctk.CTk):
             except ValueError: messagebox.showerror("Invalid value","Enter a number from 1 to 180."); return
             self.data["settings"]["focus_minutes"]=n; self.save(); messagebox.showinfo("Saved","Your settings have been saved.")
         ctk.CTkButton(focus,text="Save settings",command=save_settings).pack(anchor="w",padx=18,pady=(0,16))
+        appearance_card=self.panel(body,"Personalisation"); appearance_card.pack(fill="x",pady=12)
+        ctk.CTkLabel(appearance_card,text="Font").pack(anchor="w",padx=18,pady=(0,5))
+        font_choice=ctk.CTkOptionMenu(appearance_card,values=["Segoe UI","Arial","Calibri","Georgia","Consolas"],
+            command=lambda v:self.update_setting("font",v))
+        font_choice.set(self.data["settings"].get("font","Segoe UI")); font_choice.pack(anchor="w",padx=18,pady=(0,10))
+        bold_var=ctk.BooleanVar(value=self.data["settings"].get("bold",True))
+        ctk.CTkSwitch(appearance_card,text="Bold text",variable=bold_var,
+            command=lambda:self.update_setting("bold",bold_var.get())).pack(anchor="w",padx=18,pady=(0,14))
+        updates_card=self.panel(body,"Updates & onboarding"); updates_card.pack(fill="x",pady=(0,12))
+        auto_var=ctk.BooleanVar(value=self.data["settings"].get("auto_updates",True))
+        ctk.CTkSwitch(updates_card,text="Automatically check for updates",variable=auto_var,
+            command=lambda:self.update_setting("auto_updates",auto_var.get())).pack(anchor="w",padx=18,pady=(0,10))
+        ctk.CTkButton(updates_card,text="Check for updates",command=lambda:self.check_updates(silent=False)).pack(anchor="w",padx=18,pady=(0,8))
+        ctk.CTkButton(updates_card,text="Replay welcome tutorial",fg_color="transparent",
+            command=self.show_tutorial).pack(anchor="w",padx=18,pady=(0,14))
         info=self.panel(body,"Your data"); info.pack(fill="x",pady=12)
         ctk.CTkLabel(info,text=f"Your information is stored locally on this device:\n{DATA_FILE}",justify="left",text_color=("gray55","gray65")).pack(anchor="w",padx=18,pady=16)
+
+    def update_setting(self, key, value):
+        self.data["settings"][key] = value
+        self.save()
 
     def set_appearance(self, value):
         self.data["settings"]["appearance"]=value; self.save(); ctk.set_appearance_mode(value)
@@ -317,7 +414,6 @@ class DayFlow(ctk.CTk):
         today=date.today().isoformat()
         due=[t for t in self.data["tasks"] if not t.get("done") and t.get("due")==today and t.get("reminded")!=today]
         if due and self.state() == "normal":
-            self.data["tasks"][0]["reminded"]=today if self.data["tasks"] else today
             for task in due: task["reminded"]=today
             self.save()
             messagebox.showinfo("DayFlow reminder",f"You have {len(due)} task(s) due today.")
