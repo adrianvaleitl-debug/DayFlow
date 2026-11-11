@@ -331,7 +331,7 @@ class DayFlow(ctk.CTk):
             ("YOUR DAY", [("Overview","⌂"),("Inbox","↳"),("Tasks","✓"),("Calendar","▦")]),
             ("PERSONAL SPACE", [("Notes","▤"),("Habits","↗"),("Goals","◎")]),
             ("PRODUCTIVITY", [("Focus","◷"),("Insights","◌"),("Weekly Review","▥")]),
-            ("PREFERENCES", [("Settings","⚙")])]
+            ("PREFERENCES", [("What's New","✦"),("Settings","⚙")])]
         for group, items in groups:
             ctk.CTkLabel(nav_area, text=group, font=ctk.CTkFont(size=9, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(15,7))
             for name, glyph in items:
@@ -728,6 +728,41 @@ class DayFlow(ctk.CTk):
             while cursor.isoformat() in dates:
                 streak+=1; cursor-=timedelta(days=1)
             ctk.CTkLabel(habits,text=f"{habit.get('name','Habit')}   ·   {streak}-day current streak   ·   {sum(1 for x in dates if x>=since)} this week",anchor="w").pack(fill="x",padx=18,pady=6)
+
+    def page_whats_new(self):
+        self.header("What's new", "A release history for DayFlow, with the latest changes up front.")
+        body = self.body()
+        latest = self.panel(body)
+        latest.pack(fill="x", pady=(0, 14))
+        top = ctk.CTkFrame(latest, fg_color="transparent")
+        top.pack(fill="x", padx=22, pady=(20, 8))
+        ctk.CTkLabel(top, text="1.4.9", font=self.ui_font(25, True),
+                     text_color=self.accent_colors()[self.data["settings"].get("accent", "black")][0]).pack(side="left")
+        ctk.CTkLabel(top, text="LATEST RELEASE", font=self.ui_font(10, True),
+                     text_color=("gray55", "gray65")).pack(side="right")
+        ctk.CTkLabel(latest, text="A clearer, more dependable glass layer",
+                     font=self.ui_font(19, True)).pack(anchor="w", padx=22, pady=(0, 5))
+        ctk.CTkLabel(latest, text="11 November 2026  ·  Windows desktop",
+                     font=self.ui_font(10), text_color=("gray55", "gray65")).pack(anchor="w", padx=22)
+        ctk.CTkLabel(latest,
+            text="This release rebuilds how DayFlow exposes the Windows acrylic backdrop, improves the transparency slider, and introduces a redesigned release-history page.",
+            font=self.ui_font(11), justify="left", anchor="w", wraplength=900,
+            text_color=("gray40", "gray75")).pack(fill="x", padx=22, pady=(12, 15))
+        for item in [
+            "Windows colour-key transparency lets the desktop backdrop show through without fading text or controls.",
+            "The transparency slider now changes a wider acrylic tint range and reapplies after the window is mapped.",
+            "The accent spotlight uses the transparent host layer, keeping the surrounding workspace clear.",
+            "Your tasks, notes, habits, goals and settings remain stored locally"]:
+            ctk.CTkLabel(latest, text="✓   " + item, font=self.ui_font(11),
+                         anchor="w", justify="left", wraplength=900).pack(fill="x", padx=24, pady=3)
+        history = self.panel(body, "Previous release")
+        history.pack(fill="x", pady=5)
+        ctk.CTkLabel(history, text="1.4.8  ·  Accent and creator shortcuts",
+                     font=self.ui_font(13, True)).pack(anchor="w", padx=18, pady=(0, 4))
+        ctk.CTkLabel(history,
+                     text="Added the accent-colour spotlight and persistent Adrian Vale / Ko-fi shortcuts. The Windows backdrop and transparency implementation is refined in 1.4.9.",
+                     font=self.ui_font(11), text_color=("gray45", "gray70"),
+                     justify="left", anchor="w", wraplength=900).pack(fill="x", padx=18, pady=(0, 16))
 
     def page_settings(self):
         self.header("Settings", "Make DayFlow feel like your workspace.")
