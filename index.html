@@ -307,4 +307,42 @@ main>.footer{padding-top:148px;padding-bottom:58px}
 <script id="adrian-theme-controls">
 (()=>{const root=document.documentElement,key='av-theme-'+location.pathname;let mode='dark',accent='euro';try{mode=localStorage.getItem(key+'-mode')||mode;accent=localStorage.getItem(key+'-accent')||accent}catch{}const valid=['dollar','euro','pound','yen','franc'];function apply(){root.dataset.avMode=mode;root.dataset.avAccent=valid.includes(accent)?accent:'euro';document.querySelector('meta[name="theme-color"]')?.setAttribute('content',mode==='dark'?'#171820':'#f5f3f0');const mb=document.getElementById('av-mode');if(mb){mb.textContent=mode==='dark'?'☀ Light':'☾ Dark';mb.setAttribute('aria-pressed',String(mode==='light'))}document.querySelectorAll('[data-av-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.avChoice===accent)))}function persist(){try{localStorage.setItem(key+'-mode',mode);localStorage.setItem(key+'-accent',accent)}catch{}apply()}const tools=document.createElement('div');tools.className='av-theme-tools';tools.setAttribute('aria-label','Appearance settings');tools.innerHTML='<button id="av-mode" type="button">☀ Light</button>'+[['dollar','#e8c98f','Focus'],['euro','#9ebce9','Flow'],['pound','#c4afe7','Growth'],['yen','#e9aebc','Energy'],['franc','#9fcbd0','Balance']].map(([n,col,label])=>'<button type="button" data-av-choice="'+n+'"><i class="av-dot" style="background:'+col+'"></i>'+label+'</button>').join('');const nav=document.querySelector('.nav');if(nav)nav.append(tools);else document.body.prepend(tools);document.getElementById('av-mode').addEventListener('click',()=>{mode=mode==='dark'?'light':'dark';persist()});tools.querySelectorAll('[data-av-choice]').forEach(b=>b.addEventListener('click',()=>{accent=b.dataset.avChoice;persist()}));apply()})();
 </script>
+
+<style id="dayflow-compact-theme-and-hero-fit">
+.nav{min-height:106px}
+.av-theme-tools{width:max-content;max-width:calc(100% - 24px);margin:0 auto;padding:5px 9px;flex:0 1 auto;justify-self:center;border-radius:11px;background:var(--av-panel,#222530)}
+.nav .av-theme-tools button{width:auto;min-width:76px;padding:6px 10px;flex:0 0 auto}
+main,main>section{box-sizing:border-box}
+main>.hero{grid-template-columns:minmax(0,1.06fr) minmax(300px,.94fr);gap:clamp(22px,3vw,46px);align-items:center}
+main>.hero>div:first-child{min-width:0}
+main>.hero .lead{max-width:560px}
+main>.hero .mock{width:100%;max-width:100%;min-width:0;box-sizing:border-box;transform:none;max-height:calc(100dvh - 225px);overflow:hidden;padding:clamp(12px,1.4vw,19px)}
+main>.hero .mocktop{margin-bottom:clamp(8px,1.5vh,18px);font-size:clamp(9px,.8vw,12px)}
+main>.hero .mocktitle{font-size:clamp(17px,1.65vw,22px)}
+main>.hero .mocksub{margin-bottom:clamp(8px,1.5vh,18px)}
+main>.hero .stats{gap:7px}
+main>.hero .stat{padding:clamp(7px,.9vw,12px)}
+main>.hero .stat b{font-size:clamp(18px,2vw,25px)}
+main>.hero .tasks{margin-top:9px;gap:7px}
+main>.hero .task{padding:clamp(7px,.9vw,12px);font-size:11px}
+main>.hero .hero-detail-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:clamp(16px,2.5vh,26px)}
+main>.hero .hero-detail-strip span{display:block;padding:9px 11px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--muted);font-size:10px;line-height:1.4}
+main>.hero .hero-detail-strip b{display:block;color:var(--text);font-size:11px;margin-bottom:2px}
+@media(max-width:900px){
+ .nav{min-height:0}
+ .nav .av-theme-tools{max-width:calc(100% - 20px)}
+ .nav .av-theme-tools button{min-width:0}
+ main>.hero{grid-template-columns:minmax(0,1fr);gap:22px;align-content:start}
+ main>.hero .mock{max-width:600px;max-height:none;width:100%;margin:0 auto}
+ main>.hero .hero-detail-strip{margin-top:14px}
+}
+@media(max-width:520px){
+ .nav .av-theme-tools{display:flex;flex-wrap:wrap;width:max-content;max-width:calc(100% - 14px)}
+ .nav .av-theme-tools button{padding:5px 7px;font-size:9px}
+ main>.hero .hero-detail-strip{grid-template-columns:1fr}
+}
+</style>
+<script id="dayflow-add-hero-detail-strip">
+(()=>{const hero=document.querySelector('main>.hero>div:first-child');if(!hero||hero.querySelector('.hero-detail-strip'))return;const strip=document.createElement('div');strip.className='hero-detail-strip';strip.innerHTML='<span><b>Plan with purpose</b>Keep priorities and deadlines in view.</span><span><b>Find your focus</b>Give important work dedicated time.</span><span><b>See your progress</b>Build habits one day at a time.</span>';hero.append(strip)})();
+</script>
 </body></html>
