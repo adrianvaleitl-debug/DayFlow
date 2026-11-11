@@ -504,3 +504,16 @@ main .panel-bottomline{font-size:13px!important;line-height:1.65!important}
 (()=>{const f=document.querySelector('main>footer.footer');if(f)document.body.append(f)})();
 </script>
 </body></html>
+
+<style id="dayflow-readable-type-refinement">
+body{font-size:15px}
+main>.hero .lead{font-size:clamp(17px,1.3vw,20px)!important}
+main>.section>p{font-size:clamp(16px,1.2vw,18px)!important}
+main .feature p,main .rhythm-card p,main .principle-card p,main .section-extra article p{font-size:clamp(14px,1.1vw,16px)!important;line-height:1.7!important}
+main .feature h3,main .rhythm-card h3,main .principle-card h3{font-size:clamp(18px,1.5vw,22px)!important}
+main .section-extra article b{font-size:15px!important}
+main .panel-bottomline{font-size:14px!important}
+@media(max-width:560px){
+ main .feature p,main .rhythm-card p,main .principle-card p,main .section-extra article p{font-size:14px!important}
+}
+</style>
