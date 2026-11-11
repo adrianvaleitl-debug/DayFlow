@@ -517,3 +517,21 @@ main .panel-bottomline{font-size:14px!important}
  main .feature p,main .rhythm-card p,main .principle-card p,main .section-extra article p{font-size:14px!important}
 }
 </style>
+
+<script id="importance-first-section-order">
+(()=> {
+ const ids=["download","whats-new","features","daily-rhythm","your-space"];
+ const nodes=ids.map(id=>document.getElementById(id)).filter(Boolean);
+ if(nodes.length<2)return;
+ const parent=nodes[0].parentElement;
+ if(!parent||nodes.some(node=>node.parentElement!==parent))return;
+ const hero=Array.from(parent.children).find(el=>el.id==="hero"||el.classList?.contains("hero"))||null;
+ const nodeSet=new Set(nodes);
+ const anchor=hero ? Array.from(parent.children).find(el=>el!==hero&&!nodeSet.has(el)&&el.compareDocumentPosition(hero)&Node.DOCUMENT_POSITION_PRECEDING) : null;
+ // Place the priority sections directly after the hero/intro, preserving the remaining content.
+ let reference=hero?.nextElementSibling||null;
+ while(reference&&nodeSet.has(reference))reference=reference.nextElementSibling;
+ if(!hero)reference=Array.from(parent.children).find(el=>!nodeSet.has(el))||null;
+ for(const node of nodes)parent.insertBefore(node,reference);
+})();
+</script>
