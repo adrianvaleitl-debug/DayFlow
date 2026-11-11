@@ -19,7 +19,9 @@ DayFlow is a Windows desktop productivity workspace for planning your day, build
 - **Task manager** — due dates, priorities, completion and delete controls
 - **Upcoming calendar** — a date-sorted view of future tasks
 - **Notes** — save and revisit ideas and longer notes
-- **Habit tracker** — daily check-ins and a history count
+- **Habit tracker** — daily check-ins, current streaks and lifetime history
+- **Weekly Review** — completed tasks, focus sessions, focus time and habit check-ins from the last seven days
+- **Focus history** — completed sessions are stored locally and included in weekly progress
 - **Goals** — track progress in 10% increments
 - **Focus timer** — configurable focus sessions
 - **First-run tutorial** — guided introduction when DayFlow opens for the first time
