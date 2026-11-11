@@ -44,7 +44,7 @@ The executable is created at `dist/DayFlow.exe`.
 
 ## Release process
 
-Pushing a version tag such as `v1.0.0` runs the Windows release workflow. It builds the executable, packages it with Inno Setup and publishes the installer to GitHub Releases.
+Updating the `VERSION` file and pushing to `main` runs the Windows release workflow. It builds the executable, packages it with Inno Setup and publishes a versioned installer to GitHub Releases. The app checks that release feed for updates.
 
 ## Data and privacy
 
