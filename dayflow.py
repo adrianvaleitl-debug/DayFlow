@@ -157,9 +157,9 @@ class DayFlow(ctk.CTk):
         """Render soft accent-colour spotlights behind DayFlow's glass panels."""
         try:
             dark=ctk.get_appearance_mode()=="Dark"
-            base="#0C1422" if dark else "#EAF0F8"
+            base="#080F1B" if dark else "#EAF0F8"
             accent=self.accent_colors().get(self.data["settings"].get("accent","euro"),("#9EBCE9","#7E9CCB"))[0]
-            accents=[accent,"#9FCBD0","#C4AFE7"]
+            accents=[accent,"#78A8E8","#B69AE8","#72C7C0"]
             canvas=tk.Canvas(self,highlightthickness=0,bd=0,bg=base)
             canvas.place(x=0,y=0,relwidth=1,relheight=1)
             self._spotlight_canvas=canvas
@@ -167,11 +167,11 @@ class DayFlow(ctk.CTk):
                 if event is not None and event.widget is not self:return
                 w=max(480,self.winfo_width());h=max(360,self.winfo_height())
                 glow=Image.new("RGBA",(w,h),(0,0,0,0));draw=ImageDraw.Draw(glow)
-                alpha=76 if dark else 34
-                for x,y,r,color in [(-.10,-.10,.72,accents[0]),(.80,.16,.62,accents[1]),(.45,.90,.72,accents[2])]:
+                alpha=174 if dark else 82
+                for x,y,r,color in [(-.08,-.10,.66,accents[0]),(.84,.12,.58,accents[1]),(.48,.92,.64,accents[2]),(.10,.62,.42,accents[3])]:
                     rgb=tuple(int(color[i:i+2],16) for i in (1,3,5));cx,cy=x*w,y*h;rad=r*min(w,h)
                     draw.ellipse((cx-rad,cy-rad,cx+rad,cy+rad),fill=(*rgb,alpha))
-                glow=glow.filter(ImageFilter.GaussianBlur(max(65,int(min(w,h)*.17))))
+                glow=glow.filter(ImageFilter.GaussianBlur(max(85,int(min(w,h)*.14))))
                 image=Image.new("RGBA",(w,h),base);image.alpha_composite(glow)
                 self._spotlight_photo=ImageTk.PhotoImage(image.convert("RGB"))
                 canvas.delete("all");canvas.create_image(0,0,anchor="nw",image=self._spotlight_photo);canvas.lower()
