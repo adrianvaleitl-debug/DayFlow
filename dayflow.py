@@ -341,7 +341,8 @@ class DayFlow(ctk.CTk):
                     return tuple(int(part) for part in value.split(".") if part.isdigit())
                 if latest and version_tuple(latest) > version_tuple(current):
                     assets = release.get("assets", [])
-                    installer = next((a for a in assets if a.get("name", "").lower().endswith(".exe")), None)
+                    expected_installer = f"dayflow-setup-{latest}.exe".lower()
+                    installer = next((a for a in assets if a.get("name", "").lower() == expected_installer), None)
                     def prompt():
                         if messagebox.askyesno("DayFlow update", f"Version {latest} is available. Install it now?"):
                             if installer:
