@@ -1,14 +1,19 @@
 # DayFlow
 
-**Version 1.4.7 — Your day, under control.**
+**Version 1.4.9 — Your day, under control.**
 
-## What's new in 1.4.7
-- Persistent sidebar shortcuts to the Adrian Vale website and Donate · Ko-fi.
-- Accent-colour blurred spotlight and responsive acrylic transparency.
-- **Six optional accent choices:** Black, Amber, Azure, Lavender, Rose and Teal, with Black as the default and neutral dark glass surfaces retained.
-- **Cleaner panel spacing:** improved spacing keeps text clear of borders and outlines.
-- **Windows icon identity:** refined application icon assignment for the app window and taskbar.
-- Existing tasks, notes, habits, goals and settings are preserved.
+## What's new in 1.4.9
+- Rebuilt the Windows glass host using colour-key transparency so acrylic can show through without fading text or controls.
+- Expanded the transparency slider's acrylic tint range and apply timing.
+- Moved the accent-colour nebula spotlight onto the transparent host layer.
+- Added a dedicated Updates page with a featured release and previous-version timeline.
+- Existing tasks, notes, habits, goals, focus sessions and settings are preserved.
+
+## Previous release highlights
+- **1.4.8:** Added the accent-colour spotlight and persistent Adrian Vale / Ko-fi shortcuts.
+- **1.4.7:** Added persistent creator shortcuts to the desktop sidebar.
+- **1.4.6:** Restored six accent choices and refined panel spacing and Windows icon handling.
+
 
 ## Features
 
