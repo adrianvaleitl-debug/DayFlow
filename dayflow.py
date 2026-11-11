@@ -60,6 +60,9 @@ def load_data():
 class DayFlow(ctk.CTk):
     def __init__(self):
         self.data = load_data()
+        if not self.data["settings"].get("forest_glass_migrated"):
+            self.data["settings"]["accent"] = "dollar"
+            self.data["settings"]["forest_glass_migrated"] = True
         try:
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("AdrianVale.DayFlow")
         except Exception:
@@ -80,7 +83,7 @@ class DayFlow(ctk.CTk):
         screen_h = self.winfo_screenheight()
         self.geometry(f"{min(1380, max(1080, screen_w - 80))}x{min(900, max(720, screen_h - 100))}")
         self.minsize(1020, 680)
-        self.configure(fg_color=(self.tint_surface("#EAF0F8", .18), self.tint_surface("#0C1422", .20)))
+        self.configure(fg_color=(self.tint_surface("#E9EEE8", .08), self.tint_surface("#09120D", .12)))
         self.apply_glass_effect()
         self.apply_spotlight_background()
         self.timer_running = False
@@ -107,7 +110,7 @@ class DayFlow(ctk.CTk):
                 "franc":("#A8C9C0","#83AAA0")}
 
     def tint_surface(self, base, amount=0.06):
-        accent = self.accent_colors().get(self.data.get("settings", {}).get("accent", "euro"), self.accent_colors()["euro"])[0]
+        accent = self.accent_colors().get(self.data.get("settings", {}).get("accent", "dollar"), self.accent_colors()["euro"])[0]
         try:
             def rgb(value): return tuple(int(value[i:i+2], 16) for i in (1, 3, 5))
             a, b = rgb(base), rgb(accent)
@@ -160,7 +163,7 @@ class DayFlow(ctk.CTk):
         try:
             dark=ctk.get_appearance_mode()=="Dark"
             base="#09120D" if dark else "#E9EEE8"
-            accent=self.accent_colors().get(self.data["settings"].get("accent","euro"),("#9EBCE9","#7E9CCB"))[0]
+            accent=self.accent_colors().get(self.data["settings"].get("accent","dollar"),("#9EBCE9","#7E9CCB"))[0]
             accents=[accent,"#6F9D7D","#C69A69","#A6C8B3"]
             canvas=tk.Canvas(self,highlightthickness=0,bd=0,bg=base)
             canvas.place(x=0,y=0,relwidth=1,relheight=1)
