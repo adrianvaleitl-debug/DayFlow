@@ -345,4 +345,21 @@ main>.hero .hero-detail-strip b{display:block;color:var(--text);font-size:11px;m
 <script id="dayflow-add-hero-detail-strip">
 (()=>{const hero=document.querySelector('main>.hero>div:first-child');if(!hero||hero.querySelector('.hero-detail-strip'))return;const strip=document.createElement('div');strip.className='hero-detail-strip';strip.innerHTML='<span><b>Plan with purpose</b>Keep priorities and deadlines in view.</span><span><b>Find your focus</b>Give important work dedicated time.</span><span><b>See your progress</b>Build habits one day at a time.</span>';hero.append(strip)})();
 </script>
-</body></html>
+
+<script id="priority-section-order">
+(()=>{const main=document.querySelector('main');if(!main)return;for(const id of ['download','whats-new','features','daily-rhythm','your-space']){const section=main.querySelector('#'+id);if(section)main.append(section)}})();
+</script>
+<style id="larger-dayflow-layout">
+main>.hero h1{font-size:clamp(58px,6vw,92px)}main>.hero .lead{font-size:clamp(15px,1.2vw,18px);line-height:1.8;max-width:680px}
+main>.hero .mock{padding:clamp(20px,2.2vw,32px);max-height:calc(100dvh - 190px)}main>.hero .mocktitle{font-size:clamp(22px,2.1vw,30px)}
+main>.hero .stat{padding:clamp(12px,1.2vw,18px)}main>.hero .stat b{font-size:clamp(24px,2.5vw,34px)}
+main>section.section{padding:clamp(42px,6vh,76px) clamp(28px,5vw,76px)}main>section.section h2{font-size:clamp(34px,3.7vw,52px)}
+main>section.section>p{font-size:clamp(14px,1.1vw,17px);max-width:760px;line-height:1.8}
+main .feature,main .rhythm-card,main .principle-card{padding:clamp(17px,1.8vw,25px);min-height:150px}
+main .feature h3,main .rhythm-card h3,main .principle-card h3{font-size:clamp(16px,1.35vw,20px)}
+main .feature p,main .rhythm-card p,main .principle-card p{font-size:clamp(12px,1vw,14px);line-height:1.75}
+main .features,main .rhythm-grid,main .principles-grid{gap:clamp(12px,1.3vw,19px)}
+main .section-extra article{padding:17px 19px}main .section-extra article b{font-size:14px}main .section-extra article p{font-size:12px;line-height:1.7}
+main>.section#download .download{padding:clamp(24px,3vw,40px)}main>.section#download .download h2{font-size:clamp(30px,3vw,44px)}
+@media(max-width:900px){main>.hero .mock{max-height:none}main>section.section{padding:38px 22px}}
+</style></body></html>
