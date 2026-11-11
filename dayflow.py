@@ -31,7 +31,7 @@ DATA_FILE = DATA_DIR / "dayflow_data.json"
 
 DEFAULT_DATA = {
     "tasks": [], "notes": [], "habits": [], "goals": [], "focus_sessions": [],
-    "settings": {"appearance": "dark", "accent": "dollar", "transparency": 94, "focus_minutes": 25, "font": "Segoe UI", "bold": True, "tutorial_seen": False, "auto_updates": True}
+    "settings": {"appearance": "dark", "accent": "dollar", "transparency": 8, "focus_minutes": 25, "font": "Segoe UI", "bold": True, "tutorial_seen": False, "auto_updates": True}
 }
 
 def load_data():
@@ -145,7 +145,7 @@ class DayFlow(ctk.CTk):
     def apply_glass_effect(self):
         """Apply a subtle translucent acrylic tint on supported Windows versions."""
         try:
-            self.attributes("-alpha", max(0.78,min(1.0,float(self.data["settings"].get("transparency",94))/100)))
+            self.attributes("-alpha", max(0.65,min(1.0,1-float(self.data["settings"].get("transparency",8))/100)))
             if sys.platform != "win32": return
             class ACCENT_POLICY(ctypes.Structure):
                 _fields_ = [("AccentState", ctypes.c_int), ("AccentFlags", ctypes.c_int), ("GradientColor", ctypes.c_int), ("AnimationId", ctypes.c_int)]
@@ -619,9 +619,9 @@ class DayFlow(ctk.CTk):
         appearance=ctk.CTkOptionMenu(card,values=["dark","light","system"],command=self.set_appearance)
         appearance.set(self.data["settings"].get("appearance","dark")); appearance.pack(anchor="w",padx=18,pady=(0,12))
         ctk.CTkLabel(card,text="Window transparency").pack(anchor="w",padx=18,pady=(0,5))
-        transparency_value=ctk.CTkLabel(card,text=f'{int(self.data["settings"].get("transparency",94))}%',text_color=("gray55","gray75"))
+        transparency_value=ctk.CTkLabel(card,text=f'{int(self.data["settings"].get("transparency",8))}%',text_color=("gray55","gray75"))
         transparency_value.pack(anchor="w",padx=18,pady=(0,4))
-        transparency=ctk.CTkSlider(card,from_=78,to=100,number_of_steps=22,command=lambda v:self.set_transparency(v,transparency_value))
+        transparency=ctk.CTkSlider(card,from_=0,to=35,number_of_steps=35,command=lambda v:self.set_transparency(v,transparency_value))
         transparency.set(int(self.data["settings"].get("transparency",94))); transparency.pack(fill="x",padx=18,pady=(0,16))
         focus=self.panel(body,"Focus timer"); focus.pack(fill="x")
         ctk.CTkLabel(focus,text="Default focus session (minutes)").pack(anchor="w",padx=18,pady=(0,5))
@@ -711,7 +711,7 @@ class DayFlow(ctk.CTk):
         value=round(max(78,min(100,float(value))))
         self.data["settings"]["transparency"]=value
         if label: label.configure(text=f"{value}%")
-        self.attributes("-alpha",value/100)
+        self.attributes("-alpha",1-value/100)
         self.save()
 
     def set_accent(self, value):
