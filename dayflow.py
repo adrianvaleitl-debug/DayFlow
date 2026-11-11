@@ -791,7 +791,7 @@ class DayFlow(ctk.CTk):
         value=round(max(0,min(35,float(value))))
         self.data["settings"]["transparency"]=value
         if label: label.configure(text=f"{value}%")
-        self.attributes("-alpha",1-value/100)
+        self.apply_glass_effect()
         self.apply_glass_effect()
         self.save()
 
