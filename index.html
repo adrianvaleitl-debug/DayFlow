@@ -588,7 +588,7 @@ body>footer.footer{position:fixed!important;left:50%!important;right:auto!import
   const escaped=version.split(".").join("\\.");
   const installers=(release.assets||[]).filter(asset=>/^DayFlow-Setup-.*\\.exe$/i.test(asset.name));
   const installer=installers.find(asset=>new RegExp("^DayFlow-Setup-"+escaped+"\\.exe$","i").test(asset.name))||installers[0];
-  const url=installer?.browser_download_url||release.html_url||fallback;
+  const url=installer?.browser_download_url||fallback;
   document.querySelectorAll("[data-latest-dayflow-installer]").forEach(link=>{link.href=url;link.removeAttribute("download");});
   document.querySelectorAll("[data-latest-dayflow-release]").forEach(link=>link.href=release.html_url||releaseFallback);
   document.querySelectorAll("[data-release-version]").forEach(el=>el.textContent=version||"Latest");
