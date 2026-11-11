@@ -65,6 +65,10 @@ class DayFlow(ctk.CTk):
             self.data["settings"]["forest_glass_migrated"] = True
             DATA_DIR.mkdir(parents=True, exist_ok=True)
             DATA_FILE.write_text(json.dumps(self.data, indent=2, ensure_ascii=False), encoding="utf-8")
+        if self.data["settings"].get("accent") in ("dollar", "euro", "pound", "yen", "franc"):
+            self.data["settings"]["accent"] = "black"
+            DATA_DIR.mkdir(parents=True, exist_ok=True)
+            DATA_FILE.write_text(json.dumps(self.data, indent=2, ensure_ascii=False), encoding="utf-8")
         try:
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("AdrianVale.DayFlow")
         except Exception:
@@ -110,13 +114,8 @@ class DayFlow(ctk.CTk):
         return {"black":("#B9B9B9","#A0A0A0"),"amber":("#D7B77F","#BFA16A"),"azure":("#91AFE0","#7897C8"),"lavender":("#B5A0D8","#9B86BE"),"rose":("#D99EAD","#C48495"),"teal":("#91BEC3","#76A6AB"),"dollar":("#D7B77F","#BFA16A"),"euro":("#91AFE0","#7897C8"),"pound":("#B5A0D8","#9B86BE"),"yen":("#D99EAD","#C48495"),"franc":("#91BEC3","#76A6AB")}
 
     def tint_surface(self, base, amount=0.06):
-        accent = self.accent_colors().get(self.data.get("settings", {}).get("accent", "dollar"), self.accent_colors()["euro"])[0]
-        try:
-            def rgb(value): return tuple(int(value[i:i+2], 16) for i in (1, 3, 5))
-            a, b = rgb(base), rgb(accent)
-            return "#" + "".join(f"{round(x * (1 - amount) + y * amount):02X}" for x, y in zip(a, b))
-        except Exception:
-            return base
+        """Keep glass surfaces charcoal; the selected colour is used only for accents."""
+        return base
 
     def apply_accent_theme(self):
         accent=str(self.data.get("settings",{}).get("accent","black")).lower()
