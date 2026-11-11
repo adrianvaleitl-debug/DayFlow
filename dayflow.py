@@ -213,6 +213,7 @@ class DayFlow(ctk.CTk):
         self.protocol("WM_DELETE_WINDOW", self.close_app)
         self.build_shell()
         self.show_page("Overview")
+        self.after(350, self.apply_glass_effect)
         self.after(1200, self.apply_native_icon)
         self.after(2600, self.apply_native_icon)
         if not self.data["settings"].get("tutorial_seen", False):
