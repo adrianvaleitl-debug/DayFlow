@@ -1,5 +1,5 @@
 #define MyAppName "DayFlow"
-#define MyAppVersion "1.1.0"
+#define MyAppVersion "1.2.0"
 #define MyAppPublisher "Adrian Vale"
 #define MyAppExeName "DayFlow.exe"
 
@@ -17,6 +17,8 @@ Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
 PrivilegesRequired=admin
+CloseApplications=yes
+RestartApplications=no
 ArchitecturesInstallIn64BitMode=x64
 SetupIconFile=..\assets\dayflow.ico
 
