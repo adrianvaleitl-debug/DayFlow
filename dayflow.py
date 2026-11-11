@@ -102,9 +102,9 @@ class DayFlow(ctk.CTk):
             self.after(2500, lambda: self.check_updates(silent=True))
 
     def accent_colors(self):
-        return {"dollar":("#DCC18F","#C5A875"),"euro":("#A9BFE2","#879FC8"),
-                "pound":("#BFAFE0","#A08BC9"),"yen":("#DFAFBA","#C68F9D"),
-                "franc":("#A9C9CC","#83ADB2")}
+        return {"dollar":("#DDB47E","#C99A60"),"euro":("#A8CDB6","#82B99A"),
+                "pound":("#B5C5B5","#8FA795"),"yen":("#D8A99E","#C88E82"),
+                "franc":("#A8C9C0","#83AAA0")}
 
     def tint_surface(self, base, amount=0.18):
         accent = self.accent_colors().get(self.data.get("settings", {}).get("accent", "euro"), self.accent_colors()["euro"])[0]
@@ -145,7 +145,7 @@ class DayFlow(ctk.CTk):
                 _fields_ = [("AccentState", ctypes.c_int), ("AccentFlags", ctypes.c_int), ("GradientColor", ctypes.c_int), ("AnimationId", ctypes.c_int)]
             class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
                 _fields_ = [("Attribute", ctypes.c_int), ("Data", ctypes.c_void_p), ("SizeOfData", ctypes.c_size_t)]
-            policy = ACCENT_POLICY(4, 2, 0xCC17263A, 0)
+            policy = ACCENT_POLICY(4, 2, 0xCC14231A, 0)
             data = WINDOWCOMPOSITIONATTRIBDATA(19, ctypes.addressof(policy), ctypes.sizeof(policy))
             apply_attribute = ctypes.windll.user32.SetWindowCompositionAttribute
             apply_attribute.argtypes = [ctypes.c_void_p, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
@@ -157,9 +157,9 @@ class DayFlow(ctk.CTk):
         """Render soft accent-colour spotlights behind DayFlow's glass panels."""
         try:
             dark=ctk.get_appearance_mode()=="Dark"
-            base="#080F1B" if dark else "#EAF0F8"
+            base="#09120D" if dark else "#E9EEE8"
             accent=self.accent_colors().get(self.data["settings"].get("accent","euro"),("#9EBCE9","#7E9CCB"))[0]
-            accents=[accent,"#78A8E8","#B69AE8","#72C7C0"]
+            accents=[accent,"#6F9D7D","#C69A69","#A6C8B3"]
             canvas=tk.Canvas(self,highlightthickness=0,bd=0,bg=base)
             canvas.place(x=0,y=0,relwidth=1,relheight=1)
             self._spotlight_canvas=canvas
@@ -167,7 +167,7 @@ class DayFlow(ctk.CTk):
                 if event is not None and event.widget is not self:return
                 w=max(480,self.winfo_width());h=max(360,self.winfo_height())
                 glow=Image.new("RGBA",(w,h),(0,0,0,0));draw=ImageDraw.Draw(glow)
-                alpha=174 if dark else 82
+                alpha=150 if dark else 62
                 for x,y,r,color in [(-.08,-.10,.66,accents[0]),(.84,.12,.58,accents[1]),(.48,.92,.64,accents[2]),(.10,.62,.42,accents[3])]:
                     rgb=tuple(int(color[i:i+2],16) for i in (1,3,5));cx,cy=x*w,y*h;rad=r*min(w,h)
                     draw.ellipse((cx-rad,cy-rad,cx+rad,cy+rad),fill=(*rgb,alpha))
@@ -219,7 +219,7 @@ class DayFlow(ctk.CTk):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=1)
-        self.sidebar = ctk.CTkFrame(self, width=238, corner_radius=27, fg_color=(self.tint_surface("#F7FAFF", .10), self.tint_surface("#142236", .12)), border_width=0)
+        self.sidebar = ctk.CTkFrame(self, width=224, corner_radius=27, fg_color=(self.tint_surface("#F0F4EE", .08), self.tint_surface("#111F17", .10)), border_width=1, border_color=("#D3DED2", "#304638"))
         self.sidebar.grid(row=0, column=0, rowspan=2, sticky="nsew", padx=(14, 8), pady=14)
         self.sidebar.grid_propagate(False)
         brand = ctk.CTkFrame(self.sidebar, fg_color="transparent")
@@ -243,11 +243,11 @@ class DayFlow(ctk.CTk):
                 button = ctk.CTkButton(nav_area, text=f"{glyph}   {name}", height=42, corner_radius=12, anchor="w", fg_color="transparent", hover_color=("#E8EDF6","#263449"), text_color=("#465267","#C7D0DE"), font=self.ui_font(12), command=lambda n=name: self.show_page(n))
                 button.pack(fill="x", padx=2, pady=2)
                 self.nav_buttons[name] = button
-        side_footer = ctk.CTkFrame(self.sidebar, fg_color=(self.tint_surface("#EAF1FA", .14), self.tint_surface("#1D3048", .18)), corner_radius=22, border_width=0)
+        side_footer = ctk.CTkFrame(self.sidebar, fg_color=(self.tint_surface("#E4EBE2", .12), self.tint_surface("#1B2D21", .16)), corner_radius=22, border_width=0)
         side_footer.pack(fill="x", padx=14, pady=15)
         ctk.CTkLabel(side_footer, text="MAKE ROOM FOR WHAT MATTERS", font=ctk.CTkFont(size=8, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(11,3))
         ctk.CTkLabel(side_footer, text="A little progress, every day.", font=self.ui_font(10)).pack(anchor="w", padx=12, pady=(0,11))
-        self.topbar = ctk.CTkFrame(self, height=66, corner_radius=25, fg_color=(self.tint_surface("#FFFFFF", .08), self.tint_surface("#17263A", .12)), border_width=0)
+        self.topbar = ctk.CTkFrame(self, height=68, corner_radius=25, fg_color=(self.tint_surface("#FAFCF8", .10), self.tint_surface("#14231A", .14)), border_width=1, border_color=("#D3DED2", "#304638"))
         self.topbar.grid(row=0, column=1, sticky="ew", padx=(8, 14), pady=(14, 8))
         self.topbar.grid_propagate(False)
         self.page_title = ctk.CTkLabel(self.topbar, text="Overview", font=self.ui_font(16, True))
@@ -276,7 +276,7 @@ class DayFlow(ctk.CTk):
         return body
 
     def panel(self, parent, title=None):
-        frame = ctk.CTkFrame(parent, corner_radius=25, fg_color=(self.tint_surface("#FFFFFF", .08), self.tint_surface("#17263A", .12)), border_width=0)
+        frame = ctk.CTkFrame(parent, corner_radius=24, fg_color=(self.tint_surface("#FAFCF8", .10), self.tint_surface("#14231A", .16)), border_width=1, border_color=("#D3DED2", "#304638"))
         if title:
             ctk.CTkLabel(frame, text=title, font=self.ui_font(15, True)).pack(anchor="w", padx=18, pady=(16, 10))
         return frame
@@ -731,9 +731,9 @@ class DayFlow(ctk.CTk):
         self.data["settings"]["accent"]=value
         self.apply_accent_theme()
         self.save()
-        self.configure(fg_color=(self.tint_surface("#EAF0F8", .10), self.tint_surface("#0C1422", .13)))
-        self.sidebar.configure(fg_color=(self.tint_surface("#F7FAFF", .10), self.tint_surface("#142236", .12)))
-        self.topbar.configure(fg_color=(self.tint_surface("#FFFFFF", .08), self.tint_surface("#17263A", .12)))
+        self.configure(fg_color=(self.tint_surface("#E9EEE8", .08), self.tint_surface("#09120D", .12)))
+        self.sidebar.configure(fg_color=(self.tint_surface("#F0F4EE", .08), self.tint_surface("#111F17", .10)))
+        self.topbar.configure(fg_color=(self.tint_surface("#FAFCF8", .10), self.tint_surface("#14231A", .14)))
         self.apply_glass_effect()
         self.show_page(self.active_page)
 
