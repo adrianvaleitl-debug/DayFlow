@@ -12,6 +12,10 @@ on:
       - ".github/workflows/release.yml"
   workflow_dispatch:
 
+concurrency:
+  group: dayflow-windows-release
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
