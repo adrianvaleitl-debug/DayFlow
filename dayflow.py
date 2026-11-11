@@ -79,7 +79,7 @@ class DayFlow(ctk.CTk):
         screen_h = self.winfo_screenheight()
         self.geometry(f"{min(1380, max(1080, screen_w - 80))}x{min(900, max(720, screen_h - 100))}")
         self.minsize(1020, 680)
-        self.configure(fg_color=("#EAF0F8", "#0C1422"))
+        self.configure(fg_color=(self.tint_surface("#EAF0F8", .10), self.tint_surface("#0C1422", .13)))
         self.apply_glass_effect()
         self.timer_running = False
         self.timer_end = None
@@ -102,6 +102,15 @@ class DayFlow(ctk.CTk):
         return {"dollar":("#E8C98F","#C9A96D"),"euro":("#9E B C E9".replace(" ",""),"#7396C8"),
                 "pound":("#C4AFE7","#9B83C7"),"yen":("#E9AEBC","#C98294"),
                 "franc":("#9FCBD0","#69AAB1")}
+
+    def tint_surface(self, base, amount=0.08):
+        accent = self.accent_colors().get(self.data.get("settings", {}).get("accent", "euro"), self.accent_colors()["euro"])[0]
+        try:
+            def rgb(value): return tuple(int(value[i:i+2], 16) for i in (1, 3, 5))
+            a, b = rgb(base), rgb(accent)
+            return "#" + "".join(f"{round(x * (1 - amount) + y * amount):02X}" for x, y in zip(a, b))
+        except Exception:
+            return base
 
     def apply_accent_theme(self):
         accent=str(self.data.get("settings",{}).get("accent","euro")).lower()
@@ -149,7 +158,7 @@ class DayFlow(ctk.CTk):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=1)
-        self.sidebar = ctk.CTkFrame(self, width=238, corner_radius=27, fg_color=("#F5F8FE", "#15273D"), border_width=0)
+        self.sidebar = ctk.CTkFrame(self, width=238, corner_radius=27, fg_color=(self.tint_surface("#F7FAFF", .10), self.tint_surface("#142236", .12)), border_width=0)
         self.sidebar.grid(row=0, column=0, rowspan=2, sticky="nsew", padx=(14, 8), pady=14)
         self.sidebar.grid_propagate(False)
         brand = ctk.CTkFrame(self.sidebar, fg_color="transparent")
@@ -173,11 +182,11 @@ class DayFlow(ctk.CTk):
                 button = ctk.CTkButton(nav_area, text=f"{glyph}   {name}", height=42, corner_radius=12, anchor="w", fg_color="transparent", hover_color=("#E8EDF6","#263449"), text_color=("#465267","#C7D0DE"), font=self.ui_font(12), command=lambda n=name: self.show_page(n))
                 button.pack(fill="x", padx=2, pady=2)
                 self.nav_buttons[name] = button
-        side_footer = ctk.CTkFrame(self.sidebar, fg_color=("#E9F0FA","#20344D"), corner_radius=22, border_width=0)
+        side_footer = ctk.CTkFrame(self.sidebar, fg_color=(self.tint_surface("#EAF1FA", .14), self.tint_surface("#1D3048", .18)), corner_radius=22, border_width=0)
         side_footer.pack(fill="x", padx=14, pady=15)
         ctk.CTkLabel(side_footer, text="MAKE ROOM FOR WHAT MATTERS", font=ctk.CTkFont(size=8, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(11,3))
         ctk.CTkLabel(side_footer, text="A little progress, every day.", font=self.ui_font(10)).pack(anchor="w", padx=12, pady=(0,11))
-        self.topbar = ctk.CTkFrame(self, height=66, corner_radius=25, fg_color=("#F9FBFF","#1A2D43"), border_width=0)
+        self.topbar = ctk.CTkFrame(self, height=66, corner_radius=25, fg_color=(self.tint_surface("#FFFFFF", .08), self.tint_surface("#17263A", .12)), border_width=0)
         self.topbar.grid(row=0, column=1, sticky="ew", padx=(8, 14), pady=(14, 8))
         self.topbar.grid_propagate(False)
         self.page_title = ctk.CTkLabel(self.topbar, text="Overview", font=self.ui_font(16, True))
@@ -206,7 +215,7 @@ class DayFlow(ctk.CTk):
         return body
 
     def panel(self, parent, title=None):
-        frame = ctk.CTkFrame(parent, corner_radius=25, fg_color=("#F9FBFF", "#1A2B40"), border_width=0)
+        frame = ctk.CTkFrame(parent, corner_radius=25, fg_color=(self.tint_surface("#FFFFFF", .08), self.tint_surface("#17263A", .12)), border_width=0)
         if title:
             ctk.CTkLabel(frame, text=title, font=self.ui_font(15, True)).pack(anchor="w", padx=18, pady=(16, 10))
         return frame
@@ -661,8 +670,9 @@ class DayFlow(ctk.CTk):
         self.data["settings"]["accent"]=value
         self.apply_accent_theme()
         self.save()
-        self.sidebar.configure(fg_color=("#F6F8FC", "#15273D"))
-        self.topbar.configure(fg_color=("#FBFCFF", "#1A2D43"))
+        self.configure(fg_color=(self.tint_surface("#EAF0F8", .10), self.tint_surface("#0C1422", .13)))
+        self.sidebar.configure(fg_color=(self.tint_surface("#F7FAFF", .10), self.tint_surface("#142236", .12)))
+        self.topbar.configure(fg_color=(self.tint_surface("#FFFFFF", .08), self.tint_surface("#17263A", .12)))
         self.apply_glass_effect()
         self.show_page(self.active_page)
 
