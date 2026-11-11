@@ -145,7 +145,10 @@ class DayFlow(ctk.CTk):
                 _fields_ = [("Attribute", ctypes.c_int), ("Data", ctypes.c_void_p), ("SizeOfData", ctypes.c_size_t)]
             policy = ACCENT_POLICY(4, 2, 0xCC17263A, 0)
             data = WINDOWCOMPOSITIONATTRIBDATA(19, ctypes.addressof(policy), ctypes.sizeof(policy))
-            ctypes.windll.user32.SetWindowCompositionAttribute(self.winfo_id(), ctypes.byref(data))
+            apply_attribute = ctypes.windll.user32.SetWindowCompositionAttribute
+            apply_attribute.argtypes = [ctypes.c_void_p, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
+            apply_attribute.restype = ctypes.c_bool
+            apply_attribute(ctypes.c_void_p(self.winfo_id()), ctypes.byref(data))
         except Exception: pass
 
     def apply_native_icon(self):
@@ -160,10 +163,13 @@ class DayFlow(ctk.CTk):
             if not icon.exists():
                 return
             user32 = ctypes.windll.user32
+            user32.LoadImageW.argtypes = [ctypes.c_void_p, ctypes.c_wchar_p, ctypes.c_uint, ctypes.c_int, ctypes.c_int, ctypes.c_uint]
             user32.LoadImageW.restype = ctypes.c_void_p
             handle = user32.LoadImageW(None, str(icon), 1, 0, 0, 0x0010)
             if handle:
-                hwnd = self.winfo_id()
+                user32.SendMessageW.argtypes = [ctypes.c_void_p, ctypes.c_uint, ctypes.c_size_t, ctypes.c_void_p]
+                user32.SendMessageW.restype = ctypes.c_ssize_t
+                hwnd = ctypes.c_void_p(self.winfo_id())
                 user32.SendMessageW(hwnd, 0x0080, 1, handle)
                 user32.SendMessageW(hwnd, 0x0080, 0, handle)
                 self._dayflow_icon_handle = handle
