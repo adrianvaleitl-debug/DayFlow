@@ -71,11 +71,8 @@ class DayFlow(ctk.CTk):
         try:
             icon = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent)) / "dayflow.ico"
             if icon.exists():
-                self.iconbitmap(default=str(icon))
-                png_icon = icon.with_suffix(".png")
-                if png_icon.exists():
-                    self._window_icon_photo = tk.PhotoImage(file=str(png_icon))
-                    self.iconphoto(True, self._window_icon_photo)
+                # Use the dedicated ICO for the window and taskbar identity.
+                self.iconbitmap(str(icon))
         except Exception:
             pass
         screen_w = self.winfo_screenwidth()
