@@ -23,7 +23,7 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.4.5"
+APP_VERSION = "1.4.6"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 GITHUB_SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 DATA_DIR = Path(os.getenv("APPDATA", str(Path.home()))) / "DayFlow"
@@ -31,7 +31,7 @@ DATA_FILE = DATA_DIR / "dayflow_data.json"
 
 DEFAULT_DATA = {
     "tasks": [], "notes": [], "habits": [], "goals": [], "focus_sessions": [],
-    "settings": {"appearance": "dark", "accent": "dollar", "transparency": 8, "focus_minutes": 25, "font": "Segoe UI", "bold": True, "tutorial_seen": False, "auto_updates": True}
+    "settings": {"appearance": "dark", "accent": "black", "transparency": 8, "focus_minutes": 25, "font": "Segoe UI", "bold": True, "tutorial_seen": False, "auto_updates": True}
 }
 
 def load_data():
@@ -61,7 +61,7 @@ class DayFlow(ctk.CTk):
     def __init__(self):
         self.data = load_data()
         if not self.data["settings"].get("forest_glass_migrated"):
-            self.data["settings"]["accent"] = "dollar"
+            self.data["settings"]["accent"] = "black"
             self.data["settings"]["forest_glass_migrated"] = True
             DATA_DIR.mkdir(parents=True, exist_ok=True)
             DATA_FILE.write_text(json.dumps(self.data, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -94,7 +94,8 @@ class DayFlow(ctk.CTk):
         self.protocol("WM_DELETE_WINDOW", self.close_app)
         self.build_shell()
         self.show_page("Overview")
-        self.after(350, self.apply_native_icon)
+        self.after(1200, self.apply_native_icon)
+        self.after(2600, self.apply_native_icon)
         if not self.data["settings"].get("tutorial_seen", False):
             # Persist the first-launch flag before opening the dialog so closing
             # the window or an interrupted first run cannot trigger it forever.
@@ -106,9 +107,7 @@ class DayFlow(ctk.CTk):
             self.after(2500, lambda: self.check_updates(silent=True))
 
     def accent_colors(self):
-        return {"dollar":("#B9B9B9","#A0A0A0"),"euro":("#C3C3C3","#ABABAB"),
-                "pound":("#C0C0C0","#A1A1A1"),"yen":("#B2B2B2","#999999"),
-                "franc":("#C1C1C1","#A1A1A1")}
+        return {"black":("#B9B9B9","#A0A0A0"),"amber":("#D7B77F","#BFA16A"),"azure":("#91AFE0","#7897C8"),"lavender":("#B5A0D8","#9B86BE"),"rose":("#D99EAD","#C48495"),"teal":("#91BEC3","#76A6AB"),"dollar":("#D7B77F","#BFA16A"),"euro":("#91AFE0","#7897C8"),"pound":("#B5A0D8","#9B86BE"),"yen":("#D99EAD","#C48495"),"franc":("#91BEC3","#76A6AB")}
 
     def tint_surface(self, base, amount=0.06):
         accent = self.accent_colors().get(self.data.get("settings", {}).get("accent", "dollar"), self.accent_colors()["euro"])[0]
@@ -120,8 +119,8 @@ class DayFlow(ctk.CTk):
             return base
 
     def apply_accent_theme(self):
-        accent=str(self.data.get("settings",{}).get("accent","euro")).lower()
-        if accent not in self.accent_colors(): accent="euro"
+        accent=str(self.data.get("settings",{}).get("accent","black")).lower()
+        if accent not in self.accent_colors(): accent="black"
         self.data["settings"]["accent"]=accent
         primary,hover=self.accent_colors()[accent]
         theme=ctk.ThemeManager.theme
@@ -264,14 +263,14 @@ class DayFlow(ctk.CTk):
         return body
 
     def panel(self, parent, title=None):
-        frame = ctk.CTkFrame(parent, corner_radius=24, fg_color=("#202024", "#202024"), border_width=1, border_color=("#38383E", "#38383E"))
+        frame = ctk.CTkFrame(parent, corner_radius=24, fg_color=("#202024", "#202024"), border_width=0)
         if title:
-            ctk.CTkLabel(frame, text=title, font=self.ui_font(15, True)).pack(anchor="w", padx=18, pady=(16, 10))
+            ctk.CTkLabel(frame, text=title, font=self.ui_font(15, True)).pack(anchor="w", padx=24, pady=(20, 12))
         return frame
 
     def show_page(self, name):
         self.active_page = name
-        accent_color = self.accent_colors().get(self.data.get("settings", {}).get("accent", "euro"), self.accent_colors()["euro"])[0]
+        accent_color = self.accent_colors().get(self.data.get("settings", {}).get("accent", "black"), self.accent_colors()["euro"])[0]
         self.page_title.configure(text=name)
         for nav_name, button in self.nav_buttons.items():
             active = nav_name == name
@@ -626,7 +625,10 @@ class DayFlow(ctk.CTk):
         card=self.panel(body,"Appearance"); card.pack(fill="x",pady=(0,12))
         ctk.CTkLabel(card,text="Appearance").pack(anchor="w",padx=18,pady=(0,5))
         appearance=ctk.CTkOptionMenu(card,values=["dark","light","system"],command=self.set_appearance)
-        appearance.set(self.data["settings"].get("appearance","dark")); appearance.pack(anchor="w",padx=18,pady=(0,12))
+        appearance.set(self.data["settings"].get("appearance","dark")); appearance.pack(anchor="w",padx=22,pady=(0,12))
+        ctk.CTkLabel(card,text="Accent colour").pack(anchor="w",padx=22,pady=(0,5))
+        colour=ctk.CTkOptionMenu(card,values=["Black","Amber","Azure","Lavender","Rose","Teal"],command=self.set_accent)
+        colour.set({"black":"Black","amber":"Amber","azure":"Azure","lavender":"Lavender","rose":"Rose","teal":"Teal","dollar":"Amber","euro":"Azure","pound":"Lavender","yen":"Rose","franc":"Teal"}.get(self.data["settings"].get("accent","black"),"Black")); colour.pack(anchor="w",padx=22,pady=(0,12))
         ctk.CTkLabel(card,text="Window transparency").pack(anchor="w",padx=18,pady=(0,5))
         transparency_value=ctk.CTkLabel(card,text=f'{int(self.data["settings"].get("transparency",8))}%',text_color=("gray55","gray75"))
         transparency_value.pack(anchor="w",padx=18,pady=(0,4))
@@ -724,7 +726,7 @@ class DayFlow(ctk.CTk):
         self.save()
 
     def set_accent(self, value):
-        value={"Focus":"dollar","Flow":"euro","Growth":"pound","Energy":"yen","Balance":"franc"}.get(value,value.lower())
+        value={"Black":"black","Amber":"amber","Azure":"azure","Lavender":"lavender","Rose":"rose","Teal":"teal","Focus":"amber","Flow":"azure","Growth":"lavender","Energy":"rose","Balance":"teal"}.get(value,value.lower())
         self.data["settings"]["accent"]=value
         self.apply_accent_theme()
         self.save()
