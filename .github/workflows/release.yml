@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - "VERSION"
+      - "dayflow.py"
+      - "installer/DayFlow.iss"
+      - ".github/workflows/release.yml"
   workflow_dispatch:
 
 permissions:
@@ -63,6 +66,7 @@ jobs:
           target_commitish: main
           name: DayFlow v${{ steps.version.outputs.version }}
           generate_release_notes: true
+          overwrite_files: true
           files: release/DayFlow-Setup-*.exe
       - name: Upload Windows installer artifact
         uses: actions/upload-artifact@v4
