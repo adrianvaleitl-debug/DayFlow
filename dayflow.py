@@ -5,6 +5,8 @@ import ctypes
 import time
 import threading
 import urllib.request
+import ssl
+import certifi
 import webbrowser
 import subprocess
 import tempfile
@@ -20,8 +22,9 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.3.2"
+APP_VERSION = "1.3.3"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
+GITHUB_SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 DATA_DIR = Path(os.getenv("APPDATA", str(Path.home()))) / "DayFlow"
 DATA_FILE = DATA_DIR / "dayflow_data.json"
 
@@ -75,8 +78,10 @@ class DayFlow(ctk.CTk):
                     self.iconphoto(True, self._window_icon_photo)
         except Exception:
             pass
-        self.geometry("1240x820")
-        self.minsize(980, 680)
+        screen_w = self.winfo_screenwidth()
+        screen_h = self.winfo_screenheight()
+        self.geometry(f"{min(1240, max(900, screen_w - 80))}x{min(820, max(640, screen_h - 100))}")
+        self.minsize(min(980, max(880, screen_w - 80)), min(680, max(600, screen_h - 100)))
         self.configure(fg_color=("#F3F5F8", "#11151D"))
         self.timer_running = False
         self.timer_end = None
@@ -140,15 +145,18 @@ class DayFlow(ctk.CTk):
         self.main.grid(row=1, column=0, sticky="nsew", padx=34, pady=(24, 10))
         self.main.grid_columnconfigure(0, weight=1)
         self.main.grid_rowconfigure(1, weight=1)
-        self.nav_dock = ctk.CTkFrame(self, height=72, corner_radius=22, fg_color=("#E8EDF5", "#1A2433"), border_width=1, border_color=("#DCE4EF", "#2B3A50"))
-        self.nav_dock.grid(row=2, column=0, sticky="ew", padx=50, pady=(0, 16))
+        self.nav_dock = ctk.CTkFrame(self, height=108, corner_radius=22, fg_color=("#E8EDF5", "#1A2433"), border_width=1, border_color=("#DCE4EF", "#2B3A50"))
+        self.nav_dock.grid(row=2, column=0, sticky="ew", padx=50, pady=(0, 12))
         self.nav_dock.grid_propagate(False)
         self.nav_buttons = {}
+        for column in range(5):
+            self.nav_dock.grid_columnconfigure(column, weight=1, uniform="dock")
         for name, glyph in [("Overview","⌂"),("Tasks","✓"),("Calendar","▦"),("Notes","▤"),("Habits","↗"),("Goals","◎"),("Focus","◷"),("Weekly Review","▥"),("Settings","⚙")]:
             b = ctk.CTkButton(self.nav_dock, text=f"{glyph}  {name}", height=43, corner_radius=14,
                 fg_color="transparent", hover_color=("#D7E5F7", "#263B58"), text_color=("#344054", "#C7D0DE"),
                 font=self.ui_font(12, True), command=lambda n=name: self.show_page(n))
-            b.pack(side="left", expand=True, fill="both", padx=4, pady=6)
+            b.configure(height=38, corner_radius=12)
+            b.grid(row=index // 5, column=index % 5, sticky="ew", padx=5, pady=4)
             self.nav_buttons[name] = b
 
     def clear_main(self):
@@ -393,7 +401,7 @@ class DayFlow(ctk.CTk):
         def worker():
             try:
                 request = urllib.request.Request(GITHUB_RELEASES_API, headers={"User-Agent": "DayFlow-Updater"})
-                with urllib.request.urlopen(request, timeout=8) as response:
+                with urllib.request.urlopen(request, timeout=20, context=GITHUB_SSL_CONTEXT) as response:
                     release = json.loads(response.read().decode("utf-8"))
                 latest = str(release.get("tag_name", "")).lstrip("v")
                 current = APP_VERSION.lstrip("v")
@@ -426,7 +434,7 @@ class DayFlow(ctk.CTk):
                 os.close(fd)
                 path = Path(temp_path)
                 request = urllib.request.Request(url, headers={"User-Agent": "DayFlow-Updater"})
-                with urllib.request.urlopen(request, timeout=90) as response:
+                with urllib.request.urlopen(request, timeout=120, context=GITHUB_SSL_CONTEXT) as response:
                     payload = response.read()
                 if len(payload) < 100_000 or not payload.startswith(b"MZ"):
                     raise RuntimeError("The downloaded installer did not pass its Windows executable check. Download it from the GitHub releases page instead.")
