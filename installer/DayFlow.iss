@@ -34,4 +34,4 @@ Name: "{group}\DayFlow"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\DayFlow"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "Launch DayFlow"; Flags: postinstall nowait skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Description: "Launch DayFlow"; Flags: postinstall nowait
