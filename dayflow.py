@@ -53,6 +53,11 @@ class DayFlow(ctk.CTk):
         ctk.set_default_color_theme("blue")
         super().__init__()
         self.title(f"{APP_NAME}  •  Your day, under control")
+        try:
+            icon = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent)) / "dayflow.ico"
+            if icon.exists(): self.iconbitmap(default=str(icon))
+        except Exception:
+            pass
         self.geometry("1240x820")
         self.minsize(980, 680)
         self.configure(fg_color=("#F3F5F8", "#11151D"))
