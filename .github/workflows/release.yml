@@ -32,7 +32,7 @@ jobs:
       - name: Generate DayFlow icon
         run: python tools/generate_icon.py
       - name: Build executable
-        run: pyinstaller --noconfirm --clean --onefile --windowed --icon assets/dayflow.ico --add-data "assets/dayflow.ico;." --name DayFlow dayflow.py
+        run: pyinstaller --noconfirm --clean --onefile --windowed --icon assets/dayflow.ico --add-data "assets/dayflow.ico;." --add-data "assets/dayflow.png;." --name DayFlow dayflow.py
       - name: Install Inno Setup
         run: choco install innosetup --yes --no-progress
       - name: Build installer
