@@ -119,6 +119,9 @@ class DayFlow(ctk.CTk):
         self.data["settings"]["accent"]=accent
         primary,hover=self.accent_colors()[accent]
         theme=ctk.ThemeManager.theme
+        if "CTkFrame" in theme: theme["CTkFrame"]["corner_radius"]=22
+        if "CTkButton" in theme: theme["CTkButton"]["corner_radius"]=15
+        if "CTkEntry" in theme: theme["CTkEntry"]["corner_radius"]=15
         updates={
             "CTkButton":{"fg_color":[primary,primary],"hover_color":[hover,hover]},
             "CTkCheckBox":{"fg_color":[primary,primary],"hover_color":[hover,hover]},
