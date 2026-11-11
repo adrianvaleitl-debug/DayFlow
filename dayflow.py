@@ -23,7 +23,7 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.4.4"
+APP_VERSION = "1.4.5"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 GITHUB_SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 DATA_DIR = Path(os.getenv("APPDATA", str(Path.home()))) / "DayFlow"
@@ -31,7 +31,7 @@ DATA_FILE = DATA_DIR / "dayflow_data.json"
 
 DEFAULT_DATA = {
     "tasks": [], "notes": [], "habits": [], "goals": [], "focus_sessions": [],
-    "settings": {"appearance": "dark", "accent": "euro", "focus_minutes": 25, "font": "Segoe UI", "bold": True, "tutorial_seen": False, "auto_updates": True}
+    "settings": {"appearance": "dark", "accent": "dollar", "transparency": 94, "focus_minutes": 25, "font": "Segoe UI", "bold": True, "tutorial_seen": False, "auto_updates": True}
 }
 
 def load_data():
@@ -85,10 +85,9 @@ class DayFlow(ctk.CTk):
         screen_h = self.winfo_screenheight()
         self.geometry(f"{min(1380, max(1080, screen_w - 80))}x{min(900, max(720, screen_h - 100))}")
         self.minsize(1020, 680)
-        self.configure(fg_color=(self.tint_surface("#E9EEE8", .08), self.tint_surface("#09120D", .12)))
+        self.configure(fg_color=(self.tint_surface("#EDEDED", .08), self.tint_surface("#101010", .12)))
         self.apply_glass_effect()
-        self.apply_spotlight_background()
-        self.timer_running = False
+                self.timer_running = False
         self.timer_end = None
         self.timer_job = None
         self.active_page = "Overview"
@@ -107,9 +106,9 @@ class DayFlow(ctk.CTk):
             self.after(2500, lambda: self.check_updates(silent=True))
 
     def accent_colors(self):
-        return {"dollar":("#DDB47E","#C99A60"),"euro":("#A8CDB6","#82B99A"),
-                "pound":("#B5C5B5","#8FA795"),"yen":("#D8A99E","#C88E82"),
-                "franc":("#A8C9C0","#83AAA0")}
+        return {"dollar":("#B9B9B9","#A0A0A0"),"euro":("#C3C3C3","#ABABAB"),
+                "pound":("#C0C0C0","#A1A1A1"),"yen":("#B2B2B2","#999999"),
+                "franc":("#C1C1C1","#A1A1A1")}
 
     def tint_surface(self, base, amount=0.06):
         accent = self.accent_colors().get(self.data.get("settings", {}).get("accent", "dollar"), self.accent_colors()["euro"])[0]
@@ -130,15 +129,15 @@ class DayFlow(ctk.CTk):
         if "CTkButton" in theme: theme["CTkButton"]["corner_radius"]=15
         if "CTkEntry" in theme: theme["CTkEntry"]["corner_radius"]=15
         updates={
-            "CTkButton":{"fg_color":[primary,primary],"hover_color":[hover,hover],"text_color":["#182319","#182319"],"corner_radius":13},
-            "CTkCheckBox":{"fg_color":[primary,primary],"hover_color":[hover,hover],"border_color":["#6D8572","#6D8572"],"checkmark_color":["#182319","#182319"]},
+            "CTkButton":{"fg_color":[primary,primary],"hover_color":[hover,hover],"text_color":["#202020","#202020"],"corner_radius":13},
+            "CTkCheckBox":{"fg_color":[primary,primary],"hover_color":[hover,hover],"border_color":["#7F7F7F","#7F7F7F"],"checkmark_color":["#202020","#202020"]},
             "CTkSwitch":{"progress_color":[primary,primary]},
             "CTkSlider":{"progress_color":[primary,primary],"button_color":[primary,primary],"button_hover_color":[hover,hover]},
             "CTkProgressBar":{"progress_color":[primary,primary]},
             "CTkRadioButton":{"fg_color":[primary,primary],"hover_color":[hover,hover]},
-            "CTkOptionMenu":{"fg_color":["#1B2D21","#1B2D21"],"button_color":[primary,primary],"button_hover_color":[hover,hover],"dropdown_fg_color":["#14231A","#14231A"],"dropdown_hover_color":["#263B2D","#263B2D"],"dropdown_text_color":["#EDF4EE","#EDF4EE"],"text_color":["#EDF4EE","#EDF4EE"],"corner_radius":14},
-            "CTkComboBox":{"fg_color":["#101D15","#101D15"],"border_color":["#304638","#304638"],"button_color":[primary,primary],"button_hover_color":[hover,hover],"dropdown_fg_color":["#14231A","#14231A"],"dropdown_hover_color":["#263B2D","#263B2D"],"dropdown_text_color":["#EDF4EE","#EDF4EE"],"text_color":["#EDF4EE","#EDF4EE"],"corner_radius":14},
-            "CTkEntry":{"fg_color":["#101D15","#101D15"],"border_color":["#304638","#304638"],"text_color":["#EDF4EE","#EDF4EE"],"corner_radius":14}
+            "CTkOptionMenu":{"fg_color":["#282828","#282828"],"button_color":[primary,primary],"button_hover_color":[hover,hover],"dropdown_fg_color":["#1F1F1F","#1F1F1F"],"dropdown_hover_color":["#363636","#363636"],"dropdown_text_color":["#F2F2F2","#F2F2F2"],"text_color":["#F2F2F2","#F2F2F2"],"corner_radius":14},
+            "CTkComboBox":{"fg_color":["#1A1A1A","#1A1A1A"],"border_color":["#404040","#404040"],"button_color":[primary,primary],"button_hover_color":[hover,hover],"dropdown_fg_color":["#1F1F1F","#1F1F1F"],"dropdown_hover_color":["#363636","#363636"],"dropdown_text_color":["#F2F2F2","#F2F2F2"],"text_color":["#F2F2F2","#F2F2F2"],"corner_radius":14},
+            "CTkEntry":{"fg_color":["#1A1A1A","#1A1A1A"],"border_color":["#404040","#404040"],"text_color":["#F2F2F2","#F2F2F2"],"corner_radius":14}
         }
         for widget,values in updates.items():
             if widget in theme: theme[widget].update(values)
@@ -146,46 +145,19 @@ class DayFlow(ctk.CTk):
     def apply_glass_effect(self):
         """Apply a subtle translucent acrylic tint on supported Windows versions."""
         try:
-            self.attributes("-alpha", 0.97)
+            self.attributes("-alpha", max(0.78,min(1.0,float(self.data["settings"].get("transparency",94))/100)))
             if sys.platform != "win32": return
             class ACCENT_POLICY(ctypes.Structure):
                 _fields_ = [("AccentState", ctypes.c_int), ("AccentFlags", ctypes.c_int), ("GradientColor", ctypes.c_int), ("AnimationId", ctypes.c_int)]
             class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
                 _fields_ = [("Attribute", ctypes.c_int), ("Data", ctypes.c_void_p), ("SizeOfData", ctypes.c_size_t)]
-            policy = ACCENT_POLICY(4, 2, 0xCC14231A, 0)
+            policy = ACCENT_POLICY(4, 2, 0xCC17171B, 0)
             data = WINDOWCOMPOSITIONATTRIBDATA(19, ctypes.addressof(policy), ctypes.sizeof(policy))
             apply_attribute = ctypes.windll.user32.SetWindowCompositionAttribute
             apply_attribute.argtypes = [ctypes.c_void_p, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
             apply_attribute.restype = ctypes.c_bool
             apply_attribute(ctypes.c_void_p(self.winfo_id()), ctypes.byref(data))
         except Exception: pass
-
-    def apply_spotlight_background(self):
-        """Render soft accent-colour spotlights behind DayFlow's glass panels."""
-        try:
-            dark=ctk.get_appearance_mode()=="Dark"
-            base="#09120D" if dark else "#E9EEE8"
-            accent=self.accent_colors().get(self.data["settings"].get("accent","dollar"),("#9EBCE9","#7E9CCB"))[0]
-            accents=[accent,"#6F9D7D","#C69A69","#A6C8B3"]
-            canvas=tk.Canvas(self,highlightthickness=0,bd=0,bg=base)
-            canvas.place(x=0,y=0,relwidth=1,relheight=1)
-            self._spotlight_canvas=canvas
-            def render(event=None):
-                if event is not None and event.widget is not self:return
-                w=max(480,self.winfo_width());h=max(360,self.winfo_height())
-                glow=Image.new("RGBA",(w,h),(0,0,0,0));draw=ImageDraw.Draw(glow)
-                alpha=150 if dark else 62
-                for x,y,r,color in [(-.08,-.10,.66,accents[0]),(.84,.12,.58,accents[1]),(.48,.92,.64,accents[2]),(.10,.62,.42,accents[3])]:
-                    rgb=tuple(int(color[i:i+2],16) for i in (1,3,5));cx,cy=x*w,y*h;rad=r*min(w,h)
-                    draw.ellipse((cx-rad,cy-rad,cx+rad,cy+rad),fill=(*rgb,alpha))
-                glow=glow.filter(ImageFilter.GaussianBlur(max(85,int(min(w,h)*.14))))
-                image=Image.new("RGBA",(w,h),base);image.alpha_composite(glow)
-                self._spotlight_photo=ImageTk.PhotoImage(image.convert("RGB"))
-                canvas.delete("all");canvas.create_image(0,0,anchor="nw",image=self._spotlight_photo);canvas.lower()
-            self.bind("<Configure>",lambda e:render(e),add="+")
-            self.after(120,render)
-        except Exception:
-            pass
 
     def apply_native_icon(self):
         """Set Windows large and small window icons explicitly for the taskbar."""
@@ -226,7 +198,7 @@ class DayFlow(ctk.CTk):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=1)
-        self.sidebar = ctk.CTkFrame(self, width=224, corner_radius=27, fg_color=(self.tint_surface("#F0F4EE", .08), self.tint_surface("#111F17", .10)), border_width=1, border_color=("#D3DED2", "#304638"))
+        self.sidebar = ctk.CTkFrame(self, width=224, corner_radius=27, fg_color=(self.tint_surface("#F3F3F3", .08), self.tint_surface("#1B1B1B", .10)), border_width=1, border_color=("#DBDBDB", "#404040"))
         self.sidebar.grid(row=0, column=0, rowspan=2, sticky="nsew", padx=(14, 8), pady=14)
         self.sidebar.grid_propagate(False)
         brand = ctk.CTkFrame(self.sidebar, fg_color="transparent")
@@ -247,14 +219,14 @@ class DayFlow(ctk.CTk):
         for group, items in groups:
             ctk.CTkLabel(nav_area, text=group, font=ctk.CTkFont(size=9, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(15,7))
             for name, glyph in items:
-                button = ctk.CTkButton(nav_area, text=f"{glyph}   {name}", height=42, corner_radius=12, anchor="w", fg_color="transparent", hover_color=("#E4EBE2","#263B2D"), text_color=("#5B6E60","#B6C8B9"), font=self.ui_font(12), command=lambda n=name: self.show_page(n))
+                button = ctk.CTkButton(nav_area, text=f"{glyph}   {name}", height=42, corner_radius=12, anchor="w", fg_color="transparent", hover_color=("#E9E9E9","#363636"), text_color=("#696969","#C3C3C3"), font=self.ui_font(12), command=lambda n=name: self.show_page(n))
                 button.pack(fill="x", padx=2, pady=2)
                 self.nav_buttons[name] = button
-        side_footer = ctk.CTkFrame(self.sidebar, fg_color=(self.tint_surface("#E4EBE2", .12), self.tint_surface("#1B2D21", .16)), corner_radius=22, border_width=0)
+        side_footer = ctk.CTkFrame(self.sidebar, fg_color=(self.tint_surface("#E9E9E9", .12), self.tint_surface("#282828", .16)), corner_radius=22, border_width=0)
         side_footer.pack(fill="x", padx=14, pady=15)
         ctk.CTkLabel(side_footer, text="MAKE ROOM FOR WHAT MATTERS", font=ctk.CTkFont(size=8, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(11,3))
         ctk.CTkLabel(side_footer, text="A little progress, every day.", font=self.ui_font(10)).pack(anchor="w", padx=12, pady=(0,11))
-        self.topbar = ctk.CTkFrame(self, height=68, corner_radius=25, fg_color=(self.tint_surface("#FAFCF8", .10), self.tint_surface("#14231A", .14)), border_width=1, border_color=("#D3DED2", "#304638"))
+        self.topbar = ctk.CTkFrame(self, height=68, corner_radius=25, fg_color=(self.tint_surface("#FBFBFB", .10), self.tint_surface("#1F1F1F", .14)), border_width=1, border_color=("#DBDBDB", "#404040"))
         self.topbar.grid(row=0, column=1, sticky="ew", padx=(8, 14), pady=(14, 8))
         self.topbar.grid_propagate(False)
         self.page_title = ctk.CTkLabel(self.topbar, text="Overview", font=self.ui_font(16, True))
@@ -283,7 +255,7 @@ class DayFlow(ctk.CTk):
         return body
 
     def panel(self, parent, title=None):
-        frame = ctk.CTkFrame(parent, corner_radius=24, fg_color=(self.tint_surface("#FAFCF8", .10), self.tint_surface("#14231A", .16)), border_width=1, border_color=("#D3DED2", "#304638"))
+        frame = ctk.CTkFrame(parent, corner_radius=24, fg_color=(self.tint_surface("#FBFBFB", .10), self.tint_surface("#1F1F1F", .16)), border_width=1, border_color=("#DBDBDB", "#404040"))
         if title:
             ctk.CTkLabel(frame, text=title, font=self.ui_font(15, True)).pack(anchor="w", padx=18, pady=(16, 10))
         return frame
@@ -294,7 +266,7 @@ class DayFlow(ctk.CTk):
         self.page_title.configure(text=name)
         for nav_name, button in self.nav_buttons.items():
             active = nav_name == name
-            button.configure(fg_color=(accent_color, accent_color) if active else "transparent", hover_color=(accent_color, accent_color) if active else ("#E4EBE2","#263B2D"), text_color=("#182319","#182319") if active else ("#5B6E60","#B6C8B9"), font=self.ui_font(12, active))
+            button.configure(fg_color=(accent_color, accent_color) if active else "transparent", hover_color=(accent_color, accent_color) if active else ("#E9E9E9","#363636"), text_color=("#202020","#202020") if active else ("#696969","#C3C3C3"), font=self.ui_font(12, active))
         self.clear_main()
         getattr(self, f"page_{name.lower().replace(chr(32), chr(95))}")()
         if name == "Focus" and self.timer_running:
@@ -413,9 +385,9 @@ class DayFlow(ctk.CTk):
             done = ctk.BooleanVar(value=task.get("done",False))
             def toggle(t=task,v=done):
                 t["done"]=v.get(); t["completed_at"]=date.today().isoformat() if v.get() else ""; self.save(); self.show_page("Tasks")
-            ctk.CTkCheckBox(line,text=task["title"],variable=done,command=toggle,font=ctk.CTkFont(size=12),text_color=("gray55","gray65") if task.get("done") else ("#202939","#F2F4F7")).pack(side="left",fill="x",expand=True)
+            ctk.CTkCheckBox(line,text=task["title"],variable=done,command=toggle,font=ctk.CTkFont(size=12),text_color=("gray55","gray65") if task.get("done") else ("#282828","#F4F4F4")).pack(side="left",fill="x",expand=True)
             ctk.CTkLabel(line,text=f'{task.get("due","No date")}  ·  {task.get("priority","Normal")}',font=ctk.CTkFont(size=10),text_color=("gray55","gray65")).pack(side="left",padx=10)
-            ctk.CTkButton(line,text="×",width=30,fg_color="transparent",hover_color=("#FEE4E2","#542B2B"),text_color=("#B42318","#FDA29B"),command=lambda t=task:self.delete_item("tasks",t,"Tasks")).pack(side="right")
+            ctk.CTkButton(line,text="×",width=30,fg_color="transparent",hover_color=("#E9E9E9","#343434"),text_color=("#414141","#B5B5B5"),command=lambda t=task:self.delete_item("tasks",t,"Tasks")).pack(side="right")
 
     def page_calendar(self):
         self.header("Calendar", "A simple view of what's coming up.")
@@ -467,9 +439,9 @@ class DayFlow(ctk.CTk):
                 else: h["history"].append(today)
                 self.save(); self.show_page("Habits")
             ctk.CTkButton(card,text="✓ Completed today" if completed else "Mark complete today",command=mark,
-                fg_color="#16865A" if completed else None).pack(side="left",padx=18,pady=(0,14))
+                fg_color="#6B6B6B" if completed else None).pack(side="left",padx=18,pady=(0,14))
             ctk.CTkLabel(card,text=f'{len(habit.get("history",[]))} total check-ins',text_color=("gray55","gray65")).pack(side="left",padx=12,pady=(0,14))
-            ctk.CTkButton(card,text="Remove",width=70,fg_color="transparent",text_color=("#B42318","#FDA29B"),command=lambda h=habit:self.delete_item("habits",h,"Habits")).pack(side="right",padx=14,pady=(0,14))
+            ctk.CTkButton(card,text="Remove",width=70,fg_color="transparent",text_color=("#414141","#B5B5B5"),command=lambda h=habit:self.delete_item("habits",h,"Habits")).pack(side="right",padx=14,pady=(0,14))
 
     def page_goals(self):
         self.header("Goals", "Turn bigger ambitions into visible progress.")
@@ -546,7 +518,7 @@ class DayFlow(ctk.CTk):
             ("3. Make space to focus", "Use the focus timer to work in distraction-free blocks."),
             ("4. Keep everything together", "Save notes and see upcoming work in your calendar.")
         ]:
-            row = ctk.CTkFrame(dialog, fg_color=("gray92", "#202A39"), corner_radius=12)
+            row = ctk.CTkFrame(dialog, fg_color=("gray92", "#292929"), corner_radius=12)
             row.pack(fill="x", padx=24, pady=5)
             ctk.CTkLabel(row, text=heading, font=self.ui_font(13, True)).pack(anchor="w", padx=14, pady=(10, 2))
             ctk.CTkLabel(row, text=detail, font=self.ui_font(11), text_color=("gray40", "gray70")).pack(anchor="w", padx=14, pady=(0, 10))
@@ -646,9 +618,11 @@ class DayFlow(ctk.CTk):
         ctk.CTkLabel(card,text="Appearance").pack(anchor="w",padx=18,pady=(0,5))
         appearance=ctk.CTkOptionMenu(card,values=["dark","light","system"],command=self.set_appearance)
         appearance.set(self.data["settings"].get("appearance","dark")); appearance.pack(anchor="w",padx=18,pady=(0,12))
-        ctk.CTkLabel(card,text="Pastel colour theme").pack(anchor="w",padx=18,pady=(0,5))
-        accent=ctk.CTkOptionMenu(card,values=["Focus","Flow","Growth","Energy","Balance"],command=self.set_accent)
-        accent.set({"dollar":"Focus","euro":"Flow","pound":"Growth","yen":"Energy","franc":"Balance"}.get(self.data["settings"].get("accent","euro"),"Flow")); accent.pack(anchor="w",padx=18,pady=(0,16))
+        ctk.CTkLabel(card,text="Window transparency").pack(anchor="w",padx=18,pady=(0,5))
+        transparency_value=ctk.CTkLabel(card,text=f'{int(self.data["settings"].get("transparency",94))}%',text_color=("gray55","gray75"))
+        transparency_value.pack(anchor="w",padx=18,pady=(0,4))
+        transparency=ctk.CTkSlider(card,from_=78,to=100,number_of_steps=22,command=lambda v:self.set_transparency(v,transparency_value))
+        transparency.set(int(self.data["settings"].get("transparency",94))); transparency.pack(fill="x",padx=18,pady=(0,16))
         focus=self.panel(body,"Focus timer"); focus.pack(fill="x")
         ctk.CTkLabel(focus,text="Default focus session (minutes)").pack(anchor="w",padx=18,pady=(0,5))
         value=ctk.CTkEntry(focus,width=100); value.insert(0,str(self.data["settings"].get("focus_minutes",25))); value.pack(anchor="w",padx=18,pady=(0,8))
@@ -733,14 +707,21 @@ class DayFlow(ctk.CTk):
     def set_appearance(self, value):
         self.data["settings"]["appearance"]=value; self.save(); ctk.set_appearance_mode(value)
 
+    def set_transparency(self,value,label=None):
+        value=round(max(78,min(100,float(value))))
+        self.data["settings"]["transparency"]=value
+        if label: label.configure(text=f"{value}%")
+        self.attributes("-alpha",value/100)
+        self.save()
+
     def set_accent(self, value):
         value={"Focus":"dollar","Flow":"euro","Growth":"pound","Energy":"yen","Balance":"franc"}.get(value,value.lower())
         self.data["settings"]["accent"]=value
         self.apply_accent_theme()
         self.save()
-        self.configure(fg_color=(self.tint_surface("#E9EEE8", .08), self.tint_surface("#09120D", .12)))
-        self.sidebar.configure(fg_color=(self.tint_surface("#F0F4EE", .08), self.tint_surface("#111F17", .10)))
-        self.topbar.configure(fg_color=(self.tint_surface("#FAFCF8", .10), self.tint_surface("#14231A", .14)))
+        self.configure(fg_color=(self.tint_surface("#EDEDED", .08), self.tint_surface("#101010", .12)))
+        self.sidebar.configure(fg_color=(self.tint_surface("#F3F3F3", .08), self.tint_surface("#1B1B1B", .10)))
+        self.topbar.configure(fg_color=(self.tint_surface("#FBFBFB", .10), self.tint_surface("#1F1F1F", .14)))
         self.apply_glass_effect()
         self.show_page(self.active_page)
 
