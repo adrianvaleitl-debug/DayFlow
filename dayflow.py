@@ -19,13 +19,13 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.2.0"
+APP_VERSION = "1.3.0"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 DATA_DIR = Path(os.getenv("APPDATA", str(Path.home()))) / "DayFlow"
 DATA_FILE = DATA_DIR / "dayflow_data.json"
 
 DEFAULT_DATA = {
-    "tasks": [], "notes": [], "habits": [], "goals": [],
+    "tasks": [], "notes": [], "habits": [], "goals": [], "focus_sessions": [],
     "settings": {"appearance": "dark", "accent": "blue", "focus_minutes": 25, "font": "Segoe UI", "bold": True, "tutorial_seen": False, "auto_updates": True}
 }
 
@@ -36,7 +36,7 @@ def load_data():
             loaded = json.loads(DATA_FILE.read_text(encoding="utf-8"))
             data = DEFAULT_DATA.copy()
             data.update(loaded)
-            for key in ("tasks", "notes", "habits", "goals"):
+            for key in ("tasks", "notes", "habits", "goals", "focus_sessions"):
                 if not isinstance(data.get(key), list):
                     data[key] = []
             if not isinstance(data.get("settings"), dict):
@@ -100,7 +100,7 @@ class DayFlow(ctk.CTk):
         self.nav_dock.grid(row=2, column=0, sticky="ew", padx=50, pady=(0, 16))
         self.nav_dock.grid_propagate(False)
         self.nav_buttons = {}
-        for name, glyph in [("Overview","⌂"),("Tasks","✓"),("Calendar","▦"),("Notes","▤"),("Habits","↗"),("Goals","◎"),("Focus","◷"),("Settings","⚙")]:
+        for name, glyph in [("Overview","⌂"),("Tasks","✓"),("Calendar","▦"),("Notes","▤"),("Habits","↗"),("Goals","◎"),("Focus","◷"),("Weekly Review","▥"),("Settings","⚙")]:
             b = ctk.CTkButton(self.nav_dock, text=f"{glyph}  {name}", height=43, corner_radius=14,
                 fg_color="transparent", hover_color=("#D7E5F7", "#263B58"), text_color=("#344054", "#C7D0DE"),
                 font=self.ui_font(12, True), command=lambda n=name: self.show_page(n))
@@ -135,7 +135,7 @@ class DayFlow(ctk.CTk):
             b.configure(fg_color=("#D7E5F7", "#263B58") if n == name else "transparent",
                         text_color=("#1456A0", "#8FC0FF") if n == name else ("#344054", "#C7D0DE"))
         self.clear_main()
-        getattr(self, f"page_{name.lower()}")()
+        getattr(self, f"page_{name.lower().replace(chr(32), chr(95))}")()
         if name == "Focus" and self.timer_running:
             self.tick_timer()
 
@@ -197,7 +197,7 @@ class DayFlow(ctk.CTk):
             line = ctk.CTkFrame(listing, fg_color="transparent"); line.pack(fill="x", padx=14, pady=5)
             done = ctk.BooleanVar(value=task.get("done",False))
             def toggle(t=task,v=done):
-                t["done"]=v.get(); self.save(); self.show_page("Tasks")
+                t["done"]=v.get(); t["completed_at"]=date.today().isoformat() if v.get() else ""; self.save(); self.show_page("Tasks")
             ctk.CTkCheckBox(line,text=task["title"],variable=done,command=toggle,font=ctk.CTkFont(size=12),text_color=("gray55","gray65") if task.get("done") else ("#202939","#F2F4F7")).pack(side="left",fill="x",expand=True)
             ctk.CTkLabel(line,text=f'{task.get("due","No date")}  ·  {task.get("priority","Normal")}',font=ctk.CTkFont(size=10),text_color=("gray55","gray65")).pack(side="left",padx=10)
             ctk.CTkButton(line,text="×",width=30,fg_color="transparent",hover_color=("#FEE4E2","#542B2B"),text_color=("#B42318","#FDA29B"),command=lambda t=task:self.delete_item("tasks",t,"Tasks")).pack(side="right")
@@ -239,7 +239,11 @@ class DayFlow(ctk.CTk):
                 self.data["habits"].append({"id":str(time.time_ns()),"name":entry.get().strip(),"history":[]}); self.save(); self.show_page("Habits")
         ctk.CTkButton(form,text="Add habit",command=add).pack(side="left",padx=(0,16))
         for habit in self.data["habits"]:
+            dates=set(habit.get("history",[])); streak=0; cursor=date.today()
+            while cursor.isoformat() in dates:
+                streak+=1; cursor-=timedelta(days=1)
             card=self.panel(body,habit["name"]); card.pack(fill="x",pady=6)
+            ctk.CTkLabel(card,text=f"{streak}-day current streak  ·  {len(dates)} total check-ins",text_color=("gray55","gray65")).pack(anchor="w",padx=18,pady=(0,8))
             completed=date.today().isoformat() in habit.get("history",[])
             def mark(h=habit):
                 h.setdefault("history",[])
@@ -298,6 +302,8 @@ class DayFlow(ctk.CTk):
         self.timer_label.configure(text=f"{remaining//60:02d}:{remaining%60:02d}")
         if remaining<=0:
             self.timer_running=False; self.timer_end=None
+            self.data.setdefault("focus_sessions", []).append({"date":date.today().isoformat(),"minutes":int(self.data["settings"].get("focus_minutes",25))})
+            self.save()
             messagebox.showinfo("Focus complete","Nice work. Your focus session is complete.")
             return
         self.timer_job=self.after(500,self.tick_timer)
@@ -374,6 +380,33 @@ class DayFlow(ctk.CTk):
             self.after(500, self.close_app)
         except Exception as exc:
             messagebox.showerror("Update failed", f"Couldn't download or launch the update.\\n{exc}")
+
+    def page_weekly_review(self):
+        self.header("Weekly review", "A useful snapshot of the last seven days.")
+        body=self.body()
+        since=(date.today()-timedelta(days=6)).isoformat()
+        completed=[t for t in self.data["tasks"] if t.get("done") and t.get("completed_at","")>=since]
+        sessions=[s for s in self.data.get("focus_sessions",[]) if s.get("date","")>=since]
+        focus_minutes=sum(int(s.get("minutes",0)) for s in sessions)
+        habit_checks=sum(1 for h in self.data["habits"] for day in h.get("history",[]) if day>=since)
+        row=ctk.CTkFrame(body,fg_color="transparent");row.pack(fill="x")
+        for title,value,hint in [("TASKS COMPLETED",len(completed),"Finished in the last 7 days"),("FOCUS SESSIONS",len(sessions),"Completed focus blocks"),("FOCUS TIME",f"{focus_minutes//60}h {focus_minutes%60}m","Time invested"),("HABIT CHECK-INS",habit_checks,"Routine progress")]:
+            card=self.panel(row);card.pack(side="left",fill="x",expand=True,padx=5,pady=5)
+            ctk.CTkLabel(card,text=title,font=self.ui_font(10,True),text_color=("gray55","gray65")).pack(anchor="w",padx=14,pady=(14,3))
+            ctk.CTkLabel(card,text=str(value),font=self.ui_font(25,True)).pack(anchor="w",padx=14)
+            ctk.CTkLabel(card,text=hint,font=self.ui_font(10),text_color=("gray55","gray65")).pack(anchor="w",padx=14,pady=(0,14))
+        finished=self.panel(body,"Completed tasks");finished.pack(fill="x",pady=12)
+        if completed:
+            for task in sorted(completed,key=lambda t:t.get("completed_at",""),reverse=True)[:20]:
+                ctk.CTkLabel(finished,text=f"✓  {task.get('title','Task')}   ·   {task.get('completed_at','')}",anchor="w").pack(fill="x",padx=18,pady=5)
+        else:
+            ctk.CTkLabel(finished,text="Completed tasks will appear here as you work through your week.",text_color=("gray55","gray65")).pack(anchor="w",padx=18,pady=(0,16))
+        habits=self.panel(body,"Habit consistency");habits.pack(fill="x",pady=(0,12))
+        for habit in self.data["habits"]:
+            dates=set(habit.get("history",[])); streak=0; cursor=date.today()
+            while cursor.isoformat() in dates:
+                streak+=1; cursor-=timedelta(days=1)
+            ctk.CTkLabel(habits,text=f"{habit.get('name','Habit')}   ·   {streak}-day current streak   ·   {sum(1 for x in dates if x>=since)} this week",anchor="w").pack(fill="x",padx=18,pady=6)
 
     def page_settings(self):
         self.header("Settings", "Make DayFlow feel like your workspace.")
