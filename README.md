@@ -1,8 +1,10 @@
 # DayFlow
 
-**Version 1.4.6 — Your day, under control.**
+**Version 1.4.7 — Your day, under control.**
 
-## What's new in 1.4.6
+## What's new in 1.4.7
+- Persistent sidebar shortcuts to the Adrian Vale website and Donate · Ko-fi.
+- Accent-colour blurred spotlight and responsive acrylic transparency.
 - **Six optional accent choices:** Black, Amber, Azure, Lavender, Rose and Teal, with Black as the default and neutral dark glass surfaces retained.
 - **Cleaner panel spacing:** improved spacing keeps text clear of borders and outlines.
 - **Windows icon identity:** refined application icon assignment for the app window and taskbar.
