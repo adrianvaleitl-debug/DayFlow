@@ -85,9 +85,9 @@ class DayFlow(ctk.CTk):
         screen_h = self.winfo_screenheight()
         self.geometry(f"{min(1380, max(1080, screen_w - 80))}x{min(900, max(720, screen_h - 100))}")
         self.minsize(1020, 680)
-        self.configure(fg_color=(self.tint_surface("#EDEDED", .08), self.tint_surface("#101010", .12)))
+        self.configure(fg_color=("#101012", "#101012"))
         self.apply_glass_effect()
-                self.timer_running = False
+        self.timer_running = False
         self.timer_end = None
         self.timer_job = None
         self.active_page = "Overview"
@@ -198,7 +198,7 @@ class DayFlow(ctk.CTk):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=1)
-        self.sidebar = ctk.CTkFrame(self, width=224, corner_radius=27, fg_color=(self.tint_surface("#F3F3F3", .08), self.tint_surface("#1B1B1B", .10)), border_width=1, border_color=("#DBDBDB", "#404040"))
+        self.sidebar = ctk.CTkFrame(self, width=224, corner_radius=27, fg_color=("#202024", "#202024"), border_width=1, border_color=("#38383E", "#38383E"))
         self.sidebar.grid(row=0, column=0, rowspan=2, sticky="nsew", padx=(14, 8), pady=14)
         self.sidebar.grid_propagate(False)
         brand = ctk.CTkFrame(self.sidebar, fg_color="transparent")
@@ -222,11 +222,11 @@ class DayFlow(ctk.CTk):
                 button = ctk.CTkButton(nav_area, text=f"{glyph}   {name}", height=42, corner_radius=12, anchor="w", fg_color="transparent", hover_color=("#E9E9E9","#363636"), text_color=("#696969","#C3C3C3"), font=self.ui_font(12), command=lambda n=name: self.show_page(n))
                 button.pack(fill="x", padx=2, pady=2)
                 self.nav_buttons[name] = button
-        side_footer = ctk.CTkFrame(self.sidebar, fg_color=(self.tint_surface("#E9E9E9", .12), self.tint_surface("#282828", .16)), corner_radius=22, border_width=0)
+        side_footer = ctk.CTkFrame(self.sidebar, fg_color=("#29292E", "#29292E"), corner_radius=22, border_width=0)
         side_footer.pack(fill="x", padx=14, pady=15)
         ctk.CTkLabel(side_footer, text="MAKE ROOM FOR WHAT MATTERS", font=ctk.CTkFont(size=8, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(11,3))
         ctk.CTkLabel(side_footer, text="A little progress, every day.", font=self.ui_font(10)).pack(anchor="w", padx=12, pady=(0,11))
-        self.topbar = ctk.CTkFrame(self, height=68, corner_radius=25, fg_color=(self.tint_surface("#FBFBFB", .10), self.tint_surface("#1F1F1F", .14)), border_width=1, border_color=("#DBDBDB", "#404040"))
+        self.topbar = ctk.CTkFrame(self, height=68, corner_radius=25, fg_color=("#202024", "#202024"), border_width=1, border_color=("#38383E", "#38383E"))
         self.topbar.grid(row=0, column=1, sticky="ew", padx=(8, 14), pady=(14, 8))
         self.topbar.grid_propagate(False)
         self.page_title = ctk.CTkLabel(self.topbar, text="Overview", font=self.ui_font(16, True))
@@ -255,7 +255,7 @@ class DayFlow(ctk.CTk):
         return body
 
     def panel(self, parent, title=None):
-        frame = ctk.CTkFrame(parent, corner_radius=24, fg_color=(self.tint_surface("#FBFBFB", .10), self.tint_surface("#1F1F1F", .16)), border_width=1, border_color=("#DBDBDB", "#404040"))
+        frame = ctk.CTkFrame(parent, corner_radius=24, fg_color=("#202024", "#202024"), border_width=1, border_color=("#38383E", "#38383E"))
         if title:
             ctk.CTkLabel(frame, text=title, font=self.ui_font(15, True)).pack(anchor="w", padx=18, pady=(16, 10))
         return frame
@@ -719,9 +719,9 @@ class DayFlow(ctk.CTk):
         self.data["settings"]["accent"]=value
         self.apply_accent_theme()
         self.save()
-        self.configure(fg_color=(self.tint_surface("#EDEDED", .08), self.tint_surface("#101010", .12)))
-        self.sidebar.configure(fg_color=(self.tint_surface("#F3F3F3", .08), self.tint_surface("#1B1B1B", .10)))
-        self.topbar.configure(fg_color=(self.tint_surface("#FBFBFB", .10), self.tint_surface("#1F1F1F", .14)))
+        self.configure(fg_color=("#101012", "#101012"))
+        self.sidebar.configure(fg_color=("#202024", "#202024"))
+        self.topbar.configure(fg_color=("#202024", "#202024"))
         self.apply_glass_effect()
         self.show_page(self.active_page)
 
