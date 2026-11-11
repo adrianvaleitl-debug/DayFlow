@@ -35,7 +35,7 @@ Source: "..\assets\dayflow.ico"; DestDir: "{app}"; Flags: ignoreversion
 [Icons]
 Name: "{group}\Uninstall DayFlow"; Filename: "{uninstallexe}"; WorkingDir: "{app}"
 Name: "{group}\DayFlow"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\dayflow.ico"; AppUserModelID: "AdrianVale.DayFlow"
-Name: "{autodesktop}\DayFlow"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppExeName}"; AppUserModelID: "AdrianVale.DayFlow"; Tasks: desktopicon
+Name: "{autodesktop}\DayFlow"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\dayflow.ico"; AppUserModelID: "AdrianVale.DayFlow"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "Launch DayFlow"; Flags: postinstall nowait
