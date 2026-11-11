@@ -622,7 +622,7 @@ class DayFlow(ctk.CTk):
         transparency_value=ctk.CTkLabel(card,text=f'{int(self.data["settings"].get("transparency",8))}%',text_color=("gray55","gray75"))
         transparency_value.pack(anchor="w",padx=18,pady=(0,4))
         transparency=ctk.CTkSlider(card,from_=0,to=35,number_of_steps=35,command=lambda v:self.set_transparency(v,transparency_value))
-        transparency.set(int(self.data["settings"].get("transparency",94))); transparency.pack(fill="x",padx=18,pady=(0,16))
+        transparency.set(int(self.data["settings"].get("transparency",8))); transparency.pack(fill="x",padx=18,pady=(0,16))
         focus=self.panel(body,"Focus timer"); focus.pack(fill="x")
         ctk.CTkLabel(focus,text="Default focus session (minutes)").pack(anchor="w",padx=18,pady=(0,5))
         value=ctk.CTkEntry(focus,width=100); value.insert(0,str(self.data["settings"].get("focus_minutes",25))); value.pack(anchor="w",padx=18,pady=(0,8))
@@ -708,7 +708,7 @@ class DayFlow(ctk.CTk):
         self.data["settings"]["appearance"]=value; self.save(); ctk.set_appearance_mode(value)
 
     def set_transparency(self,value,label=None):
-        value=round(max(78,min(100,float(value))))
+        value=round(max(0,min(35,float(value))))
         self.data["settings"]["transparency"]=value
         if label: label.configure(text=f"{value}%")
         self.attributes("-alpha",1-value/100)
