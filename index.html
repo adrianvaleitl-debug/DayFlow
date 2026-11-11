@@ -138,6 +138,85 @@ html[data-av-mode="light"] .navlinks a,html[data-av-mode="light"] .site-rail a,h
 html[data-av-mode="light"] .hero h1 span,html[data-av-mode="light"] .eyebrow,html[data-av-mode="light"] .num,html[data-av-mode="light"] .up,html[data-av-mode="light"] .tag{color:var(--av-accent-ink)!important}
 html[data-av-mode="light"] .btn.primary,html[data-av-mode="light"] .primary,html[data-av-mode="light"] .rail-download{background:var(--av-accent)!important;color:var(--av-accent-ink)!important}
 </style>
+
+<style id="dayflow-continuous-landscape-fix">
+/* One shared landscape canvas: no slide-sized scroll boxes or section snapping. */
+html,body{width:100%;height:100%;overflow:hidden!important}
+body{overscroll-behavior:none}
+.wrap{height:100dvh;overflow:hidden}
+main{
+ height:100dvh; width:100%; display:flex; align-items:stretch;
+ gap:clamp(34px,5vw,76px); padding:0 clamp(24px,5vw,76px) 18px;
+ overflow-x:auto; overflow-y:hidden; scroll-snap-type:none; scroll-behavior:auto;
+ overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#6688b588 transparent;
+}
+main>section{
+ position:relative; flex:0 0 clamp(660px,72vw,1000px); width:auto; min-width:0;
+ height:auto; min-height:100dvh; max-height:none; overflow:visible;
+ padding:112px 0 54px; margin:0; display:flex; flex-direction:column;
+ justify-content:center; border:0!important; scroll-snap-align:none; scroll-snap-stop:normal;
+}
+main>section:before{display:none!important}
+main>.hero{flex-basis:clamp(700px,78vw,1080px);padding-top:112px;padding-bottom:42px}
+main>.section{border:0!important}
+main>.section h2{font-size:clamp(30px,3vw,44px);line-height:1.12;margin:7px 0 10px}
+main>.section>p{max-width:700px;font-size:14px;line-height:1.5;margin:0}
+main>.section#features{flex-basis:clamp(720px,78vw,1080px)}
+main>.section#daily-rhythm{flex-basis:clamp(700px,75vw,1040px)}
+main>.section#whats-new{flex-basis:clamp(680px,73vw,1000px)}
+main>.section#your-space{flex-basis:clamp(700px,75vw,1040px)}
+main>.section#download{flex-basis:clamp(680px,73vw,1000px);padding-top:112px}
+main>.footer{flex:0 0 280px;width:280px;height:auto;min-height:100dvh;margin:0;padding:120px 0 54px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:20px;border:0;font-size:14px}
+main>.footer:before{content:"DAYFLOW · YOUR SPACE, YOUR PACE";font-size:11px;letter-spacing:.16em;color:var(--blue);font-weight:800}
+.features{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:20px}
+.feature{min-height:0;padding:15px 16px;border-radius:16px;grid-template-columns:38px 1fr;column-gap:10px}
+.feature .ico{width:34px;height:34px;border-radius:11px;font-size:18px}
+.feature h3{font-size:14px;margin:0 0 3px}
+.feature p{font-size:11px;line-height:1.4}
+.rhythm-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:19px}
+.rhythm-card{min-height:0;padding:16px 17px;border-radius:17px}
+.rhythm-card .number{font-size:10px}
+.rhythm-card h3,.principle-card h3{font-size:16px;margin:8px 0 4px}
+.rhythm-card p,.principle-card p{font-size:11px;line-height:1.45}
+.principles-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.principle-card{min-height:0;padding:16px 17px;border-radius:17px}
+.section-extra{gap:9px;margin-top:13px}
+.section-extra article{padding:11px 14px;border-radius:13px}
+.section-extra b{font-size:11px;margin-bottom:2px}
+.section-extra p{font-size:10px;line-height:1.4}
+.section-meta{gap:7px;margin-top:14px}
+.section-meta span{font-size:10px;padding:5px 9px}
+.panel-bottomline{font-size:11px;padding:12px 15px;margin-top:13px}
+main>.section#download .download{padding:28px 32px;min-height:0;border-radius:22px}
+main>.section#download .download h2{font-size:clamp(25px,2.5vw,36px)}
+main>.section#download .download p{font-size:12px;margin:6px 0 0}
+.continuity-cue{bottom:18px;right:20px;transition:opacity .25s}
+.nav{position:fixed;top:10px;left:50%;transform:translateX(-50%);width:min(1160px,calc(100% - 28px));margin:0;height:62px;padding:0 18px}
+@media(max-height:760px) and (min-width:801px){
+ main>section{padding-top:94px;padding-bottom:35px}
+ main>.hero{padding-top:96px}
+ .feature{padding:11px 12px}
+ .rhythm-card,.principle-card{padding:12px 14px}
+ .section-extra article{padding:9px 12px}
+}
+@media(max-width:800px){
+ main{gap:30px;padding:0 20px 16px}
+ main>section{flex-basis:86vw;min-height:100dvh;padding:100px 0 42px}
+ main>.hero{flex-basis:90vw;padding-top:100px}
+ main>.footer{flex-basis:240px;width:240px;padding-top:105px}
+ .features{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .rhythm-grid,.principles-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .nav{top:8px;width:calc(100% - 16px);height:auto;min-height:60px;padding:10px 13px}
+}
+@media(max-width:520px){
+ main{gap:24px;padding:0 15px 14px}
+ main>section{flex-basis:89vw;padding-top:105px}
+ main>.hero{flex-basis:93vw}
+ .features,.rhythm-grid,.principles-grid,.section-extra{grid-template-columns:1fr}
+ .navlinks{gap:7px;font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.continuity-cue{transition:none}}
+</style>
 </head><body><div class="wrap">
 <header class="nav"><a class="brand" href="#">◈ DAY<span>FLOW</span></a><nav class="navlinks"><a href="#features">Features</a><a href="#daily-rhythm">Your day</a><a href="#download">Download</a><a href="https://github.com/adrianvaleitl-debug/DayFlow">GitHub ↗</a></nav></header>
 <main><section class="hero"><div><div class="eyebrow">A clearer way to get things done</div><h1>Your day.<br><span class="gradient">Under control.</span></h1><p class="lead">Bring tasks, routines, notes and goals into one calm workspace. DayFlow helps you make a plan, focus on what matters and see your progress — with weekly reviews, habit streaks and a smoother Windows update experience.</p><div class="actions"><a class="btn" id="downloadButton" href="https://github.com/adrianvaleitl-debug/DayFlow/releases/latest">Download for Windows</a><a class="btn secondary" href="#features">Explore features</a></div><div class="small" id="releaseNote">DayFlow 1.3.2 · Windows desktop · Free · Your data stays on your device</div></div>
@@ -167,7 +246,7 @@ html[data-av-mode="light"] .btn.primary,html[data-av-mode="light"] .primary,html
 </div><div class="section-extra"><article><b>Private by default</b><p>DayFlow is designed around local-first personal productivity. Your personal workspace does not require a hosted account.</p></article><article><b>Your pace, your routine</b><p>There is no prescribed productivity method. Shape your day around the commitments and habits that matter to you.</p></article></div><div class="panel-bottomline">No account setup. No noisy dashboard. Just the tools you need to make today count.</div></section>
 <section class="section" id="download"><div class="download"><div><div class="eyebrow">Make room for what matters</div><h2>Start your next day with DayFlow.</h2><p>Download the Windows installer from the latest GitHub release.</p></div><a class="btn" id="downloadButton2" href="https://github.com/adrianvaleitl-debug/DayFlow/releases/latest">Get DayFlow ↗</a></div><div class="section-extra"><article><b>For Windows</b><p>Download the latest Windows setup file from the official GitHub release page. Follow the installer prompts to get started.</p></article><article><b>Updates included</b><p>Use DayFlow's update flow to check for newer releases and keep your desktop app current.</p></article><article><b>Your information</b><p>Your personal planning information is stored locally on your device.</p></article><article><b>Need the source?</b><p>Visit the public GitHub repository for the project, release history and development updates.</p></article></div><div class="section-meta"><span>Simple setup</span><span>Local-first</span><span>Windows desktop</span></div></section><footer class="footer"><span>© <span id="year"></span> Adrian Vale · DayFlow</span><span><a href="https://github.com/adrianvaleitl-debug">GitHub</a> · <a href="https://adrianvaleitl-debug.github.io/">Portfolio</a></span></footer></main><div class="continuity-cue" id="pageHint">Keep scrolling to explore DayFlow →</div></div>
 <script>document.getElementById("year").textContent=new Date().getFullYear();
-(()=>{const rail=document.querySelector('main');if(!rail)return;let target=rail.scrollLeft,frame=0;const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;function animate(){const diff=target-rail.scrollLeft;if(Math.abs(diff)<.6){rail.scrollLeft=target;frame=0;return}rail.scrollLeft+=diff*(reduce ? .85 : .16);frame=requestAnimationFrame(animate)}rail.addEventListener('wheel',e=>{if(e.ctrlKey)return;const delta=Math.abs(e.deltaY)>Math.abs(e.deltaX)?e.deltaY:e.deltaX;if(delta){e.preventDefault();target=Math.max(0,Math.min(rail.scrollWidth-rail.clientWidth,target+delta*1.35));if(!frame)frame=requestAnimationFrame(animate)}},{passive:false});rail.addEventListener('scroll',()=>{if(!frame)target=rail.scrollLeft},{passive:true});document.querySelectorAll('.navlinks a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const el=document.querySelector(a.getAttribute('href'));if(el){e.preventDefault();target=Math.max(0,Math.min(rail.scrollWidth-rail.clientWidth,el.offsetLeft-rail.offsetLeft));if(frame)cancelAnimationFrame(frame);frame=requestAnimationFrame(animate)}}));const hint=document.getElementById('pageHint');let timer;rail.addEventListener('scroll',()=>{if(hint){hint.style.opacity='1';clearTimeout(timer);timer=setTimeout(()=>hint.style.opacity='.35',2200)}},{passive:true})})();
+(()=>{const rail=document.querySelector('main');if(!rail)return;let target=rail.scrollLeft,raf=0,last=0;const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;const clamp=v=>Math.max(0,Math.min(rail.scrollWidth-rail.clientWidth,v));function tick(now){const dt=last?Math.min(32,now-last):16;last=now;const diff=target-rail.scrollLeft;const ease=reduce?1:1-Math.pow(.0018,dt/16);if(Math.abs(diff)<.35){rail.scrollLeft=target;raf=0;last=0;return}rail.scrollLeft+=diff*ease;raf=requestAnimationFrame(tick)}function move(delta){target=clamp(target+delta);if(!raf)raf=requestAnimationFrame(tick)}rail.addEventListener('wheel',e=>{if(e.ctrlKey)return;let dy=e.deltaY,dx=e.deltaX;if(e.deltaMode===1){dy*=16;dx*=16}else if(e.deltaMode===2){dy*=rail.clientHeight;dx*=rail.clientWidth}const delta=Math.abs(dy)>Math.abs(dx)?dy:dx;if(delta){e.preventDefault();move(delta)}},{passive:false});rail.addEventListener('scroll',()=>{if(!raf)target=rail.scrollLeft},{passive:true});document.querySelectorAll('.navlinks a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const el=document.querySelector(a.getAttribute('href'));if(el){e.preventDefault();target=clamp(el.offsetLeft-rail.offsetLeft);if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(tick)}}));const hint=document.getElementById('pageHint');let timer;rail.addEventListener('scroll',()=>{if(hint){hint.style.opacity='1';clearTimeout(timer);timer=setTimeout(()=>hint.style.opacity='.35',1800)}},{passive:true})})();
 (async()=>{try{const r=await fetch("https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest");if(!r.ok)throw 0;const d=await r.json();const version=(d.tag_name||"").replace(/^v/i,"");const expected=`dayflow-setup-${version}.exe`.toLowerCase();const a=(d.assets||[]).find(x=>x.name.toLowerCase()===expected);if(a){for(const id of ["downloadButton","downloadButton2"]){const b=document.getElementById(id);b.href=a.browser_download_url;b.setAttribute("download",a.name)}document.getElementById("releaseNote").textContent=(d.tag_name||"Latest release")+" · Windows installer · Free · Your data stays on your device";}}catch(e){}})();</script>
 <script id="adrian-theme-controls">
 (()=>{const root=document.documentElement,key='av-theme-'+location.pathname;let mode='dark',accent='euro';try{mode=localStorage.getItem(key+'-mode')||mode;accent=localStorage.getItem(key+'-accent')||accent}catch{}const valid=['dollar','euro','pound','yen','franc'];function apply(){root.dataset.avMode=mode;root.dataset.avAccent=valid.includes(accent)?accent:'euro';document.querySelector('meta[name="theme-color"]')?.setAttribute('content',mode==='dark'?'#171820':'#f5f3f0');const mb=document.getElementById('av-mode');if(mb){mb.textContent=mode==='dark'?'☀ Light':'☾ Dark';mb.setAttribute('aria-pressed',String(mode==='light'))}document.querySelectorAll('[data-av-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.avChoice===accent)))}function persist(){try{localStorage.setItem(key+'-mode',mode);localStorage.setItem(key+'-accent',accent)}catch{}apply()}const tools=document.createElement('div');tools.className='av-theme-tools';tools.setAttribute('aria-label','Appearance settings');tools.innerHTML='<button id="av-mode" type="button">☀ Light</button>'+[['dollar','#e8c98f','Focus'],['euro','#9ebce9','Flow'],['pound','#c4afe7','Growth'],['yen','#e9aebc','Energy'],['franc','#9fcbd0','Balance']].map(([n,col,label])=>'<button type="button" data-av-choice="'+n+'"><i class="av-dot" style="background:'+col+'"></i>'+label+'</button>').join('');const nav=document.querySelector('.nav');if(nav)nav.append(tools);else document.body.prepend(tools);document.getElementById('av-mode').addEventListener('click',()=>{mode=mode==='dark'?'light':'dark';persist()});tools.querySelectorAll('[data-av-choice]').forEach(b=>b.addEventListener('click',()=>{accent=b.dataset.avChoice;persist()}));apply()})();
