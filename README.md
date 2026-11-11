@@ -1,22 +1,12 @@
 # DayFlow
 
-**Version 1.3.1 — Your day, under control.**
+**Version 1.4.6 — Your day, under control.**
 
-## What's new in 1.3.1
-- **Windows taskbar identity:** set a stable Windows AppUserModelID and apply the bundled ICO/PNG assets to the app window and taskbar.
-- **Safer in-app updates:** validate the downloaded Windows installer, use a unique temporary installer file and hand off installation more reliably.
-- **One-time tutorial:** persist the welcome state before the guide opens; closing it counts as seen, and the guide can still be replayed from Settings.
-
-## What's new in 1.3.0
-- **Weekly Review:** see completed tasks, focus sessions, focus time and habit check-ins over the last seven days.
-- **Habit streaks:** current daily streaks and lifetime check-in totals are visible on each habit card.
-- **Focus history:** completed focus sessions are saved locally and included in the weekly review.
-- Existing task, note, habit and goal data remains compatible; the new history starts accumulating from this version.
-
-
-**Your day, under control.**
-
-DayFlow is a Windows desktop productivity workspace for planning your day, building routines, capturing ideas and making steady progress on your goals. Version 1.3.0 adds a Weekly Review, habit streaks and focus-session history to the redesigned personal planning workspace.
+## What's new in 1.4.6
+- **Six optional accent choices:** Black, Amber, Azure, Lavender, Rose and Teal, with Black as the default and neutral dark glass surfaces retained.
+- **Cleaner panel spacing:** improved spacing keeps text clear of borders and outlines.
+- **Windows icon identity:** refined application icon assignment for the app window and taskbar.
+- Existing tasks, notes, habits, goals and settings are preserved.
 
 ## Features
 
