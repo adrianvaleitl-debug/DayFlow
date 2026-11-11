@@ -52,6 +52,8 @@ DayFlow stores its data locally in `%APPDATA%\DayFlow\dayflow_data.json`. It doe
 
 ## Project links
 
+- **Adrian Vale — personal website:** https://adrianvaleitl-debug.github.io/
+
 - Website: https://adrianvaleitl-debug.github.io/DayFlow/
 - GitHub: https://github.com/adrianvaleitl-debug/DayFlow
 - Creator: [Adrian Vale](https://github.com/adrianvaleitl-debug)
