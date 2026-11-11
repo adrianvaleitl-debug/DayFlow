@@ -1,0 +1,61 @@
+name: Build and release DayFlow
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows-release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Build executable
+        run: pyinstaller --noconfirm --clean --onefile --windowed --name DayFlow dayflow.py
+      - name: Create installer icon
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          $bmp = New-Object System.Drawing.Bitmap(256,256)
+          $g = [System.Drawing.Graphics]::FromImage($bmp)
+          $g.Clear([System.Drawing.Color]::FromArgb(20,28,42))
+          $brush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(91,139,238))
+          $g.FillRectangle($brush,18,18,220,220)
+          $icon = [System.Drawing.Icon]::FromHandle($bmp.GetHicon())
+          $stream = [System.IO.File]::Create("$pwd\assets\dayflow.ico")
+          $icon.Save($stream)
+          $stream.Close()
+          $icon.Dispose()
+          $g.Dispose()
+          $bmp.Dispose()
+      - name: Install Inno Setup
+        run: choco install innosetup --yes --no-progress
+      - name: Build installer
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force release | Out-Null
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\DayFlow.iss
+      - name: Publish GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: DayFlow ${{ github.ref_name }}
+          generate_release_notes: true
+          files: release/DayFlow-Setup-*.exe
+      - name: Upload installer artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: DayFlow-Windows-Installer
+          path: release/DayFlow-Setup-*.exe
