@@ -79,7 +79,7 @@ class DayFlow(ctk.CTk):
         screen_h = self.winfo_screenheight()
         self.geometry(f"{min(1380, max(1080, screen_w - 80))}x{min(900, max(720, screen_h - 100))}")
         self.minsize(1020, 680)
-        self.configure(fg_color=(self.tint_surface("#EAF0F8", .10), self.tint_surface("#0C1422", .13)))
+        self.configure(fg_color=(self.tint_surface("#EAF0F8", .18), self.tint_surface("#0C1422", .20)))
         self.apply_glass_effect()
         self.timer_running = False
         self.timer_end = None
@@ -100,11 +100,11 @@ class DayFlow(ctk.CTk):
             self.after(2500, lambda: self.check_updates(silent=True))
 
     def accent_colors(self):
-        return {"dollar":("#E8C98F","#C9A96D"),"euro":("#9E B C E9".replace(" ",""),"#7396C8"),
-                "pound":("#C4AFE7","#9B83C7"),"yen":("#E9AEBC","#C98294"),
-                "franc":("#9FCBD0","#69AAB1")}
+        return {"dollar":("#DCC18F","#C5A875"),"euro":("#A9BFE2","#879FC8"),
+                "pound":("#BFAFE0","#A08BC9"),"yen":("#DFAFBA","#C68F9D"),
+                "franc":("#A9C9CC","#83ADB2")}
 
-    def tint_surface(self, base, amount=0.08):
+    def tint_surface(self, base, amount=0.18):
         accent = self.accent_colors().get(self.data.get("settings", {}).get("accent", "euro"), self.accent_colors()["euro"])[0]
         try:
             def rgb(value): return tuple(int(value[i:i+2], 16) for i in (1, 3, 5))
