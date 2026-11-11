@@ -738,16 +738,16 @@ class DayFlow(ctk.CTk):
         latest.pack(fill="x", pady=(0, 14))
         top = ctk.CTkFrame(latest, fg_color="transparent")
         top.pack(fill="x", padx=22, pady=(20, 8))
-        ctk.CTkLabel(top, text="1.4.9", font=self.ui_font(25, True),
+        ctk.CTkLabel(top, text="1.5.0", font=self.ui_font(25, True),
                      text_color=self.accent_colors()[self.data["settings"].get("accent", "black")][0]).pack(side="left")
         ctk.CTkLabel(top, text="LATEST RELEASE", font=self.ui_font(10, True),
                      text_color=("gray55", "gray65")).pack(side="right")
-        ctk.CTkLabel(latest, text="A clearer, more dependable glass layer",
+        ctk.CTkLabel(latest, text="A cleaner layout and reliable colour themes",
                      font=self.ui_font(19, True)).pack(anchor="w", padx=22, pady=(0, 5))
         ctk.CTkLabel(latest, text="11 November 2026  ·  Windows desktop",
                      font=self.ui_font(10), text_color=("gray55", "gray65")).pack(anchor="w", padx=22)
         ctk.CTkLabel(latest,
-            text="This release rebuilds how DayFlow exposes the Windows acrylic backdrop, improves the transparency slider, and introduces a redesigned release-history page.",
+            text="This release moves navigation to the right-hand rail, refreshes the full shell when an accent is changed and makes window resizing smoother.",
             font=self.ui_font(11), justify="left", anchor="w", wraplength=900,
             text_color=("gray40", "gray75")).pack(fill="x", padx=22, pady=(12, 15))
         for item in [
