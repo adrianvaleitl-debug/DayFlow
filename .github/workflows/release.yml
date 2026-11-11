@@ -6,6 +6,7 @@ on:
     paths:
       - "VERSION"
       - "dayflow.py"
+      - "tools/generate_icon.py"
       - "installer/DayFlow.iss"
       - ".github/workflows/release.yml"
   workflow_dispatch:
@@ -27,24 +28,10 @@ jobs:
           pip install -r requirements.txt
       - name: Check Python syntax
         run: python -m py_compile dayflow.py
-      - name: Create installer icon
-        shell: pwsh
-        run: |
-          Add-Type -AssemblyName System.Drawing
-          $bmp = New-Object System.Drawing.Bitmap(256,256)
-          $g = [System.Drawing.Graphics]::FromImage($bmp)
-          $g.Clear([System.Drawing.Color]::FromArgb(20,28,42))
-          $brush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(91,139,238))
-          $g.FillRectangle($brush,18,18,220,220)
-          $icon = [System.Drawing.Icon]::FromHandle($bmp.GetHicon())
-          $stream = [System.IO.File]::Create("$pwd\assets\dayflow.ico")
-          $icon.Save($stream)
-          $stream.Close()
-          $icon.Dispose()
-          $g.Dispose()
-          $bmp.Dispose()
+      - name: Generate DayFlow icon
+        run: python tools/generate_icon.py
       - name: Build executable
-        run: pyinstaller --noconfirm --clean --onefile --windowed --icon assets/dayflow.ico --name DayFlow dayflow.py
+        run: pyinstaller --noconfirm --clean --onefile --windowed --icon assets/dayflow.ico --add-data "assets/dayflow.ico;." --name DayFlow dayflow.py
       - name: Install Inno Setup
         run: choco install innosetup --yes --no-progress
       - name: Build installer
