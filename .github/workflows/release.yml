@@ -24,8 +24,6 @@ jobs:
           pip install -r requirements.txt
       - name: Check Python syntax
         run: python -m py_compile dayflow.py
-      - name: Build executable
-        run: pyinstaller --noconfirm --clean --onefile --windowed --name DayFlow dayflow.py
       - name: Create installer icon
         shell: pwsh
         run: |
@@ -42,6 +40,8 @@ jobs:
           $icon.Dispose()
           $g.Dispose()
           $bmp.Dispose()
+      - name: Build executable
+        run: pyinstaller --noconfirm --clean --onefile --windowed --icon assets/dayflow.ico --name DayFlow dayflow.py
       - name: Install Inno Setup
         run: choco install innosetup --yes --no-progress
       - name: Build installer
