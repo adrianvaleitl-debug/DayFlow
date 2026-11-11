@@ -91,7 +91,7 @@ class DayFlow(ctk.CTk):
         self.main.grid_columnconfigure(0, weight=1)
         self.main.grid_rowconfigure(1, weight=1)
         self.nav_dock = ctk.CTkFrame(self, height=72, corner_radius=22, fg_color=("#E8EDF5", "#1A2433"), border_width=1, border_color=("#DCE4EF", "#2B3A50"))
-        self.nav_dock.grid(row=2, column=0, sticky="ew", padx=210, pady=(0, 16))
+        self.nav_dock.grid(row=2, column=0, sticky="ew", padx=50, pady=(0, 16))
         self.nav_dock.grid_propagate(False)
         self.nav_buttons = {}
         for name, glyph in [("Overview","⌂"),("Tasks","✓"),("Calendar","▦"),("Notes","▤"),("Habits","↗"),("Goals","◎"),("Focus","◷"),("Settings","⚙")]:
