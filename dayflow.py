@@ -20,7 +20,7 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.3.1"
+APP_VERSION = "1.3.2"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 DATA_DIR = Path(os.getenv("APPDATA", str(Path.home()))) / "DayFlow"
 DATA_FILE = DATA_DIR / "dayflow_data.json"
