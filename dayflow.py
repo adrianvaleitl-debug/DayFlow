@@ -123,13 +123,8 @@ def install_accent_spotlight(window, accent, background="#101012"):
         canvas.lower()
         window._accent_spotlight_canvas = canvas
         window._accent_spotlight_photo = photo
-        if not getattr(window, "_accent_spotlight_resize_bound", False):
-            def redraw(event):
-                if event.widget is window:
-                    window.after_idle(lambda: install_accent_spotlight(
-                        window, getattr(window, "_active_spotlight_colour", accent), background))
-            window.bind("<Configure>", redraw, add="+")
-            window._accent_spotlight_resize_bound = True
+        # Keep the pre-rendered glow stable during interactive resizing.
+        # Re-blurring a full-window image on every Configure event caused lag.
         window._active_spotlight_colour = accent
     except Exception:
         # A decorative layer must never interrupt app startup or navigation.
@@ -141,7 +136,7 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.4.9"
+APP_VERSION = "1.5.0"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 PERSONAL_SITE = "https://adrianvaleitl-debug.github.io/"
 KOFI = "https://ko-fi.com/marketinsight"
@@ -316,12 +311,13 @@ class DayFlow(ctk.CTk):
 
     def build_shell(self):
         install_accent_spotlight(self, self.accent_colors()[str(self.data["settings"].get("accent", "black")).lower()][0], GLASS_KEY if sys.platform=="win32" else ("#EDEDED" if ctk.get_appearance_mode()=="Light" else "#101012"))
-        self.grid_columnconfigure(0, weight=0)
-        self.grid_columnconfigure(1, weight=1)
+        # Right-side navigation rail keeps the working canvas broad and uncluttered.
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=0)
         self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=1)
         self.sidebar = ctk.CTkFrame(self, width=224, corner_radius=27, fg_color=("#202024", "#202024"), border_width=1, border_color=("#38383E", "#38383E"))
-        self.sidebar.grid(row=0, column=0, rowspan=2, sticky="nsew", padx=(14, 8), pady=14)
+        self.sidebar.grid(row=0, column=1, rowspan=2, sticky="nsew", padx=(8, 14), pady=14)
         self.sidebar.grid_propagate(False)
         brand = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         brand.pack(fill="x", padx=20, pady=(25, 28))
@@ -351,14 +347,14 @@ class DayFlow(ctk.CTk):
         ctk.CTkButton(side_footer, text="My website ↗", height=30, corner_radius=10, fg_color="transparent", hover_color=("#E9E9E9","#383838"), text_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][0], command=lambda:webbrowser.open(PERSONAL_SITE)).pack(fill="x", padx=9, pady=2)
         ctk.CTkButton(side_footer, text="Donate · Ko-fi ↗", height=30, corner_radius=10, fg_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][0], hover_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][1], text_color="#202020", command=lambda:webbrowser.open(KOFI)).pack(fill="x", padx=9, pady=(2,10))
         self.topbar = ctk.CTkFrame(self, height=68, corner_radius=25, fg_color=("#202024", "#202024"), border_width=1, border_color=("#38383E", "#38383E"))
-        self.topbar.grid(row=0, column=1, sticky="ew", padx=(8, 14), pady=(14, 8))
+        self.topbar.grid(row=0, column=0, sticky="ew", padx=(14, 8), pady=(14, 8))
         self.topbar.grid_propagate(False)
         self.page_title = ctk.CTkLabel(self.topbar, text="Overview", font=self.ui_font(16, True))
         self.page_title.pack(side="left", padx=27)
         self.date_label = ctk.CTkLabel(self.topbar, text=date.today().strftime("%A  ·  %d %B %Y"), font=ctk.CTkFont(size=11), text_color=("gray55","gray65"))
         self.date_label.pack(side="right", padx=28)
         self.main = ctk.CTkFrame(self, fg_color="transparent", corner_radius=18)
-        self.main.grid(row=1, column=1, sticky="nsew", padx=(16, 14), pady=(10, 14))
+        self.main.grid(row=1, column=0, sticky="nsew", padx=(16, 8), pady=(10, 14))
         self.main.grid_columnconfigure(0, weight=1)
         self.main.grid_rowconfigure(1, weight=1)
 
@@ -891,16 +887,26 @@ class DayFlow(ctk.CTk):
         self.save()
 
     def set_accent(self, value):
-        value={"Black":"black","Amber":"amber","Azure":"azure","Lavender":"lavender","Rose":"rose","Teal":"teal","Focus":"amber","Flow":"azure","Growth":"lavender","Energy":"rose","Balance":"teal"}.get(value,value.lower())
+        aliases={"Black":"black","Amber":"amber","Azure":"azure","Lavender":"lavender","Rose":"rose","Teal":"teal","Focus":"amber","Flow":"azure","Growth":"lavender","Energy":"rose","Balance":"teal"}
+        value=aliases.get(value,str(value).lower())
+        if value not in self.accent_colors():
+            value="black"
         self.data["settings"]["accent"]=value
         self.apply_accent_theme()
         self.save()
-        self.configure(fg_color=GLASS_KEY if sys.platform=="win32" else ("#101012", "#101012"))
-        self.sidebar.configure(fg_color=("#202024", "#202024"))
-        self.topbar.configure(fg_color=("#202024", "#202024"))
+        # Recreate the shell as well as the page so the sidebar, footer,
+        # navigation highlights and content all receive the selected palette.
+        current_page=getattr(self,"active_page","Overview")
+        for child in self.winfo_children():
+            try:
+                child.destroy()
+            except Exception:
+                pass
+        self.build_shell()
+        self.show_page(current_page)
         self.apply_glass_effect()
-        install_accent_spotlight(self, self.accent_colors()[value][0], GLASS_KEY if sys.platform=="win32" else ("#EDEDED" if ctk.get_appearance_mode()=="Light" else "#101012"))
-        self.show_page(self.active_page)
+        install_accent_spotlight(self, self.accent_colors()[value][0],
+            GLASS_KEY if sys.platform=="win32" else ("#EDEDED" if ctk.get_appearance_mode()=="Light" else "#101012"))
 
     def delete_item(self, key, item, page):
         if messagebox.askyesno("Delete item","Are you sure you want to delete this?"):
