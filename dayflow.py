@@ -23,7 +23,7 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.4.3"
+APP_VERSION = "1.4.4"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 GITHUB_SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 DATA_DIR = Path(os.getenv("APPDATA", str(Path.home()))) / "DayFlow"
@@ -106,7 +106,7 @@ class DayFlow(ctk.CTk):
                 "pound":("#B5C5B5","#8FA795"),"yen":("#D8A99E","#C88E82"),
                 "franc":("#A8C9C0","#83AAA0")}
 
-    def tint_surface(self, base, amount=0.18):
+    def tint_surface(self, base, amount=0.06):
         accent = self.accent_colors().get(self.data.get("settings", {}).get("accent", "euro"), self.accent_colors()["euro"])[0]
         try:
             def rgb(value): return tuple(int(value[i:i+2], 16) for i in (1, 3, 5))
