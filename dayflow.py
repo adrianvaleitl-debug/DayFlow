@@ -688,7 +688,7 @@ class DayFlow(ctk.CTk):
                 return
             target = Path(sys.executable)
             args = "" if getattr(sys, "frozen", False) else '"' + str(Path(__file__).resolve()) + '"'
-            icon = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent)) / "dayflow.ico"
+            icon = (Path(sys.executable).resolve().parent / "dayflow.ico") if getattr(sys, "frozen", False) else (Path(__file__).resolve().parent / "assets" / "dayflow.ico")
             shortcut.parent.mkdir(parents=True, exist_ok=True)
             ps = "$w=New-Object -ComObject WScript.Shell; $s=$w.CreateShortcut(" + repr(str(shortcut)) + "); $s.TargetPath=" + repr(str(target)) + "; $s.Arguments=" + repr(args) + "; $s.WorkingDirectory=" + repr(str(target.parent)) + "; $s.Description='DayFlow personal planner'; $s.IconLocation=" + repr(str(icon) + ",0") + "; $s.Save()"
             encoded = __import__("base64").b64encode(ps.encode("utf-16le")).decode("ascii")
