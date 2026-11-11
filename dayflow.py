@@ -151,7 +151,7 @@ class DayFlow(ctk.CTk):
         self.nav_buttons = {}
         for column in range(5):
             self.nav_dock.grid_columnconfigure(column, weight=1, uniform="dock")
-        for name, glyph in [("Overview","⌂"),("Tasks","✓"),("Calendar","▦"),("Notes","▤"),("Habits","↗"),("Goals","◎"),("Focus","◷"),("Weekly Review","▥"),("Settings","⚙")]:
+        for index, (name, glyph) in enumerate([("Overview","⌂"),("Tasks","✓"),("Calendar","▦"),("Notes","▤"),("Habits","↗"),("Goals","◎"),("Focus","◷"),("Weekly Review","▥"),("Settings","⚙")]):
             b = ctk.CTkButton(self.nav_dock, text=f"{glyph}  {name}", height=43, corner_radius=14,
                 fg_color="transparent", hover_color=("#D7E5F7", "#263B58"), text_color=("#344054", "#C7D0DE"),
                 font=self.ui_font(12, True), command=lambda n=name: self.show_page(n))
