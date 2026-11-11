@@ -1,5 +1,14 @@
 # DayFlow
 
+**Version 1.3.0 — Your day, under control.**
+
+## What's new in 1.3.0
+- **Weekly Review:** see completed tasks, focus sessions, focus time and habit check-ins over the last seven days.
+- **Habit streaks:** current daily streaks and lifetime check-in totals are visible on each habit card.
+- **Focus history:** completed focus sessions are saved locally and included in the weekly review.
+- Existing task, note, habit and goal data remains compatible; the new history starts accumulating from this version.
+
+
 **Your day, under control.**
 
 DayFlow is a Windows desktop productivity workspace for planning your day, building routines, capturing ideas and making steady progress on your goals. Version 1.1.0 introduces a redesigned top header and floating bottom navigation dock, giving the personal planning workspace its own layout.
