@@ -247,7 +247,7 @@ class DayFlow(ctk.CTk):
         for group, items in groups:
             ctk.CTkLabel(nav_area, text=group, font=ctk.CTkFont(size=9, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(15,7))
             for name, glyph in items:
-                button = ctk.CTkButton(nav_area, text=f"{glyph}   {name}", height=42, corner_radius=12, anchor="w", fg_color="transparent", hover_color=("#E8EDF6","#263449"), text_color=("#465267","#C7D0DE"), font=self.ui_font(12), command=lambda n=name: self.show_page(n))
+                button = ctk.CTkButton(nav_area, text=f"{glyph}   {name}", height=42, corner_radius=12, anchor="w", fg_color="transparent", hover_color=("#E4EBE2","#263B2D"), text_color=("#5B6E60","#B6C8B9"), font=self.ui_font(12), command=lambda n=name: self.show_page(n))
                 button.pack(fill="x", padx=2, pady=2)
                 self.nav_buttons[name] = button
         side_footer = ctk.CTkFrame(self.sidebar, fg_color=(self.tint_surface("#E4EBE2", .12), self.tint_surface("#1B2D21", .16)), corner_radius=22, border_width=0)
@@ -294,7 +294,7 @@ class DayFlow(ctk.CTk):
         self.page_title.configure(text=name)
         for nav_name, button in self.nav_buttons.items():
             active = nav_name == name
-            button.configure(fg_color=(accent_color, accent_color) if active else "transparent", hover_color=(accent_color, accent_color) if active else ("#E8EDF6","#263449"), text_color=("#202B3B","#17202D") if active else ("#465267","#C7D0DE"), font=self.ui_font(12, active))
+            button.configure(fg_color=(accent_color, accent_color) if active else "transparent", hover_color=(accent_color, accent_color) if active else ("#E4EBE2","#263B2D"), text_color=("#182319","#182319") if active else ("#5B6E60","#B6C8B9"), font=self.ui_font(12, active))
         self.clear_main()
         getattr(self, f"page_{name.lower().replace(chr(32), chr(95))}")()
         if name == "Focus" and self.timer_running:
