@@ -11,7 +11,7 @@
 
 **Your day, under control.**
 
-DayFlow is a Windows desktop productivity workspace for planning your day, building routines, capturing ideas and making steady progress on your goals. Version 1.1.0 introduces a redesigned top header and floating bottom navigation dock, giving the personal planning workspace its own layout.
+DayFlow is a Windows desktop productivity workspace for planning your day, building routines, capturing ideas and making steady progress on your goals. Version 1.3.0 adds a Weekly Review, habit streaks and focus-session history to the redesigned personal planning workspace.
 
 ## Features
 
