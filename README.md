@@ -1,8 +1,8 @@
 # DayFlow
 
-**Version 1.5.0 — Your day, under control.**
+**Version 1.5 — Your day, under control.**
 
-## What's new in 1.5.0
+## What's new in 1.5
 - Fixed accent-theme refresh so the sidebar, navigation, footer and page content all update together.
 - Moved the navigation rail to the right to create a wider, uninterrupted working canvas.
 - Removed expensive spotlight image regeneration during window resizing for smoother window movement.
