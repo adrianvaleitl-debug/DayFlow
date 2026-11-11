@@ -6,6 +6,8 @@ on:
     paths:
       - "VERSION"
       - "dayflow.py"
+      - "requirements.txt"
+      - "tools/generate_icon.py"
       - "tools/generate_icon.py"
       - "installer/DayFlow.iss"
       - ".github/workflows/release.yml"
