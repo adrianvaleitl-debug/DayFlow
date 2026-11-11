@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import ctypes
 import time
 import threading
 import urllib.request
@@ -41,6 +42,12 @@ def load_data():
                     data[key] = []
             if not isinstance(data.get("settings"), dict):
                 data["settings"] = DEFAULT_DATA["settings"].copy()
+            else:
+                settings = DEFAULT_DATA["settings"].copy()
+                settings.update(data["settings"])
+                if "tutorial_seen" not in data["settings"]:
+                    settings["tutorial_seen"] = True
+                data["settings"] = settings
             return data
         except (OSError, json.JSONDecodeError):
             pass
@@ -49,13 +56,22 @@ def load_data():
 class DayFlow(ctk.CTk):
     def __init__(self):
         self.data = load_data()
+        try:
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("AdrianVale.DayFlow")
+        except Exception:
+            pass
         ctk.set_appearance_mode(self.data["settings"].get("appearance", "dark"))
         ctk.set_default_color_theme("blue")
         super().__init__()
         self.title(f"{APP_NAME}  •  Your day, under control")
         try:
             icon = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent)) / "dayflow.ico"
-            if icon.exists(): self.iconbitmap(default=str(icon))
+            if icon.exists():
+                self.iconbitmap(default=str(icon))
+                png_icon = icon.with_suffix(".png")
+                if png_icon.exists():
+                    self._window_icon_photo = tk.PhotoImage(file=str(png_icon))
+                    self.iconphoto(True, self._window_icon_photo)
         except Exception:
             pass
         self.geometry("1240x820")
@@ -339,6 +355,7 @@ class DayFlow(ctk.CTk):
             self.data["settings"]["tutorial_seen"] = True
             self.save()
             dialog.destroy()
+        dialog.protocol("WM_DELETE_WINDOW", finish)
         ctk.CTkButton(dialog, text="Let's get started", command=finish, height=40).pack(anchor="e", padx=24, pady=18)
 
     def check_updates(self, silent=False):
@@ -370,16 +387,29 @@ class DayFlow(ctk.CTk):
         threading.Thread(target=worker, daemon=True).start()
 
     def install_update(self, url):
-        try:
-            fd, path = tempfile.mkstemp(prefix="DayFlow-Update-", suffix=".exe")
-            os.close(fd)
-            request = urllib.request.Request(url, headers={"User-Agent": "DayFlow-Updater"})
-            with urllib.request.urlopen(request, timeout=60) as response, open(path, "wb") as output:
-                output.write(response.read())
-            subprocess.Popen([path, "/SILENT", "/CLOSEAPPLICATIONS", "/NORESTART"], shell=False, close_fds=True)
-            self.after(500, self.close_app)
-        except Exception as exc:
-            messagebox.showerror("Update failed", f"Couldn't download or launch the update.\\n{exc}")
+        def worker():
+            try:
+                update_dir = Path(tempfile.gettempdir()) / "AdrianVale" / "DayFlow"
+                update_dir.mkdir(parents=True, exist_ok=True)
+                path = update_dir / f"DayFlow-Setup-{APP_VERSION}-update.exe"
+                request = urllib.request.Request(url, headers={"User-Agent": "DayFlow-Updater"})
+                with urllib.request.urlopen(request, timeout=90) as response:
+                    payload = response.read()
+                if len(payload) < 100_000 or not payload.startswith(b"MZ"):
+                    raise RuntimeError("The downloaded installer did not pass its Windows executable check. Download it from the GitHub releases page instead.")
+                path.write_bytes(payload)
+                subprocess.Popen(
+                    [str(path), "/SILENT", "/CLOSEAPPLICATIONS", "/NORESTART", "/SUPPRESSMSGBOXES", "/SP-"],
+                    shell=False, close_fds=True
+                )
+                self.after(1200, self.close_app)
+            except Exception as exc:
+                message = str(exc)
+                self.after(0, lambda message=message: messagebox.showerror(
+                    "DayFlow update failed",
+                    f"The update could not be started. Your existing app and data have been left untouched.\n\n{message}"
+                ))
+        threading.Thread(target=worker, daemon=True).start()
 
     def page_weekly_review(self):
         self.header("Weekly review", "A useful snapshot of the last seven days.")
