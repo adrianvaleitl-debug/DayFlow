@@ -3,8 +3,8 @@ name: Build and release DayFlow
 on:
   push:
     branches: [main]
-    tags:
-      - "v*"
+    paths:
+      - "VERSION"
   workflow_dispatch:
 
 permissions:
@@ -49,11 +49,19 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force release | Out-Null
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\DayFlow.iss
+      - name: Read release version
+        id: version
+        shell: pwsh
+        run: |
+          $version = (Get-Content VERSION -Raw).Trim()
+          "version=$version" >> $env:GITHUB_OUTPUT
       - name: Publish GitHub release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: github.event_name == 'push'
         uses: softprops/action-gh-release@v2
         with:
-          name: DayFlow ${{ github.ref_name }}
+          tag_name: v${{ steps.version.outputs.version }}
+          target_commitish: main
+          name: DayFlow v${{ steps.version.outputs.version }}
           generate_release_notes: true
           files: release/DayFlow-Setup-*.exe
       - name: Upload Windows installer artifact
