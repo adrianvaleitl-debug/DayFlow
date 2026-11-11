@@ -17,6 +17,71 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageTk
 
+GLASS_KEY = "#010101"
+
+def apply_windows_glass_backdrop(window, transparency=8, light=False):
+    """Expose a Windows acrylic backdrop through transparent Tk root pixels."""
+    if sys.platform != "win32":
+        return False
+    key = GLASS_KEY
+    try:
+        # Tk's colour-key transparency lets DWM draw acrylic behind the client
+        # area without fading child text, icons or controls.
+        window.wm_attributes("-transparentcolor", key)
+        window.configure(fg_color=key)
+    except Exception:
+        # Keep the app usable if colour-key transparency is unavailable.
+        try:
+            window.configure(fg_color="#EDEDED" if light else "#101012")
+        except Exception:
+            pass
+    try:
+        window.update_idletasks()
+        user32 = ctypes.windll.user32
+        hwnd = ctypes.c_void_p(window.winfo_id())
+        try:
+            user32.GetAncestor.argtypes = [ctypes.c_void_p, ctypes.c_uint]
+            user32.GetAncestor.restype = ctypes.c_void_p
+            hwnd = ctypes.c_void_p(user32.GetAncestor(hwnd, 2) or hwnd.value)
+        except Exception:
+            pass
+
+        # Windows 11 system backdrop (transient acrylic).
+        backdrop_ok = False
+        try:
+            backdrop = ctypes.c_int(3)
+            result = ctypes.windll.dwmapi.DwmSetWindowAttribute(
+                hwnd, 38, ctypes.byref(backdrop), ctypes.sizeof(backdrop))
+            backdrop_ok = (result == 0)
+        except Exception:
+            pass
+
+        # Acrylic fallback also supplies a user-adjustable tint on Windows 10.
+        class ACCENT_POLICY(ctypes.Structure):
+            _fields_ = [("AccentState", ctypes.c_int), ("AccentFlags", ctypes.c_int),
+                        ("GradientColor", ctypes.c_int), ("AnimationId", ctypes.c_int)]
+        class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
+            _fields_ = [("Attribute", ctypes.c_int), ("Data", ctypes.c_void_p),
+                        ("SizeOfData", ctypes.c_size_t)]
+        amount = max(0, min(35, int(transparency)))
+        alpha = 0xE8 - round((0xE8 - 0x70) * amount / 35)
+        colour = 0x00F0F0F0 if light else 0x0017171B
+        policy = ACCENT_POLICY(4, 2, (alpha << 24) | colour, 0)
+        data = WINDOWCOMPOSITIONATTRIBDATA(19, ctypes.addressof(policy), ctypes.sizeof(policy))
+        apply_attribute = user32.SetWindowCompositionAttribute
+        apply_attribute.argtypes = [ctypes.c_void_p, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
+        apply_attribute.restype = ctypes.c_bool
+        accent_ok = bool(apply_attribute(hwnd, ctypes.byref(data)))
+        try:
+            user32.SetWindowPos(hwnd, None, 0, 0, 0, 0,
+                                0x0001 | 0x0002 | 0x0004 | 0x0020)
+        except Exception:
+            pass
+        return backdrop_ok or accent_ok
+    except Exception:
+        return False
+
+
 
 def install_accent_spotlight(window, accent, background="#101012"):
     """Render a soft multi-layer nebula glow behind the app's glass surfaces."""
@@ -71,7 +136,7 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.4.8"
+APP_VERSION = "1.4.9"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 PERSONAL_SITE = "https://adrianvaleitl-debug.github.io/"
 KOFI = "https://ko-fi.com/marketinsight"
@@ -139,7 +204,7 @@ class DayFlow(ctk.CTk):
         screen_h = self.winfo_screenheight()
         self.geometry(f"{min(1380, max(1080, screen_w - 80))}x{min(900, max(720, screen_h - 100))}")
         self.minsize(1020, 680)
-        self.configure(fg_color=("#101012", "#101012"))
+        self.configure(fg_color=GLASS_KEY if sys.platform=="win32" else ("#101012", "#101012"))
         self.apply_glass_effect()
         self.timer_running = False
         self.timer_end = None
@@ -191,36 +256,12 @@ class DayFlow(ctk.CTk):
             if widget in theme: theme[widget].update(values)
 
     def apply_glass_effect(self):
-        """Enable a real Windows acrylic backdrop (blurred content behind the window)."""
         try:
             if not sys.platform.startswith("win"):
                 return
-            self.update_idletasks()
-            hwnd = ctypes.c_void_p(self.winfo_id())
-            # Windows 11 system backdrop: transient-window acrylic. This is the
-            # supported DWM path; the legacy accent policy below is a fallback.
-            try:
-                backdrop = ctypes.c_int(3)  # DWMSBT_TRANSIENTWINDOW (acrylic)
-                ctypes.windll.dwmapi.DwmSetWindowAttribute(
-                    hwnd, 38, ctypes.byref(backdrop), ctypes.sizeof(backdrop))
-            except Exception:
-                pass
-            class ACCENT_POLICY(ctypes.Structure):
-                _fields_ = [("AccentState", ctypes.c_int), ("AccentFlags", ctypes.c_int),
-                            ("GradientColor", ctypes.c_int), ("AnimationId", ctypes.c_int)]
-            class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
-                _fields_ = [("Attribute", ctypes.c_int), ("Data", ctypes.c_void_p),
-                            ("SizeOfData", ctypes.c_size_t)]
-            # Alpha controls the acrylic tint, not the opacity of all text/widgets.
-            transparency = int(self.data["settings"].get("transparency", 8)) if hasattr(self, "data") else int(self.get("transparency", "8"))
-            alpha = max(0x78, min(0xD8, 0xC8 - round(transparency * 1.1)))
-            tint = (alpha << 24) | 0x0017171B
-            policy = ACCENT_POLICY(4, 2, tint, 0)
-            data = WINDOWCOMPOSITIONATTRIBDATA(19, ctypes.addressof(policy), ctypes.sizeof(policy))
-            apply_attribute = ctypes.windll.user32.SetWindowCompositionAttribute
-            apply_attribute.argtypes = [ctypes.c_void_p, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
-            apply_attribute.restype = ctypes.c_bool
-            apply_attribute(hwnd, ctypes.byref(data))
+            apply_windows_glass_backdrop(
+                self, int(self.data["settings"].get("transparency", 8)),
+                ctk.get_appearance_mode() == "Light")
         except Exception:
             pass
 
@@ -268,7 +309,7 @@ class DayFlow(ctk.CTk):
         DATA_FILE.write_text(json.dumps(self.data, indent=2, ensure_ascii=False), encoding="utf-8")
 
     def build_shell(self):
-        install_accent_spotlight(self, self.accent_colors()[str(self.data["settings"].get("accent", "black")).lower()][0], "#EDEDED" if ctk.get_appearance_mode()=="Light" else "#101012")
+        install_accent_spotlight(self, self.accent_colors()[str(self.data["settings"].get("accent", "black")).lower()][0], GLASS_KEY if sys.platform=="win32" else ("#EDEDED" if ctk.get_appearance_mode()=="Light" else "#101012"))
         self.grid_columnconfigure(0, weight=0)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=0)
@@ -791,8 +832,7 @@ class DayFlow(ctk.CTk):
         value=round(max(0,min(35,float(value))))
         self.data["settings"]["transparency"]=value
         if label: label.configure(text=f"{value}%")
-        self.apply_glass_effect()
-        self.apply_glass_effect()
+        self.after_idle(self.apply_glass_effect)
         self.save()
 
     def set_accent(self, value):
@@ -800,11 +840,11 @@ class DayFlow(ctk.CTk):
         self.data["settings"]["accent"]=value
         self.apply_accent_theme()
         self.save()
-        self.configure(fg_color=("#101012", "#101012"))
+        self.configure(fg_color=GLASS_KEY if sys.platform=="win32" else ("#101012", "#101012"))
         self.sidebar.configure(fg_color=("#202024", "#202024"))
         self.topbar.configure(fg_color=("#202024", "#202024"))
         self.apply_glass_effect()
-        install_accent_spotlight(self, self.accent_colors()[value][0], "#EDEDED" if ctk.get_appearance_mode()=="Light" else "#101012")
+        install_accent_spotlight(self, self.accent_colors()[value][0], GLASS_KEY if sys.platform=="win32" else ("#EDEDED" if ctk.get_appearance_mode()=="Light" else "#101012"))
         self.show_page(self.active_page)
 
     def delete_item(self, key, item, page):
