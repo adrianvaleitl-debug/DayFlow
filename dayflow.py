@@ -88,6 +88,7 @@ class DayFlow(ctk.CTk):
         self.protocol("WM_DELETE_WINDOW", self.close_app)
         self.build_shell()
         self.show_page("Overview")
+        self.after(350, self.apply_native_icon)
         if not self.data["settings"].get("tutorial_seen", False):
             # Persist the first-launch flag before opening the dialog so closing
             # the window or an interrupted first run cannot trigger it forever.
@@ -143,6 +144,28 @@ class DayFlow(ctk.CTk):
             data = WINDOWCOMPOSITIONATTRIBDATA(19, ctypes.addressof(policy), ctypes.sizeof(policy))
             ctypes.windll.user32.SetWindowCompositionAttribute(self.winfo_id(), ctypes.byref(data))
         except Exception: pass
+
+    def apply_native_icon(self):
+        """Set Windows large and small window icons explicitly for the taskbar."""
+        if sys.platform != "win32":
+            return
+        try:
+            base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
+            icon = base / "dayflow.ico"
+            if not icon.exists():
+                icon = base / "assets" / "dayflow.ico"
+            if not icon.exists():
+                return
+            user32 = ctypes.windll.user32
+            user32.LoadImageW.restype = ctypes.c_void_p
+            handle = user32.LoadImageW(None, str(icon), 1, 0, 0, 0x0010)
+            if handle:
+                hwnd = self.winfo_id()
+                user32.SendMessageW(hwnd, 0x0080, 1, handle)
+                user32.SendMessageW(hwnd, 0x0080, 0, handle)
+                self._dayflow_icon_handle = handle
+        except Exception:
+            pass
 
     def ui_font(self, size=12, force_bold=False):
         settings = self.data.get("settings", {})
