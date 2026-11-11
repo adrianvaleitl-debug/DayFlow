@@ -56,6 +56,15 @@ html[data-av-mode="light"] .market-ticker span{background:var(--av-panel2)!impor
 .av-theme-tools button[aria-pressed=true]{border-color:var(--av-accent);box-shadow:inset 0 0 0 1px var(--av-accent)}
 .av-theme-tools .av-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
 
+
+<style id="av-theme-compat">
+html[data-av-accent]{--green:var(--av-accent);--green2:var(--av-accent);--blue:var(--av-accent)}
+html[data-av-mode="light"] body{background:var(--av-bg)!important}
+html[data-av-mode="light"] .mock,html[data-av-mode="light"] .preview,html[data-av-mode="light"] .feature,html[data-av-mode="light"] .download,html[data-av-mode="light"] .about-card,html[data-av-mode="light"] .screen,html[data-av-mode="light"] .metric,html[data-av-mode="light"] .task,html[data-av-mode="light"] .table,html[data-av-mode="light"] .stat,html[data-av-mode="light"] .stock,html[data-av-mode="light"] .site-rail,html[data-av-mode="light"] .rail-stat{background:var(--av-panel)!important;color:var(--av-text)!important;border-color:var(--av-line)!important}
+html[data-av-mode="light"] .mock *,html[data-av-mode="light"] .preview *,html[data-av-mode="light"] .feature *,html[data-av-mode="light"] .download *,html[data-av-mode="light"] .about-card *{border-color:var(--av-line)}
+html[data-av-mode="light"] .navlinks a,html[data-av-mode="light"] .site-rail a,html[data-av-mode="light"] .rail-links a{color:var(--av-text)!important}
+html[data-av-mode="light"] .hero h1 span,html[data-av-mode="light"] .eyebrow,html[data-av-mode="light"] .num,html[data-av-mode="light"] .up,html[data-av-mode="light"] .tag{color:var(--av-accent-ink)!important}
+html[data-av-mode="light"] .btn.primary,html[data-av-mode="light"] .primary,html[data-av-mode="light"] .rail-download{background:var(--av-accent)!important;color:var(--av-accent-ink)!important}
 </head><body><div class="wrap">
 <header class="nav"><a class="brand" href="#">◈ DAY<span>FLOW</span></a><nav class="navlinks"><a href="#features">Features</a><a href="#download">Download</a><a href="https://github.com/adrianvaleitl-debug/DayFlow">GitHub ↗</a></nav></header>
 <main><section class="hero"><div><div class="eyebrow">A clearer way to get things done</div><h1>Your day.<br><span class="gradient">Under control.</span></h1><p class="lead">Bring tasks, routines, notes and goals into one calm workspace. DayFlow helps you make a plan, focus on what matters and see your progress — with weekly reviews, habit streaks and a smoother Windows update experience.</p><div class="actions"><a class="btn" id="downloadButton" href="https://github.com/adrianvaleitl-debug/DayFlow/releases/latest">Download for Windows</a><a class="btn secondary" href="#features">Explore features</a></div><div class="small" id="releaseNote">DayFlow 1.3.1 · Windows desktop · Free · Your data stays on your device</div></div>
