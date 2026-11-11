@@ -125,13 +125,15 @@ class DayFlow(ctk.CTk):
         if "CTkButton" in theme: theme["CTkButton"]["corner_radius"]=15
         if "CTkEntry" in theme: theme["CTkEntry"]["corner_radius"]=15
         updates={
-            "CTkButton":{"fg_color":[primary,primary],"hover_color":[hover,hover]},
-            "CTkCheckBox":{"fg_color":[primary,primary],"hover_color":[hover,hover]},
+            "CTkButton":{"fg_color":[primary,primary],"hover_color":[hover,hover],"text_color":["#182319","#182319"],"corner_radius":13},
+            "CTkCheckBox":{"fg_color":[primary,primary],"hover_color":[hover,hover],"border_color":["#6D8572","#6D8572"],"checkmark_color":["#182319","#182319"]},
             "CTkSwitch":{"progress_color":[primary,primary]},
             "CTkSlider":{"progress_color":[primary,primary],"button_color":[primary,primary],"button_hover_color":[hover,hover]},
             "CTkProgressBar":{"progress_color":[primary,primary]},
             "CTkRadioButton":{"fg_color":[primary,primary],"hover_color":[hover,hover]},
-            "CTkOptionMenu":{"fg_color":["#EAF0F8","#263B55"],"button_color":[primary,primary],"button_hover_color":[hover,hover],"dropdown_fg_color":["#F7FAFF","#17263A"],"dropdown_hover_color":["#E4ECF7","#304966"],"dropdown_text_color":["#26374D","#EFF5FF"],"text_color":["#26374D","#EFF5FF"],"corner_radius":14},"CTkComboBox":{"fg_color":["#F7FAFF","#17263A"],"border_color":["#DCE6F3","#304966"],"button_color":[primary,primary],"button_hover_color":[hover,hover],"dropdown_fg_color":["#F7FAFF","#17263A"],"dropdown_hover_color":["#E4ECF7","#304966"],"dropdown_text_color":["#26374D","#EFF5FF"],"text_color":["#26374D","#EFF5FF"],"corner_radius":14},"CTkEntry":{"corner_radius":14}
+            "CTkOptionMenu":{"fg_color":["#1B2D21","#1B2D21"],"button_color":[primary,primary],"button_hover_color":[hover,hover],"dropdown_fg_color":["#14231A","#14231A"],"dropdown_hover_color":["#263B2D","#263B2D"],"dropdown_text_color":["#EDF4EE","#EDF4EE"],"text_color":["#EDF4EE","#EDF4EE"],"corner_radius":14},
+            "CTkComboBox":{"fg_color":["#101D15","#101D15"],"border_color":["#304638","#304638"],"button_color":[primary,primary],"button_hover_color":[hover,hover],"dropdown_fg_color":["#14231A","#14231A"],"dropdown_hover_color":["#263B2D","#263B2D"],"dropdown_text_color":["#EDF4EE","#EDF4EE"],"text_color":["#EDF4EE","#EDF4EE"],"corner_radius":14},
+            "CTkEntry":{"fg_color":["#101D15","#101D15"],"border_color":["#304638","#304638"],"text_color":["#EDF4EE","#EDF4EE"],"corner_radius":14}
         }
         for widget,values in updates.items():
             if widget in theme: theme[widget].update(values)
