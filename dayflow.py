@@ -171,15 +171,24 @@ class DayFlow(ctk.CTk):
             if not icon.exists():
                 return
             user32 = ctypes.windll.user32
+            self.update_idletasks()
+            self.iconbitmap(default=str(icon))
+            png = icon.with_suffix('.png')
+            if png.exists():
+                self._dayflow_icon_photo = tk.PhotoImage(file=str(png))
+                self.iconphoto(True, self._dayflow_icon_photo)
             user32.LoadImageW.argtypes = [ctypes.c_void_p, ctypes.c_wchar_p, ctypes.c_uint, ctypes.c_int, ctypes.c_int, ctypes.c_uint]
             user32.LoadImageW.restype = ctypes.c_void_p
             handle = user32.LoadImageW(None, str(icon), 1, 0, 0, 0x0010)
             if handle:
+                user32.GetAncestor.argtypes = [ctypes.c_void_p, ctypes.c_uint]
+                user32.GetAncestor.restype = ctypes.c_void_p
                 user32.SendMessageW.argtypes = [ctypes.c_void_p, ctypes.c_uint, ctypes.c_size_t, ctypes.c_void_p]
                 user32.SendMessageW.restype = ctypes.c_ssize_t
                 hwnd = ctypes.c_void_p(self.winfo_id())
-                user32.SendMessageW(hwnd, 0x0080, 1, handle)
-                user32.SendMessageW(hwnd, 0x0080, 0, handle)
+                root_hwnd = user32.GetAncestor(hwnd, 2) or hwnd
+                user32.SendMessageW(root_hwnd, 0x0080, 1, handle)
+                user32.SendMessageW(root_hwnd, 0x0080, 0, handle)
                 self._dayflow_icon_handle = handle
         except Exception:
             pass
