@@ -229,7 +229,13 @@ class DayFlow(ctk.CTk):
         dialog.minsize(600, 520)
         dialog.transient(self)
         dialog.grab_set()
-        dialog.protocol("WM_DELETE_WINDOW", self.close_app)
+        def dismiss_notice():
+            if force:
+                dialog.grab_release()
+                dialog.destroy()
+            else:
+                self.close_app()
+        dialog.protocol("WM_DELETE_WINDOW", dismiss_notice)
         dialog.configure(fg_color=("#F2F3F2", "#171A18"))
         ctk.CTkLabel(dialog, text="Before you use DayFlow", font=self.ui_font(24, True), anchor="w").pack(fill="x", padx=26, pady=(22, 5))
         ctk.CTkLabel(dialog, text="Please read and acknowledge this personal planning software notice.", font=self.ui_font(12), text_color=("gray35", "gray70"), anchor="w").pack(fill="x", padx=26, pady=(0, 12))
@@ -251,13 +257,14 @@ class DayFlow(ctk.CTk):
         ctk.CTkLabel(body, text=notice, font=self.ui_font(12), justify="left", anchor="nw", wraplength=630).pack(fill="both", expand=True, padx=16, pady=16)
         actions = ctk.CTkFrame(dialog, fg_color="transparent")
         actions.pack(fill="x", padx=20, pady=(0, 18))
-        ctk.CTkButton(actions, text="Exit DayFlow", command=self.close_app, width=160).pack(side="left")
+        ctk.CTkButton(actions, text="Exit DayFlow", command=dismiss_notice, width=160).pack(side="left")
         def accept_notice():
             self.data["settings"]["legal_notice_version"] = version
             self.save()
             dialog.grab_release()
             dialog.destroy()
-            self.continue_after_legal_notice()
+            if not force:
+                self.continue_after_legal_notice()
         ctk.CTkButton(actions, text="I understand — continue", command=accept_notice, width=205, height=40).pack(side="right")
 
     def continue_after_legal_notice(self):
