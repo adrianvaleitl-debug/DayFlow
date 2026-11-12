@@ -1,13 +1,16 @@
 # DayFlow
 
-**Version 1.5 — Your day, under control.**
+**Version 1.6 — Your day, under control.**
 
-## What's new in 1.5
-- Fixed accent-theme refresh so the sidebar, navigation, footer and page content all update together.
-- Moved the navigation rail to the right to create a wider, uninterrupted working canvas.
-- Removed expensive spotlight image regeneration during window resizing for smoother window movement.
-- Preserved tasks, notes, habits, goals, focus sessions and settings.
+## What's new in 1.6
+- Added a required first-launch legal and liability acknowledgement before app access.
+- Added a Legal & Important Information section to Settings so the notice can be reopened.
+- Clarified reminder limitations, critical appointment safeguards, local data storage and backups.
 - Existing tasks, notes, habits, goals, focus sessions and settings are preserved.
+
+## Legal and data notice
+
+DayFlow is a personal productivity and planning tool, not a professional scheduling, emergency alert, medical, mental-health, legal, financial or other advisory service. In-app reminders are not guaranteed and depend on the app and device being available; do not rely on DayFlow as the sole reminder for critical commitments. Personal planning data is stored locally, and users are responsible for keeping separate backups. DayFlow does not guarantee productivity or other outcomes. To the fullest extent permitted by law, Adrian Vale and the people involved in creating or maintaining DayFlow exclude liability for losses arising from use of or reliance on the app, including data loss and missed reminders. This does not exclude liability or consumer rights that cannot legally be excluded.
 
 ## Previous release highlights
 - **1.4.8:** Added the accent-colour spotlight and persistent Adrian Vale / Ko-fi shortcuts.
