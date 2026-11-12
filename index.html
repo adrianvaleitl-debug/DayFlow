@@ -605,5 +605,44 @@ body>footer.footer{position:fixed!important;left:50%!important;right:auto!import
  }
 })();
 </script>
+<style id="av-device-responsive-v1">
+/* Phone portrait: turn the desktop horizontal presentation into a natural vertical page. */
+@media (max-width:600px) and (pointer:coarse) and (orientation:portrait){
+ html,body{width:100%!important;height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important}
+ body{overscroll-behavior:auto!important}
+ .wrap{width:100%!important;max-width:none!important;height:auto!important;min-height:0!important;overflow:visible!important;padding:0 14px!important}
+ .nav,body>header.wrap.nav{position:sticky!important;top:5px!important;left:auto!important;right:auto!important;transform:none!important;width:calc(100% - 12px)!important;max-width:none!important;height:auto!important;min-height:0!important;margin:6px 6px 0!important;padding:10px 12px!important;display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;justify-content:space-between!important;gap:8px!important;border-radius:15px!important}
+ .nav .brand{font-size:17px!important}
+ .nav .navlinks{width:100%!important;display:flex!important;flex-wrap:wrap!important;justify-content:flex-start!important;gap:7px 13px!important;font-size:12px!important}
+ main{display:block!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;padding:0!important;scroll-snap-type:none!important}
+ main>section,main>.hero,main>.section{display:block!important;position:relative!important;box-sizing:border-box!important;flex:none!important;width:100%!important;min-width:0!important;max-width:none!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;padding:36px 2px!important;margin:0!important;scroll-snap-align:none!important;scroll-snap-stop:normal!important}
+ main>.hero{padding-top:42px!important;text-align:left!important}
+ main>.hero h1{font-size:clamp(40px,11vw,54px)!important;line-height:1.04!important}
+ main>.hero .lead{font-size:16px!important;margin:0!important}
+ main>.hero .actions{justify-content:flex-start!important}
+ main>.hero .mock{width:100%!important;max-width:none!important;transform:none!important;padding:13px!important;margin:0!important;border-radius:19px!important}
+ main>.hero .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ main>.hero .stat{padding:11px!important;min-width:0!important}
+ main>.hero .stat b{font-size:19px!important}
+ main>.hero .tasks{grid-template-columns:1fr!important}
+ main>.section h2{font-size:clamp(28px,8vw,36px)!important}
+ main .features,main .rhythm-grid,main .principles-grid,main .section-extra{grid-template-columns:1fr!important;gap:10px!important}
+ main .feature,main .rhythm-card,main .principle-card{min-height:0!important;height:auto!important;padding:17px!important}
+ main .feature p,main .rhythm-card p,main .principle-card p,main .section-extra article p{font-size:14px!important;line-height:1.6!important}
+ main>.section#download .download{display:flex!important;flex-direction:column!important;align-items:stretch!important;padding:21px!important;gap:15px!important}
+ .btn{min-height:44px!important}
+ body>footer.footer{position:static!important;left:auto!important;right:auto!important;bottom:auto!important;transform:none!important;width:100%!important;min-width:0!important;height:auto!important;min-height:0!important;max-height:none!important;margin:16px 0 0!important;padding:24px 14px!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:10px!important}
+}
+@media (max-height:520px) and (pointer:coarse) and (orientation:landscape){
+ html,body{height:100%!important;overflow:hidden!important}
+ main{display:flex!important;height:100dvh!important;overflow-x:auto!important;overflow-y:hidden!important;gap:18px!important;padding:0 10px!important}
+ main>section{flex:0 0 84vw!important;width:84vw!important;min-width:0!important;height:100dvh!important;min-height:0!important;max-height:100dvh!important;overflow-y:auto!important;padding:88px 0 72px!important}
+ main>.hero{flex-basis:90vw!important;width:90vw!important;display:flex!important;flex-direction:row!important;gap:18px!important;padding-top:92px!important}
+ main>.hero>div:first-child,main>.hero .mock{flex:1 1 50%!important;min-width:0!important}
+ main .features,main .rhythm-grid,main .principles-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .nav,body>header.wrap.nav{top:4px!important;padding:6px 10px!important}
+ body>footer.footer{bottom:6px!important}
+}
+</style>
 </body>
 </html>
