@@ -784,23 +784,23 @@ class DayFlow(ctk.CTk):
         latest.pack(fill="x", pady=(0, 14))
         top = ctk.CTkFrame(latest, fg_color="transparent")
         top.pack(fill="x", padx=22, pady=(20, 8))
-        ctk.CTkLabel(top, text="1.5", font=self.ui_font(25, True),
+        ctk.CTkLabel(top, text="1.6", font=self.ui_font(25, True),
                      text_color=self.accent_colors()[self.data["settings"].get("accent", "black")][0]).pack(side="left")
         ctk.CTkLabel(top, text="LATEST RELEASE", font=self.ui_font(10, True),
                      text_color=("gray55", "gray65")).pack(side="right")
-        ctk.CTkLabel(latest, text="A cleaner layout and reliable colour themes",
+        ctk.CTkLabel(latest, text="Legal safeguards and reminder limitations",
                      font=self.ui_font(19, True)).pack(anchor="w", padx=22, pady=(0, 5))
-        ctk.CTkLabel(latest, text="11 November 2026  ·  Windows desktop",
+        ctk.CTkLabel(latest, text="12 November 2026  ·  Windows desktop",
                      font=self.ui_font(10), text_color=("gray55", "gray65")).pack(anchor="w", padx=22)
         ctk.CTkLabel(latest,
-            text="This release moves navigation to the right-hand rail, refreshes the full shell when an accent is changed and makes window resizing smoother.",
+            text="This release adds a first-launch legal and liability notice, plus a Legal & Important Information section in Settings. It explains reminder limitations, critical commitments and local data backups.",
             font=self.ui_font(11), justify="left", anchor="w", wraplength=900,
             text_color=("gray40", "gray75")).pack(fill="x", padx=22, pady=(12, 15))
         for item in [
-            "Windows colour-key transparency lets the desktop backdrop show through without fading text or controls.",
-            "The transparency slider now changes a wider acrylic tint range and reapplies after the window is mapped.",
-            "The accent spotlight uses the transparent host layer, keeping the surrounding workspace clear.",
-            "Your tasks, notes, habits, goals and settings remain stored locally"]:
+            "A risk and liability notice appears before first use and must be acknowledged.",
+            "The full notice can be reopened from Settings at any time.",
+            "In-app reminders are not guaranteed and should not be the only alert for critical commitments.",
+            "Your tasks, notes, habits, goals and settings remain stored locally; keep separate backups."]:
             ctk.CTkLabel(latest, text="✓   " + item, font=self.ui_font(11),
                          anchor="w", justify="left", wraplength=900).pack(fill="x", padx=24, pady=3)
         history = self.panel(body, "Previous release")
