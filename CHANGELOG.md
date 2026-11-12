@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6 — 12 November 2026
+- Added a required first-launch legal and liability acknowledgement before app access.
+- Added a Legal & Important Information section to Settings for reopening the notice.
+- Clarified in-app reminder limitations, critical commitments, local data storage, backups and third-party service dependencies.
+
+
 ## 1.5 — 11 November 2026
 - Reworked the main shell with a right-hand navigation rail and a wider left-side content canvas.
 - Rebuilt the shell on accent changes so navigation, sidebar links and page controls use the selected theme consistently.
