@@ -136,7 +136,7 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.5"
+APP_VERSION = "1.6"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 PERSONAL_SITE = "https://adrianvaleitl-debug.github.io/"
 KOFI = "https://ko-fi.com/marketinsight"
@@ -216,15 +216,61 @@ class DayFlow(ctk.CTk):
         self.after(350, self.apply_glass_effect)
         self.after(1200, self.apply_native_icon)
         self.after(2600, self.apply_native_icon)
+        self.after(500, self.show_legal_notice)
+
+    def show_legal_notice(self, force=False):
+        version = "2026-11-12"
+        if not force and self.data["settings"].get("legal_notice_version") == version:
+            self.continue_after_legal_notice()
+            return
+        dialog = ctk.CTkToplevel(self)
+        dialog.title("DayFlow · Important information")
+        dialog.geometry("720x650")
+        dialog.minsize(600, 520)
+        dialog.transient(self)
+        dialog.grab_set()
+        dialog.protocol("WM_DELETE_WINDOW", self.close_app)
+        dialog.configure(fg_color=("#F2F3F2", "#171A18"))
+        ctk.CTkLabel(dialog, text="Before you use DayFlow", font=self.ui_font(24, True), anchor="w").pack(fill="x", padx=26, pady=(22, 5))
+        ctk.CTkLabel(dialog, text="Please read and acknowledge this personal planning software notice.", font=self.ui_font(12), text_color=("gray35", "gray70"), anchor="w").pack(fill="x", padx=26, pady=(0, 12))
+        body = ctk.CTkScrollableFrame(dialog, fg_color=("#FFFFFF", "#202622"))
+        body.pack(fill="both", expand=True, padx=20, pady=(0, 14))
+        notice = (
+            "PERSONAL ORGANISATION TOOL ONLY\n\n"
+            "DayFlow is a personal productivity and planning tool. It helps you organise tasks, notes, habits, goals and focus sessions. It is not a professional scheduling, emergency alert, medical, mental-health, legal, financial or other advisory service. It does not assess your health, wellbeing, performance or suitability for any activity.\n\n"
+            "TASKS, DATES AND REMINDERS\n\n"
+            "You are responsible for checking task details, due dates, priorities and plans. DayFlow reminders are in-app prompts and are not guaranteed to appear at a particular time or at all. They can be affected by whether the app is running, device settings, sleep or shutdown, software errors and other interruptions. Do not rely on DayFlow as the sole reminder for medical appointments, safety matters, legal deadlines, payments, travel or other critical commitments. Use an additional dependable reminder where missing an event could have serious consequences.\n\n"
+            "YOUR DATA AND BACKUPS\n\n"
+            "Your tasks, notes, habits, goals and progress are stored locally on this device. Device failure, accidental deletion, corrupted files, operating-system problems or user actions may cause data loss. You are responsible for keeping separate backups of information you need.\n\n"
+            "NO GUARANTEE OF RESULTS OR AVAILABILITY\n\n"
+            "DayFlow does not guarantee increased productivity, completion of goals, improved habits or any particular outcome. Features may change, become unavailable or contain defects. Update checks and downloads rely on third-party services, including GitHub, outside the developer's control.\n\n"
+            "LIMITATION OF LIABILITY\n\n"
+            "To the fullest extent permitted by applicable law, Adrian Vale and the people involved in creating or maintaining DayFlow exclude responsibility for losses, damage or costs arising from use of, inability to use, or reliance on the app, including lost or corrupted data, missed reminders, missed deadlines, interrupted work or decisions made using its contents. This does not exclude or limit any liability or consumer right that cannot lawfully be excluded or limited.\n\n"
+            "Using DayFlow does not create a professional relationship with Adrian Vale. If you do not agree with this notice, do not continue using the app."
+        )
+        ctk.CTkLabel(body, text=notice, font=self.ui_font(12), justify="left", anchor="nw", wraplength=630).pack(fill="both", expand=True, padx=16, pady=16)
+        actions = ctk.CTkFrame(dialog, fg_color="transparent")
+        actions.pack(fill="x", padx=20, pady=(0, 18))
+        ctk.CTkButton(actions, text="Exit DayFlow", command=self.close_app, width=160).pack(side="left")
+        def accept_notice():
+            self.data["settings"]["legal_notice_version"] = version
+            self.save()
+            dialog.grab_release()
+            dialog.destroy()
+            self.continue_after_legal_notice()
+        ctk.CTkButton(actions, text="I understand — continue", command=accept_notice, width=205, height=40).pack(side="right")
+
+    def continue_after_legal_notice(self):
         if not self.data["settings"].get("tutorial_seen", False):
-            # Persist the first-launch flag before opening the dialog so closing
-            # the window or an interrupted first run cannot trigger it forever.
             self.data["settings"]["tutorial_seen"] = True
             self.save()
-            self.after(500, self.show_tutorial)
+            self.after(250, self.show_tutorial)
         self.after(15000, self.check_reminders)
         if self.data["settings"].get("auto_updates", True):
             self.after(2500, lambda: self.check_updates(silent=True))
+
+    def show_legal_from_settings(self):
+        self.show_legal_notice(force=True)
 
     def accent_colors(self):
         return {"black":("#B9B9B9","#A0A0A0"),"amber":("#D7B77F","#BFA16A"),"azure":("#91AFE0","#7897C8"),"lavender":("#B5A0D8","#9B86BE"),"rose":("#D99EAD","#C48495"),"teal":("#91BEC3","#76A6AB"),"dollar":("#D7B77F","#BFA16A"),"euro":("#91AFE0","#7897C8"),"pound":("#B5A0D8","#9B86BE"),"yen":("#D99EAD","#C48495"),"franc":("#91BEC3","#76A6AB")}
@@ -825,6 +871,12 @@ class DayFlow(ctk.CTk):
         ctk.CTkSwitch(shortcuts,text="Launch DayFlow when Windows starts",variable=startup_var,command=lambda:self.set_startup(startup_var.get())).pack(anchor="w",padx=18,pady=(0,14))
         info=self.panel(body,"Your data"); info.pack(fill="x",pady=12)
         ctk.CTkLabel(info,text=f"Your information is stored locally on this device:\n{DATA_FILE}",justify="left",text_color=("gray55","gray65")).pack(anchor="w",padx=18,pady=16)
+
+        legal = ctk.CTkFrame(scroll, fg_color=("#FFFFFF", "#202622"), corner_radius=18)
+        legal.pack(fill="x", padx=12, pady=8)
+        ctk.CTkLabel(legal, text="Legal & important information", font=self.ui_font(16, True), anchor="w").pack(fill="x", padx=18, pady=(14, 5))
+        ctk.CTkLabel(legal, text="Reminders are not guaranteed. Keep separate backups of important personal planning information.", font=self.ui_font(11), text_color=("gray35", "gray70"), wraplength=700, justify="left", anchor="w").pack(fill="x", padx=18, pady=(0, 8))
+        ctk.CTkButton(legal, text="Read legal & liability notice", command=self.show_legal_from_settings, width=220).pack(anchor="w", padx=18, pady=(0, 14))
 
     def update_setting(self, key, value):
         self.data["settings"][key] = value
