@@ -30,7 +30,7 @@ jobs:
       - name: Generate app icon
         run: python tools/generate_icon.py
       - name: Build executable
-        run: pyinstaller --noconfirm --clean --windowed --icon assets/dayflow.ico --add-data "assets/dayflow.ico;." --collect-all certifi --collect-all customtkinter --name DayFlow dayflow.py
+        run: pyinstaller --noconfirm --clean --windowed --icon assets/dayflow.ico --add-data "assets/dayflow.ico;." --add-data "THIRD_PARTY_NOTICES.md;." --collect-all certifi --collect-all customtkinter --name DayFlow dayflow.py
       - name: Upload Windows build
         uses: actions/upload-artifact@v4
         with:
