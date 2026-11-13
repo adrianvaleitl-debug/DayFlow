@@ -1,9 +1,11 @@
 # Changelog
 
-## 2.0.0 — clean TypeScript rebuild
-- Replaced the legacy Python desktop UI with a new React + TypeScript + Tauri 2 application.
+## 2.0.0 — clean React + TypeScript rebuild
+- Replaced the desktop interface with a new React, TypeScript and Tauri 2 application.
 - Rebuilt tasks, calendar, notes, daily habit check-ins and goals.
-- Added focus timer and weekly review.
-- Added Classy blue and Royal gold themes.
-- Added native Windows packaging, new application icon and automated regression tests.
-- Kept the project website and legal pages separate from the desktop app.
+- Added consecutive-day habit streaks and persisted focus-session history.
+- Added a weekly review based on the last seven days, including completed tasks, focus minutes and habit check-ins.
+- Added local JSON backup, CSV export and confirmed local-data deletion controls.
+- Matched the Adrian Vale website surfaces, typography and Classy blue / Royal gold themes.
+- Added automated tests and Windows installer build checks.
+- No legacy Python application code or old desktop UI is included.
