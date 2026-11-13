@@ -86,7 +86,7 @@ except ImportError:
 
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.10"
+APP_VERSION = "1.11"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 PERSONAL_SITE = "https://adrianvaleitl-debug.github.io/"
 KOFI = "https://ko-fi.com/marketinsight"
@@ -741,21 +741,21 @@ class DayFlow(ctk.CTk):
         latest.pack(fill="x", pady=(0, 14))
         top = ctk.CTkFrame(latest, fg_color="transparent")
         top.pack(fill="x", padx=22, pady=(20, 8))
-        ctk.CTkLabel(top, text="1.10", font=self.ui_font(25, True),
+        ctk.CTkLabel(top, text="1.11", font=self.ui_font(25, True),
                      text_color=self.accent_colors()[self.data["settings"].get("accent", "classy")][0]).pack(side="left")
         ctk.CTkLabel(top, text="LATEST RELEASE", font=self.ui_font(10, True),
                      text_color=("gray55", "gray65")).pack(side="right")
-        ctk.CTkLabel(latest, text="Unstyled interface baseline",
+        ctk.CTkLabel(latest, text="Website-matched visual redesign",
                      font=self.ui_font(19, True)).pack(anchor="w", padx=22, pady=(0, 5))
         ctk.CTkLabel(latest, text="13 November 2026  ·  Windows desktop",
                      font=self.ui_font(10), text_color=("gray55", "gray65")).pack(anchor="w", padx=22)
         ctk.CTkLabel(latest,
-            text="This release temporarily removes custom visual styling to provide a clean, neutral starting point for the next interface redesign. Existing features, navigation, layout structure and saved data are retained.",
+            text="The app now follows the Adrian Vale website design with flat surfaces, matching Classy and Royal palettes, consistent Manrope and Cormorant typography, and a full-height navigation layout. Existing features and saved data are retained.",
             font=self.ui_font(11), justify="left", anchor="w", wraplength=900,
             text_color=("gray40", "gray75")).pack(fill="x", padx=22, pady=(12, 15))
         for item in [
-            "Removed custom colours, decorative backgrounds and branded visual effects.",
-            "Reset typography and control styling to a plain system appearance.",
+            "Removed acrylic blur and decorative background effects.",
+            "Matched typography, navigation, panels and controls to the Adrian Vale website.",
             "Kept the existing screens, controls, navigation and app functionality.",
             "Your tasks, notes, habits, goals, focus sessions and settings remain stored locally."]:
             ctk.CTkLabel(latest, text="✓   " + item, font=self.ui_font(11),
