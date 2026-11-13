@@ -3,7 +3,7 @@ import { Activity, ArrowDownRight, ArrowUpRight, BarChart3, CalendarDays, Check,
 import "./styles.css";
 
 type Row = { id:string; created:string; done?:boolean; [key:string]:string|number|boolean|undefined };
-const APP = "DayFlow";
+const APP: string = "DayFlow";
 const NAV = ["Overview","Tasks","Calendar","Notes","Habits","Goals","Focus","Weekly review"] as string[];
 const FIELDS = {"Tasks":[["title","Task","text"],["due","Due date","date"],["priority","Priority","select","Low|Normal|High"],["notes","Notes","textarea"]],"Notes":[["title","Note title","text"],["body","Write your note","textarea"],["tag","Tag","text"]],"Habits":[["title","Habit","text"],["cadence","Frequency","select","Daily|Weekdays|Weekly"],["notes","Why it matters","text"]],"Goals":[["title","Goal","text"],["target","Target date","date"],["category","Area","select","Personal|Work|Health|Learning|Other"],["notes","Next step","textarea"]]} as Record<string, [string,string,string,string?][]>;
 const STORE = "adrianvale.rebuild." + APP.toLowerCase().replace(/ /g,"-") + ".v2";
@@ -81,6 +81,6 @@ export default function App(){
  {toast?<div className="toast"><CheckCircle2 size={15}/>{toast}</div>:null}</div>;
 }
 function Metric({label,value,hint,icon}:{label:string;value:string;hint:string;icon:any}){return <div className="metric-card"><div className="metric-top"><span>{label}</span><i>{icon}</i></div><strong>{value}</strong><small>{hint}</small></div>}
-function SectionTitle({title,action,onAction}:{title:string;action:string;onAction:()=>void}){return <div className="section-title"><h3>{title}</h3><button onClick={onAction}>{action} <ArrowUpRight size={13}/></button></div>}
+function SectionTitle({title,action,onAction=()=>{}}:{title:string;action:string;onAction?:()=>void}){return <div className="section-title"><h3>{title}</h3><button onClick={onAction}>{action} <ArrowUpRight size={13}/></button></div>}
 function EyeIcon(){return <Activity/>}
 function UsersIcon(){return <Wallet/>}
