@@ -74,10 +74,10 @@ def palette_color(value):
             pass
     return value
 def apply_windows_glass_backdrop(window, transparency=8, light=False):
-    """Disable acrylic so app surfaces stay crisp and opaque like the website."""
+    """Use solid website-matched surfaces instead of Windows acrylic."""
     return False
 def install_accent_spotlight(window, accent, background=None):
-    """No decorative blur layer: use the flat website palette instead."""
+    """Keep the app background flat; the website design has no app blur layer."""
     return None
 try:
     import customtkinter as ctk
@@ -791,11 +791,6 @@ class DayFlow(ctk.CTk):
         ctk.CTkLabel(card,text="Colour theme").pack(anchor="w",padx=22,pady=(0,5))
         colour=ctk.CTkOptionMenu(card,values=["Classy","Royal"],command=self.set_accent)
         colour.set("Royal" if self.data["settings"].get("accent")=="royal" else "Classy"); colour.pack(anchor="w",padx=22,pady=(0,12))
-        ctk.CTkLabel(card,text="Window transparency").pack(anchor="w",padx=18,pady=(0,5))
-        transparency_value=ctk.CTkLabel(card,text=f'{int(self.data["settings"].get("transparency",8))}%',text_color=("gray55","gray75"))
-        transparency_value.pack(anchor="w",padx=18,pady=(0,4))
-        transparency=ctk.CTkSlider(card,from_=0,to=35,number_of_steps=35,command=lambda v:self.set_transparency(v,transparency_value))
-        transparency.set(int(self.data["settings"].get("transparency",8))); transparency.pack(fill="x",padx=18,pady=(0,16))
         focus=self.panel(body,"Focus timer"); focus.pack(fill="x")
         ctk.CTkLabel(focus,text="Default focus session (minutes)").pack(anchor="w",padx=18,pady=(0,5))
         value=ctk.CTkEntry(focus,width=100); value.insert(0,str(self.data["settings"].get("focus_minutes",25))); value.pack(anchor="w",padx=18,pady=(0,8))
