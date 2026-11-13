@@ -884,7 +884,8 @@ class DayFlow(ctk.CTk):
         legal.pack(fill="x", padx=12, pady=8)
         ctk.CTkLabel(legal, text="Legal & important information", font=self.ui_font(16, True), anchor="w").pack(fill="x", padx=18, pady=(14, 5))
         ctk.CTkLabel(legal, text="Reminders are not guaranteed. Keep separate backups of important personal planning information.", font=self.ui_font(11), text_color=("gray35", "gray70"), wraplength=700, justify="left", anchor="w").pack(fill="x", padx=18, pady=(0, 8))
-        ctk.CTkButton(legal, text="Read legal & liability notice", command=self.show_legal_from_settings, width=220).pack(anchor="w", padx=18, pady=(0, 14))
+        ctk.CTkButton(legal, text="Read legal & liability notice", command=self.show_legal_from_settings, width=220).pack(anchor="w", padx=18, pady=(0, 8))
+        ctk.CTkButton(legal, text="Privacy & legal information online", command=lambda: webbrowser.open("https://adrianvaleitl-debug.github.io/DayFlow/legal.html"), width=260).pack(anchor="w", padx=18, pady=(0, 14))
 
     def update_setting(self, key, value):
         self.data["settings"][key] = value
