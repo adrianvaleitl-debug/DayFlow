@@ -36,7 +36,7 @@ jobs:
       - name: Generate DayFlow icon
         run: python tools/generate_icon.py
       - name: Build executable
-        run: pyinstaller --noconfirm --clean --onefile --windowed --icon assets/dayflow.ico --add-data "assets/dayflow.ico;." --add-data "assets/dayflow.png;." --collect-all certifi --collect-all customtkinter --name DayFlow dayflow.py
+        run: pyinstaller --noconfirm --clean --onefile --windowed --icon assets/dayflow.ico --add-data "assets/dayflow.ico;." --add-data "assets/dayflow.png;." --add-data "THIRD_PARTY_NOTICES.md;." --collect-all certifi --collect-all customtkinter --name DayFlow dayflow.py
       - name: Smoke test packaged desktop app
         shell: pwsh
         run: |
