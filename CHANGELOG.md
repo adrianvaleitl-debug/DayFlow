@@ -9,3 +9,8 @@
 - Matched the Adrian Vale website surfaces, typography and Classy blue / Royal gold themes.
 - Added automated tests and Windows installer build checks.
 - No legacy Python application code or old desktop UI is included.
+
+## 2.2.0 — Daymark release
+- Added a first-launch reminder reliability and data-loss acknowledgement.
+- Renamed the product Daymark and introduced a matching royal-gold D app icon.
+- Updated the desktop installer identity and manual release links.
