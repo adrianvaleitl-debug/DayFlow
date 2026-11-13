@@ -398,7 +398,7 @@ class DayFlow(ctk.CTk):
         ctk.CTkLabel(side_footer, text="MAKE ROOM FOR WHAT MATTERS", font=ctk.CTkFont(size=8, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(11,3))
         ctk.CTkLabel(side_footer, text="A little progress, every day.", font=self.ui_font(10)).pack(anchor="w", padx=12, pady=(0,7))
         ctk.CTkButton(side_footer, text="My website ↗", height=30, corner_radius=10, fg_color="transparent", hover_color=("#E9E9E9","#383838"), text_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][0], command=lambda:webbrowser.open(PERSONAL_SITE)).pack(fill="x", padx=9, pady=2)
-        ctk.CTkButton(side_footer, text="Donate · Ko-fi ↗", height=30, corner_radius=10, fg_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][0], hover_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][1], text_color="#202020", command=lambda:webbrowser.open(KOFI)).pack(fill="x", padx=9, pady=(2,10))
+        ctk.CTkButton(side_footer, text="Optional support · Ko-fi ↗", height=30, corner_radius=10, fg_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][0], hover_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][1], text_color="#202020", command=lambda:webbrowser.open(KOFI)).pack(fill="x", padx=9, pady=(2,10))
         self.topbar = ctk.CTkFrame(self, height=68, corner_radius=25, fg_color=("#202024", "#202024"), border_width=1, border_color=("#38383E", "#38383E"))
         self.topbar.grid(row=0, column=0, sticky="ew", padx=(14, 8), pady=(14, 8))
         self.topbar.grid_propagate(False)
