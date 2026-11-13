@@ -10,6 +10,7 @@ const FIELDS = {"Tasks":[["title","Task","text"],["due","Due date","date"],["pri
 const PREFS_STORE = "adrianvale.preferences." + APP.toLowerCase().replace(/ /g,"-");
 const THEME_STORE = PREFS_STORE + ".theme";
 const DEFAULT_PREFERENCES = {font:"modern" as "modern"|"royal",textSize:"normal" as "normal"|"large"|"larger",reduceMotion:false,highContrast:false,enhancedFocus:true};
+type AppPreferences = typeof DEFAULT_PREFERENCES;
 const STORE = "adrianvale.rebuild." + APP.toLowerCase().replace(/ /g,"-") + ".v2";
 const money = (n:number) => new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP",maximumFractionDigits:2}).format(n||0);
 const num = (v:unknown) => Number(v)||0;
@@ -20,7 +21,7 @@ export default function App(){
  const [page,setPage]=useState("Overview");
  const [data,setData]=useState<Record<string,Row[]>>(()=>{try{return {...emptyData(),...JSON.parse(localStorage.getItem(STORE)||"{}")}}catch{return emptyData()}});
  const [theme,setTheme]=useState<"classy"|"royal">(()=>localStorage.getItem(THEME_STORE)==="royal"?"royal":"classy");
- const [preferences,setPreferences]=useState(()=>{try{return {...DEFAULT_PREFERENCES,...JSON.parse(localStorage.getItem(PREFS_STORE)||"{}")}}catch{return DEFAULT_PREFERENCES}});
+ const [preferences,setPreferences]=useState<AppPreferences>(()=>{try{return {...DEFAULT_PREFERENCES,...JSON.parse(localStorage.getItem(PREFS_STORE)||"{}")}}catch{return DEFAULT_PREFERENCES}});
  const [displayName,setDisplayName]=useState(()=>localStorage.getItem(PREFS_STORE+".name")||"");
  const [query,setQuery]=useState("");
  const [modal,setModal]=useState(false);
