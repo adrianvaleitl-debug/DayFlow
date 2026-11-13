@@ -164,7 +164,7 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.7"
+APP_VERSION = "1.8"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 PERSONAL_SITE = "https://adrianvaleitl-debug.github.io/"
 KOFI = "https://ko-fi.com/marketinsight"
@@ -819,7 +819,7 @@ class DayFlow(ctk.CTk):
         latest.pack(fill="x", pady=(0, 14))
         top = ctk.CTkFrame(latest, fg_color="transparent")
         top.pack(fill="x", padx=22, pady=(20, 8))
-        ctk.CTkLabel(top, text="1.6", font=self.ui_font(25, True),
+        ctk.CTkLabel(top, text="1.8", font=self.ui_font(25, True),
                      text_color=self.accent_colors()[self.data["settings"].get("accent", "classy")][0]).pack(side="left")
         ctk.CTkLabel(top, text="LATEST RELEASE", font=self.ui_font(10, True),
                      text_color=("gray55", "gray65")).pack(side="right")
