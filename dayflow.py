@@ -186,6 +186,8 @@ def install_accent_spotlight(window, accent, background=palette_color("#101012")
 
 try:
     import customtkinter as ctk
+except ImportError:
+    raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 # ---------------------------------------------------------------------------
 # TEMPORARY UNSTYLED UI BASELINE
@@ -246,9 +248,6 @@ def _install_unstyled_ui():
     globals()["install_accent_spotlight"] = lambda *args, **kwargs: None
 
 _install_unstyled_ui()
-
-except ImportError:
-    raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
 APP_VERSION = "1.10"
