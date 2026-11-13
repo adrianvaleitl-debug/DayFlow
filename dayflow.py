@@ -136,7 +136,7 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.6"
+APP_VERSION = "1.7"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 PERSONAL_SITE = "https://adrianvaleitl-debug.github.io/"
 KOFI = "https://ko-fi.com/marketinsight"
