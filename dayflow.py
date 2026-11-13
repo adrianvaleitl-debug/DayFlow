@@ -19,6 +19,12 @@ from PIL import Image, ImageDraw, ImageFilter, ImageTk
 
 GLASS_KEY = "#010101"
 
+ACTIVE_THEME = "Classy"
+def palette_color(value):
+    royal = {"#101012":"#24160E","#202024":"#432C1B","#29292E":"#52351F","#38383E":"#75512D","#404040":"#75512D","#363636":"#694523","#36363D":"#694523","#1A1A1A":"#2C1C11","#1B1B20":"#2C1C11","#F2F2F2":"#F1D9A8","#EBEEF2":"#F1D9A8","#EDEDED":"#24160E","#E9E9E9":"#52351F","#FFFFFF":"#F1D9A8","#F4F4F4":"#F1D9A8","#292929":"#52351F","#343434":"#52351F","#414141":"#C5A978","#B5B5B5":"#C5A978","#696969":"#C5A978","#C3C3C3":"#C5A978","#E4E4E4":"#694523"}
+    classy = {"#101012":"#000412","#202024":"#111B2B","#29292E":"#18243A","#38383E":"#29364A","#404040":"#29364A","#363636":"#24334A","#36363D":"#24334A","#1A1A1A":"#0B1424","#1B1B20":"#0B1424","#F2F2F2":"#EBEEF2","#EBEEF2":"#EBEEF2","#EDEDED":"#000412","#E9E9E9":"#18243A","#FFFFFF":"#EBEEF2","#F4F4F4":"#EBEEF2","#292929":"#18243A","#343434":"#18243A","#414141":"#AAB4C2","#B5B5B5":"#AAB4C2","#696969":"#AAB4C2","#C3C3C3":"#AAB4C2","#E4E4E4":"#24334A"}
+    return (royal if ACTIVE_THEME=="Royal" else classy).get(value, value)
+
 def apply_windows_glass_backdrop(window, transparency=8, light=False):
     """Expose a Windows acrylic backdrop through transparent Tk root pixels."""
     if sys.platform != "win32":
@@ -32,7 +38,7 @@ def apply_windows_glass_backdrop(window, transparency=8, light=False):
     except Exception:
         # Keep the app usable if colour-key transparency is unavailable.
         try:
-            window.configure(fg_color="#EDEDED" if light else "#101012")
+            window.configure(fg_color=palette_color("#EDEDED") if light else palette_color("#101012"))
         except Exception:
             pass
     try:
@@ -88,7 +94,7 @@ def apply_windows_glass_backdrop(window, transparency=8, light=False):
 
 
 
-def install_accent_spotlight(window, accent, background="#101012"):
+def install_accent_spotlight(window, accent, background=palette_color("#101012")):
     """Render a soft multi-layer nebula glow behind the app's glass surfaces."""
     try:
         if not isinstance(accent, str) or len(accent) != 7 or not accent.startswith("#"):
@@ -146,7 +152,7 @@ DATA_FILE = DATA_DIR / "dayflow_data.json"
 
 DEFAULT_DATA = {
     "tasks": [], "notes": [], "habits": [], "goals": [], "focus_sessions": [],
-    "settings": {"appearance": "dark", "accent": "black", "transparency": 8, "focus_minutes": 25, "font": "Segoe UI", "bold": True, "tutorial_seen": False, "auto_updates": True}
+    "settings": {"appearance": "dark", "accent": "classy", "transparency": 8, "focus_minutes": 25, "font": "Segoe UI", "bold": True, "tutorial_seen": False, "auto_updates": True}
 }
 
 def load_data():
@@ -175,20 +181,20 @@ def load_data():
 class DayFlow(ctk.CTk):
     def __init__(self):
         self.data = load_data()
-        if not self.data["settings"].get("forest_glass_migrated"):
-            self.data["settings"]["accent"] = "black"
-            self.data["settings"]["forest_glass_migrated"] = True
-            DATA_DIR.mkdir(parents=True, exist_ok=True)
-            DATA_FILE.write_text(json.dumps(self.data, indent=2, ensure_ascii=False), encoding="utf-8")
-        if self.data["settings"].get("accent") in ("dollar", "euro", "pound", "yen", "franc"):
-            self.data["settings"]["accent"] = "black"
-            DATA_DIR.mkdir(parents=True, exist_ok=True)
-            DATA_FILE.write_text(json.dumps(self.data, indent=2, ensure_ascii=False), encoding="utf-8")
+        old_theme = str(self.data["settings"].get("accent", "classy")).lower()
+        selected_theme = "royal" if old_theme in ("royal", "amber", "focus") else "classy"
+        self.data["settings"]["accent"] = selected_theme
+        self.data["settings"]["appearance"] = "dark"
+        self.data["settings"]["forest_glass_migrated"] = True
+        global ACTIVE_THEME
+        ACTIVE_THEME = "Royal" if selected_theme == "royal" else "Classy"
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        DATA_FILE.write_text(json.dumps(self.data, indent=2, ensure_ascii=False), encoding="utf-8")
         try:
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("AdrianVale.DayFlow")
         except Exception:
             pass
-        ctk.set_appearance_mode(self.data["settings"].get("appearance", "dark"))
+        ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
         self.apply_accent_theme()
         super().__init__()
@@ -204,7 +210,7 @@ class DayFlow(ctk.CTk):
         screen_h = self.winfo_screenheight()
         self.geometry(f"{min(1380, max(1080, screen_w - 80))}x{min(900, max(720, screen_h - 100))}")
         self.minsize(1020, 680)
-        self.configure(fg_color=GLASS_KEY if sys.platform=="win32" else ("#101012", "#101012"))
+        self.configure(fg_color=GLASS_KEY if sys.platform=="win32" else (palette_color("#101012"), palette_color("#101012")))
         self.apply_glass_effect()
         self.timer_running = False
         self.timer_end = None
@@ -236,10 +242,10 @@ class DayFlow(ctk.CTk):
             else:
                 self.close_app()
         dialog.protocol("WM_DELETE_WINDOW", dismiss_notice)
-        dialog.configure(fg_color=("#F2F3F2", "#171A18"))
+        dialog.configure(fg_color=(palette_color("#F2F3F2"), palette_color("#171A18")))
         ctk.CTkLabel(dialog, text="Before you use DayFlow", font=self.ui_font(24, True), anchor="w").pack(fill="x", padx=26, pady=(22, 5))
         ctk.CTkLabel(dialog, text="Please read and acknowledge this personal planning software notice.", font=self.ui_font(12), text_color=("gray35", "gray70"), anchor="w").pack(fill="x", padx=26, pady=(0, 12))
-        body = ctk.CTkScrollableFrame(dialog, fg_color=("#FFFFFF", "#202622"))
+        body = ctk.CTkScrollableFrame(dialog, fg_color=(palette_color("#FFFFFF"), palette_color("#202622")))
         body.pack(fill="both", expand=True, padx=20, pady=(0, 14))
         notice = (
             "PERSONAL ORGANISATION TOOL ONLY\n\n"
@@ -280,15 +286,15 @@ class DayFlow(ctk.CTk):
         self.show_legal_notice(force=True)
 
     def accent_colors(self):
-        return {"black":("#B9B9B9","#A0A0A0"),"amber":("#D7B77F","#BFA16A"),"azure":("#91AFE0","#7897C8"),"lavender":("#B5A0D8","#9B86BE"),"rose":("#D99EAD","#C48495"),"teal":("#91BEC3","#76A6AB"),"dollar":("#D7B77F","#BFA16A"),"euro":("#91AFE0","#7897C8"),"pound":("#B5A0D8","#9B86BE"),"yen":("#D99EAD","#C48495"),"franc":("#91BEC3","#76A6AB")}
+        return {"classy":("#DCE5F0","#AAB9CC"),"royal":("#FFC34D","#DFA52F")}
 
     def tint_surface(self, base, amount=0.06):
         """Keep glass surfaces charcoal; the selected colour is used only for accents."""
         return base
 
     def apply_accent_theme(self):
-        accent=str(self.data.get("settings",{}).get("accent","black")).lower()
-        if accent not in self.accent_colors(): accent="black"
+        accent=str(self.data.get("settings",{}).get("accent","classy")).lower()
+        if accent not in self.accent_colors(): accent="classy"
         self.data["settings"]["accent"]=accent
         primary,hover=self.accent_colors()[accent]
         theme=ctk.ThemeManager.theme
@@ -296,15 +302,15 @@ class DayFlow(ctk.CTk):
         if "CTkButton" in theme: theme["CTkButton"]["corner_radius"]=15
         if "CTkEntry" in theme: theme["CTkEntry"]["corner_radius"]=15
         updates={
-            "CTkButton":{"fg_color":[primary,primary],"hover_color":[hover,hover],"text_color":["#202020","#202020"],"corner_radius":13},
-            "CTkCheckBox":{"fg_color":[primary,primary],"hover_color":[hover,hover],"border_color":["#7F7F7F","#7F7F7F"],"checkmark_color":["#202020","#202020"]},
+            "CTkButton":{"fg_color":[primary,primary],"hover_color":[hover,hover],"text_color":[palette_color("#202020"),palette_color("#202020")],"corner_radius":13},
+            "CTkCheckBox":{"fg_color":[primary,primary],"hover_color":[hover,hover],"border_color":[palette_color("#7F7F7F"),palette_color("#7F7F7F")],"checkmark_color":[palette_color("#202020"),palette_color("#202020")]},
             "CTkSwitch":{"progress_color":[primary,primary]},
             "CTkSlider":{"progress_color":[primary,primary],"button_color":[primary,primary],"button_hover_color":[hover,hover]},
             "CTkProgressBar":{"progress_color":[primary,primary]},
             "CTkRadioButton":{"fg_color":[primary,primary],"hover_color":[hover,hover]},
-            "CTkOptionMenu":{"fg_color":["#282828","#282828"],"button_color":[primary,primary],"button_hover_color":[hover,hover],"dropdown_fg_color":["#1F1F1F","#1F1F1F"],"dropdown_hover_color":["#363636","#363636"],"dropdown_text_color":["#F2F2F2","#F2F2F2"],"text_color":["#F2F2F2","#F2F2F2"],"corner_radius":14},
-            "CTkComboBox":{"fg_color":["#1A1A1A","#1A1A1A"],"border_color":["#404040","#404040"],"button_color":[primary,primary],"button_hover_color":[hover,hover],"dropdown_fg_color":["#1F1F1F","#1F1F1F"],"dropdown_hover_color":["#363636","#363636"],"dropdown_text_color":["#F2F2F2","#F2F2F2"],"text_color":["#F2F2F2","#F2F2F2"],"corner_radius":14},
-            "CTkEntry":{"fg_color":["#1A1A1A","#1A1A1A"],"border_color":["#404040","#404040"],"text_color":["#F2F2F2","#F2F2F2"],"corner_radius":14}
+            "CTkOptionMenu":{"fg_color":[palette_color("#282828"),palette_color("#282828")],"button_color":[primary,primary],"button_hover_color":[hover,hover],"dropdown_fg_color":[palette_color("#1F1F1F"),palette_color("#1F1F1F")],"dropdown_hover_color":[palette_color("#363636"),palette_color("#363636")],"dropdown_text_color":[palette_color("#F2F2F2"),palette_color("#F2F2F2")],"text_color":[palette_color("#F2F2F2"),palette_color("#F2F2F2")],"corner_radius":14},
+            "CTkComboBox":{"fg_color":[palette_color("#1A1A1A"),palette_color("#1A1A1A")],"border_color":[palette_color("#404040"),palette_color("#404040")],"button_color":[primary,primary],"button_hover_color":[hover,hover],"dropdown_fg_color":[palette_color("#1F1F1F"),palette_color("#1F1F1F")],"dropdown_hover_color":[palette_color("#363636"),palette_color("#363636")],"dropdown_text_color":[palette_color("#F2F2F2"),palette_color("#F2F2F2")],"text_color":[palette_color("#F2F2F2"),palette_color("#F2F2F2")],"corner_radius":14},
+            "CTkEntry":{"fg_color":[palette_color("#1A1A1A"),palette_color("#1A1A1A")],"border_color":[palette_color("#404040"),palette_color("#404040")],"text_color":[palette_color("#F2F2F2"),palette_color("#F2F2F2")],"corner_radius":14}
         }
         for widget,values in updates.items():
             if widget in theme: theme[widget].update(values)
@@ -363,13 +369,13 @@ class DayFlow(ctk.CTk):
         DATA_FILE.write_text(json.dumps(self.data, indent=2, ensure_ascii=False), encoding="utf-8")
 
     def build_shell(self):
-        install_accent_spotlight(self, self.accent_colors()[str(self.data["settings"].get("accent", "black")).lower()][0], GLASS_KEY if sys.platform=="win32" else ("#EDEDED" if ctk.get_appearance_mode()=="Light" else "#101012"))
+        install_accent_spotlight(self, self.accent_colors()[str(self.data["settings"].get("accent", "classy")).lower()][0], GLASS_KEY if sys.platform=="win32" else palette_color(palette_color("#101012")))
         # Right-side navigation rail keeps the working canvas broad and uncluttered.
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=0)
         self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=1)
-        self.sidebar = ctk.CTkFrame(self, width=224, corner_radius=27, fg_color=("#202024", "#202024"), border_width=1, border_color=("#38383E", "#38383E"))
+        self.sidebar = ctk.CTkFrame(self, width=224, corner_radius=27, fg_color=(palette_color("#202024"), palette_color("#202024")), border_width=1, border_color=(palette_color("#38383E"), palette_color("#38383E")))
         self.sidebar.grid(row=0, column=1, rowspan=2, sticky="nsew", padx=(8, 14), pady=14)
         self.sidebar.grid_propagate(False)
         brand = ctk.CTkFrame(self.sidebar, fg_color="transparent")
@@ -390,16 +396,16 @@ class DayFlow(ctk.CTk):
         for group, items in groups:
             ctk.CTkLabel(nav_area, text=group, font=ctk.CTkFont(size=9, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(15,7))
             for name, glyph in items:
-                button = ctk.CTkButton(nav_area, text=f"{glyph}   {name}", height=42, corner_radius=12, anchor="w", fg_color="transparent", hover_color=("#E9E9E9","#363636"), text_color=("#696969","#C3C3C3"), font=self.ui_font(12), command=lambda n=name: self.show_page(n))
+                button = ctk.CTkButton(nav_area, text=f"{glyph}   {name}", height=42, corner_radius=12, anchor="w", fg_color="transparent", hover_color=(palette_color("#E9E9E9"),palette_color("#363636")), text_color=(palette_color("#696969"),palette_color("#C3C3C3")), font=self.ui_font(12), command=lambda n=name: self.show_page(n))
                 button.pack(fill="x", padx=2, pady=2)
                 self.nav_buttons[name] = button
-        side_footer = ctk.CTkFrame(self.sidebar, fg_color=("#29292E", "#29292E"), corner_radius=22, border_width=0)
+        side_footer = ctk.CTkFrame(self.sidebar, fg_color=(palette_color("#29292E"), palette_color("#29292E")), corner_radius=22, border_width=0)
         side_footer.pack(fill="x", padx=14, pady=15)
         ctk.CTkLabel(side_footer, text="MAKE ROOM FOR WHAT MATTERS", font=ctk.CTkFont(size=8, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(11,3))
         ctk.CTkLabel(side_footer, text="A little progress, every day.", font=self.ui_font(10)).pack(anchor="w", padx=12, pady=(0,7))
-        ctk.CTkButton(side_footer, text="My website ↗", height=30, corner_radius=10, fg_color="transparent", hover_color=("#E9E9E9","#383838"), text_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][0], command=lambda:webbrowser.open(PERSONAL_SITE)).pack(fill="x", padx=9, pady=2)
-        ctk.CTkButton(side_footer, text="Optional support · Ko-fi ↗", height=30, corner_radius=10, fg_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][0], hover_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][1], text_color="#202020", command=lambda:webbrowser.open(KOFI)).pack(fill="x", padx=9, pady=(2,10))
-        self.topbar = ctk.CTkFrame(self, height=68, corner_radius=25, fg_color=("#202024", "#202024"), border_width=1, border_color=("#38383E", "#38383E"))
+        ctk.CTkButton(side_footer, text="My website ↗", height=30, corner_radius=10, fg_color="transparent", hover_color=(palette_color("#E9E9E9"),palette_color("#383838")), text_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][0], command=lambda:webbrowser.open(PERSONAL_SITE)).pack(fill="x", padx=9, pady=2)
+        ctk.CTkButton(side_footer, text="Optional support · Ko-fi ↗", height=30, corner_radius=10, fg_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][0], hover_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][1], text_color=palette_color("#202020"), command=lambda:webbrowser.open(KOFI)).pack(fill="x", padx=9, pady=(2,10))
+        self.topbar = ctk.CTkFrame(self, height=68, corner_radius=25, fg_color=(palette_color("#202024"), palette_color("#202024")), border_width=1, border_color=(palette_color("#38383E"), palette_color("#38383E")))
         self.topbar.grid(row=0, column=0, sticky="ew", padx=(14, 8), pady=(14, 8))
         self.topbar.grid_propagate(False)
         self.page_title = ctk.CTkLabel(self.topbar, text="Overview", font=self.ui_font(16, True))
@@ -428,7 +434,7 @@ class DayFlow(ctk.CTk):
         return body
 
     def panel(self, parent, title=None):
-        frame = ctk.CTkFrame(parent, corner_radius=24, fg_color=("#202024", "#202024"), border_width=0)
+        frame = ctk.CTkFrame(parent, corner_radius=24, fg_color=(palette_color("#202024"), palette_color("#202024")), border_width=0)
         if title:
             ctk.CTkLabel(frame, text=title, font=self.ui_font(15, True)).pack(anchor="w", padx=24, pady=(20, 12))
         return frame
@@ -439,7 +445,7 @@ class DayFlow(ctk.CTk):
         self.page_title.configure(text=name)
         for nav_name, button in self.nav_buttons.items():
             active = nav_name == name
-            button.configure(fg_color=(accent_color, accent_color) if active else "transparent", hover_color=(accent_color, accent_color) if active else ("#E9E9E9","#363636"), text_color=("#202020","#202020") if active else ("#696969","#C3C3C3"), font=self.ui_font(12, active))
+            button.configure(fg_color=(accent_color, accent_color) if active else "transparent", hover_color=(accent_color, accent_color) if active else (palette_color("#E9E9E9"),palette_color("#363636")), text_color=(palette_color("#202020"),palette_color("#202020")) if active else (palette_color("#696969"),palette_color("#C3C3C3")), font=self.ui_font(12, active))
         self.clear_main()
         getattr(self, f"page_{name.lower().replace(chr(32), chr(95))}")()
         if name == "Focus" and self.timer_running:
@@ -558,9 +564,9 @@ class DayFlow(ctk.CTk):
             done = ctk.BooleanVar(value=task.get("done",False))
             def toggle(t=task,v=done):
                 t["done"]=v.get(); t["completed_at"]=date.today().isoformat() if v.get() else ""; self.save(); self.show_page("Tasks")
-            ctk.CTkCheckBox(line,text=task["title"],variable=done,command=toggle,font=ctk.CTkFont(size=12),text_color=("gray55","gray65") if task.get("done") else ("#282828","#F4F4F4")).pack(side="left",fill="x",expand=True)
+            ctk.CTkCheckBox(line,text=task["title"],variable=done,command=toggle,font=ctk.CTkFont(size=12),text_color=("gray55","gray65") if task.get("done") else (palette_color("#282828"),palette_color("#F4F4F4"))).pack(side="left",fill="x",expand=True)
             ctk.CTkLabel(line,text=f'{task.get("due","No date")}  ·  {task.get("priority","Normal")}',font=ctk.CTkFont(size=10),text_color=("gray55","gray65")).pack(side="left",padx=10)
-            ctk.CTkButton(line,text="×",width=30,fg_color="transparent",hover_color=("#E9E9E9","#343434"),text_color=("#414141","#B5B5B5"),command=lambda t=task:self.delete_item("tasks",t,"Tasks")).pack(side="right")
+            ctk.CTkButton(line,text="×",width=30,fg_color="transparent",hover_color=(palette_color("#E9E9E9"),palette_color("#343434")),text_color=(palette_color("#414141"),palette_color("#B5B5B5")),command=lambda t=task:self.delete_item("tasks",t,"Tasks")).pack(side="right")
 
     def page_calendar(self):
         self.header("Calendar", "A simple view of what's coming up.")
@@ -612,9 +618,9 @@ class DayFlow(ctk.CTk):
                 else: h["history"].append(today)
                 self.save(); self.show_page("Habits")
             ctk.CTkButton(card,text="✓ Completed today" if completed else "Mark complete today",command=mark,
-                fg_color="#6B6B6B" if completed else None).pack(side="left",padx=18,pady=(0,14))
+                fg_color=palette_color("#6B6B6B") if completed else None).pack(side="left",padx=18,pady=(0,14))
             ctk.CTkLabel(card,text=f'{len(habit.get("history",[]))} total check-ins',text_color=("gray55","gray65")).pack(side="left",padx=12,pady=(0,14))
-            ctk.CTkButton(card,text="Remove",width=70,fg_color="transparent",text_color=("#414141","#B5B5B5"),command=lambda h=habit:self.delete_item("habits",h,"Habits")).pack(side="right",padx=14,pady=(0,14))
+            ctk.CTkButton(card,text="Remove",width=70,fg_color="transparent",text_color=(palette_color("#414141"),palette_color("#B5B5B5")),command=lambda h=habit:self.delete_item("habits",h,"Habits")).pack(side="right",padx=14,pady=(0,14))
 
     def page_goals(self):
         self.header("Goals", "Turn bigger ambitions into visible progress.")
@@ -691,7 +697,7 @@ class DayFlow(ctk.CTk):
             ("3. Make space to focus", "Use the focus timer to work in distraction-free blocks."),
             ("4. Keep everything together", "Save notes and see upcoming work in your calendar.")
         ]:
-            row = ctk.CTkFrame(dialog, fg_color=("gray92", "#292929"), corner_radius=12)
+            row = ctk.CTkFrame(dialog, fg_color=("gray92", palette_color("#292929")), corner_radius=12)
             row.pack(fill="x", padx=24, pady=5)
             ctk.CTkLabel(row, text=heading, font=self.ui_font(13, True)).pack(anchor="w", padx=14, pady=(10, 2))
             ctk.CTkLabel(row, text=detail, font=self.ui_font(11), text_color=("gray40", "gray70")).pack(anchor="w", padx=14, pady=(0, 10))
@@ -837,12 +843,10 @@ class DayFlow(ctk.CTk):
         self.header("Settings", "Make DayFlow feel like your workspace.")
         body=self.body()
         card=self.panel(body,"Appearance"); card.pack(fill="x",pady=(0,12))
-        ctk.CTkLabel(card,text="Appearance").pack(anchor="w",padx=18,pady=(0,5))
-        appearance=ctk.CTkOptionMenu(card,values=["dark","light","system"],command=self.set_appearance)
-        appearance.set(self.data["settings"].get("appearance","dark")); appearance.pack(anchor="w",padx=22,pady=(0,12))
-        ctk.CTkLabel(card,text="Accent colour").pack(anchor="w",padx=22,pady=(0,5))
-        colour=ctk.CTkOptionMenu(card,values=["Black","Amber","Azure","Lavender","Rose","Teal"],command=self.set_accent)
-        colour.set({"black":"Black","amber":"Amber","azure":"Azure","lavender":"Lavender","rose":"Rose","teal":"Teal","dollar":"Amber","euro":"Azure","pound":"Lavender","yen":"Rose","franc":"Teal"}.get(self.data["settings"].get("accent","black"),"Black")); colour.pack(anchor="w",padx=22,pady=(0,12))
+        ctk.CTkLabel(card,text="Classy and Royal use separate complete palettes across the app.").pack(anchor="w",padx=18,pady=(0,5))
+        ctk.CTkLabel(card,text="Colour theme").pack(anchor="w",padx=22,pady=(0,5))
+        colour=ctk.CTkOptionMenu(card,values=["Classy","Royal"],command=self.set_accent)
+        colour.set("Royal" if self.data["settings"].get("accent")=="royal" else "Classy"); colour.pack(anchor="w",padx=22,pady=(0,12))
         ctk.CTkLabel(card,text="Window transparency").pack(anchor="w",padx=18,pady=(0,5))
         transparency_value=ctk.CTkLabel(card,text=f'{int(self.data["settings"].get("transparency",8))}%',text_color=("gray55","gray75"))
         transparency_value.pack(anchor="w",padx=18,pady=(0,4))
@@ -878,9 +882,9 @@ class DayFlow(ctk.CTk):
         ctk.CTkSwitch(shortcuts,text="Launch DayFlow when Windows starts",variable=startup_var,command=lambda:self.set_startup(startup_var.get())).pack(anchor="w",padx=18,pady=(0,14))
         info=self.panel(body,"Your data"); info.pack(fill="x",pady=12)
         ctk.CTkLabel(info,text=f"Your tasks, notes, habits, goals, focus sessions and settings are stored locally on this device:\n{DATA_FILE}",justify="left",text_color=("gray55","gray65"),wraplength=760).pack(anchor="w",padx=18,pady=(16,8))
-        ctk.CTkButton(info,text="Delete all DayFlow data…",fg_color="#9B3434",hover_color="#7E2929",command=self.delete_all_local_data).pack(anchor="w",padx=18,pady=(0,16))
+        ctk.CTkButton(info,text="Delete all DayFlow data…",fg_color=palette_color("#9B3434"),hover_color=palette_color("#7E2929"),command=self.delete_all_local_data).pack(anchor="w",padx=18,pady=(0,16))
 
-        legal = ctk.CTkFrame(scroll, fg_color=("#FFFFFF", "#202622"), corner_radius=18)
+        legal = ctk.CTkFrame(scroll, fg_color=(palette_color("#FFFFFF"), palette_color("#202622")), corner_radius=18)
         legal.pack(fill="x", padx=12, pady=8)
         ctk.CTkLabel(legal, text="Legal & important information", font=self.ui_font(16, True), anchor="w").pack(fill="x", padx=18, pady=(14, 5))
         ctk.CTkLabel(legal, text="Reminders are not guaranteed. Keep separate backups of important personal planning information.", font=self.ui_font(11), text_color=("gray35", "gray70"), wraplength=700, justify="left", anchor="w").pack(fill="x", padx=18, pady=(0, 8))
@@ -948,10 +952,11 @@ class DayFlow(ctk.CTk):
         self.save()
 
     def set_accent(self, value):
-        aliases={"Black":"black","Amber":"amber","Azure":"azure","Lavender":"lavender","Rose":"rose","Teal":"teal","Focus":"amber","Flow":"azure","Growth":"lavender","Energy":"rose","Balance":"teal"}
-        value=aliases.get(value,str(value).lower())
+        value=str(value).lower()
         if value not in self.accent_colors():
-            value="black"
+            value="classy"
+        global ACTIVE_THEME
+        ACTIVE_THEME = "Royal" if value=="royal" else "Classy"
         self.data["settings"]["accent"]=value
         self.apply_accent_theme()
         self.save()
@@ -967,7 +972,7 @@ class DayFlow(ctk.CTk):
         self.show_page(current_page)
         self.apply_glass_effect()
         install_accent_spotlight(self, self.accent_colors()[value][0],
-            GLASS_KEY if sys.platform=="win32" else ("#EDEDED" if ctk.get_appearance_mode()=="Light" else "#101012"))
+            GLASS_KEY if sys.platform=="win32" else palette_color(palette_color("#101012")))
 
     def delete_all_local_data(self):
         if not messagebox.askyesno(
