@@ -1,32 +1,12 @@
-# Third-party software and SDK inventory
+# Third-party notices
 
-This inventory records the direct Python packages declared or imported by this project. Package versions are not locked to exact builds in the repository. Each Windows release workflow therefore generates a `THIRD_PARTY_LICENSES.md` report from the actual build environment, listing resolved package versions, licence identifiers and upstream URLs, including transitive dependencies.
+This application is an independent project by Adrian Vale. It includes or depends on the following open-source software:
 
-## Runtime dependencies
+- React and React DOM — MIT License
+- TypeScript — Apache License 2.0
+- Vite and the Vite React plugin — MIT License
+- Lucide React — ISC License
+- Tauri and Tauri CLI — Apache License 2.0 or MIT License
+- Rust ecosystem dependencies listed in `src-tauri/Cargo.toml` — each dependency retains its own published license
 
-| Package | Purpose in this project | Upstream licence |
-|---|---|---|
-| CustomTkinter | Desktop interface widgets | MIT — https://github.com/TomSchimansky/CustomTkinter/blob/master/LICENSE |
-| Pillow | Local image and icon processing | MIT-CMU — https://github.com/python-pillow/Pillow/blob/main/LICENSE |
-| certifi | TLS certificate bundle | MPL-2.0 — https://github.com/certifi/python-certifi/blob/master/LICENSE |
-
-## Build tooling
-
-PyInstaller is used by the Windows release workflow to package the desktop application. Its licence is GPL-2.0 with a bootloader exception, with additional files under Apache-2.0 as described by the upstream project: https://github.com/pyinstaller/pyinstaller/blob/develop/doc/license.rst
-
-
-## Desktop app network integrations
-
-The desktop app uses GitHub's Releases API for optional update checks and release downloads. It does not send tasks, notes, habits, goals, focus sessions or other planning records to GitHub. Ordinary connection metadata may be visible to GitHub when an update check is made.
-
-## Website SDK and tracking review
-
-The website source was reviewed for external script imports, embedded frames, analytics tags, advertising pixels and third-party JavaScript SDKs. None were found in the main project pages reviewed. Inline project scripts provide interface behaviour and, where applicable, request public release metadata from GitHub. This is a source review, not a guarantee about future third-party behaviour.
-
-## Release checklist
-
-Before each public release:
-- Review the generated `THIRD_PARTY_LICENSES.md` report for unknown, changed or restrictive licences.
-- Check the exact licence text and required attribution for all direct and transitive dependencies.
-- Confirm the packaged distribution includes the upstream licence files required by those dependencies.
-- Re-run the SDK and network-endpoint review when dependencies or update/data integrations change.
+The exact dependency versions are declared in `package.json` and `src-tauri/Cargo.toml`. No external market-data service is used by this application.
