@@ -828,7 +828,7 @@ class DayFlow(ctk.CTk):
         earlier.pack(fill="x", pady=5)
         for version, title, detail in [
             ("1.4.7", "Creator shortcuts", "Added persistent website and Ko-fi links to the desktop sidebar."),
-            ("1.4.6", "Accent and spacing refinements", "Restored six accent choices, refined panel spacing and improved Windows icon handling.")
+            ("1.4.6", "Accent and spacing refinements", "Refined panel spacing and improved Windows icon handling.")
         ]:
             row = ctk.CTkFrame(earlier, fg_color="transparent")
             row.pack(fill="x", padx=18, pady=(8, 2))
@@ -842,7 +842,7 @@ class DayFlow(ctk.CTk):
     def page_settings(self):
         self.header("Settings", "Make DayFlow feel like your workspace.")
         body=self.body()
-        card=self.panel(body,"Appearance"); card.pack(fill="x",pady=(0,12))
+        card=self.panel(body,"Colour theme"); card.pack(fill="x",pady=(0,12))
         ctk.CTkLabel(card,text="Classy and Royal use separate complete palettes across the app.").pack(anchor="w",padx=18,pady=(0,5))
         ctk.CTkLabel(card,text="Colour theme").pack(anchor="w",padx=22,pady=(0,5))
         colour=ctk.CTkOptionMenu(card,values=["Classy","Royal"],command=self.set_accent)
