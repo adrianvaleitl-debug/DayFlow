@@ -6,6 +6,6 @@ edition="2021"
 name="DayFlow_lib"
 crate-type=["staticlib","cdylib","rlib"]
 [build-dependencies]
-tauri-build={version="2"}
+tauri-build={version="2.7.2"}
 [dependencies]
-tauri={version="2"}
+tauri={version="2.12.3"}
