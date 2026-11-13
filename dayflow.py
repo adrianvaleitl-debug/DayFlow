@@ -409,7 +409,7 @@ class DayFlow(ctk.CTk):
 
     def ui_font(self, size=12, force_bold=False):
         settings = self.data.get("settings", {})
-        return ctk.CTkFont(family="Georgia" if str(settings.get("accent", "classy")).lower() == "royal" else "Manrope", size=size,
+        return ctk.CTkFont(family="Manrope", size=size,
                            weight="bold" if force_bold or settings.get("bold", True) else "normal")
 
     def save(self):
