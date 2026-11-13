@@ -972,7 +972,7 @@ class DayFlow(ctk.CTk):
     def delete_all_local_data(self):
         if not messagebox.askyesno(
             "Delete all DayFlow data",
-            "This permanently deletes your locally stored tasks, notes, habits, goals, focus sessions and settings from this device. Back up anything you want to keep first. This cannot be undone.\n\nContinue?"
+            "This permanently deletes your locally stored tasks, notes, habits, goals, focus sessions and settings from this device. Back up anything you want to keep first. Copies you exported or backed up elsewhere are not deleted. This cannot be undone.\n\nContinue?"
         ):
             return
         try:
