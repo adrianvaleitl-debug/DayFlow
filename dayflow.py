@@ -21,32 +21,58 @@ GLASS_KEY = "#010101"
 
 ACTIVE_THEME = "Classy"
 def palette_color(value):
-    royal = {"#101012":"#24160E","#202024":"#432C1B","#29292E":"#52351F","#38383E":"#75512D","#404040":"#75512D","#363636":"#694523","#36363D":"#694523","#1A1A1A":"#2C1C11","#1B1B20":"#2C1C11","#F2F2F2":"#F1D9A8","#EBEEF2":"#F1D9A8","#EDEDED":"#24160E","#E9E9E9":"#52351F","#FFFFFF":"#F1D9A8","#F4F4F4":"#F1D9A8","#292929":"#52351F","#343434":"#52351F","#414141":"#C5A978","#B5B5B5":"#C5A978","#696969":"#C5A978","#C3C3C3":"#C5A978","#E4E4E4":"#694523"}
-    classy = {"#101012":"#000412","#202024":"#111B2B","#29292E":"#18243A","#38383E":"#29364A","#404040":"#29364A","#363636":"#24334A","#36363D":"#24334A","#1A1A1A":"#0B1424","#1B1B20":"#0B1424","#F2F2F2":"#EBEEF2","#EBEEF2":"#EBEEF2","#EDEDED":"#000412","#E9E9E9":"#18243A","#FFFFFF":"#EBEEF2","#F4F4F4":"#EBEEF2","#292929":"#18243A","#343434":"#18243A","#414141":"#AAB4C2","#B5B5B5":"#AAB4C2","#696969":"#AAB4C2","#C3C3C3":"#AAB4C2","#E4E4E4":"#24334A"}
-    if value == "#171A18":
-        return "#24160E" if ACTIVE_THEME=="Royal" else "#000412"
-    if value == "#202622":
-        return "#432C1B" if ACTIVE_THEME=="Royal" else "#111B2B"
-    palette = royal if ACTIVE_THEME=="Royal" else classy
-    if value in palette:
-        return palette[value]
-    if value in ("#202020","#1A1A1A","#1F1F1F","#363636"):
-        return "#24160E" if ACTIVE_THEME=="Royal" else "#000412"
-    if len(value)==7 and value.startswith("#"):
+    """Translate legacy widget colours into the Adrian Vale website palette."""
+    royal = ACTIVE_THEME == "Royal"
+    colors = {
+        "#101012": "#241407" if royal else "#000412",
+        "#19191D": "#4a2e18" if royal else "#101d32",
+        "#202024": "#382313" if royal else "#081225",
+        "#29292E": "#4a2e18" if royal else "#101d32",
+        "#38383E": "#6b4a2c" if royal else "#26364d",
+        "#404040": "#6b4a2c" if royal else "#26364d",
+        "#36363D": "#4a2e18" if royal else "#101d32",
+        "#1B1B20": "#241407" if royal else "#000412",
+        "#F2F2F2": "#fff3d9" if royal else "#EBEEF2",
+        "#EBEEF2": "#fff3d9" if royal else "#EBEEF2",
+        "#A9A9A9": "#d5bd94" if royal else "#aeb8c8",
+        "#AFAFAF": "#d5bd94" if royal else "#aeb8c8",
+        "#EDEDED": "#241407" if royal else "#000412",
+        "#FBFBFB": "#382313" if royal else "#081225",
+        "#F9F9F9": "#4a2e18" if royal else "#101d32",
+        "#FFFFFF": "#fff3d9" if royal else "#EBEEF2",
+        "#E9E9E9": "#4a2e18" if royal else "#101d32",
+        "#E4E4E4": "#6b4a2c" if royal else "#26364d",
+        "#DBDBDB": "#6b4a2c" if royal else "#26364d",
+        "#7E7E7E": "#d5bd94" if royal else "#aeb8c8",
+        "#333333": "#fff3d9" if royal else "#EBEEF2",
+        "#1E1E1E": "#241407" if royal else "#000412",
+        "#282828": "#4a2e18" if royal else "#101d32",
+        "#1F1F1F": "#382313" if royal else "#081225",
+        "#7F7F7F": "#d5bd94" if royal else "#aeb8c8",
+        "#D6D6D6": "#6b4a2c" if royal else "#26364d",
+        "#CBCBCB": "#6b4a2c" if royal else "#26364d",
+        "#585858": "#4a2e18" if royal else "#101d32",
+        "#343434": "#4a2e18" if royal else "#101d32",
+        "#B9B9B9": "#F1D9A8" if royal else "#d8dde5",
+        "#A0A0A0": "#d5bd94" if royal else "#aeb8c8",
+        "#696969": "#d5bd94" if royal else "#aeb8c8",
+        "#C3C3C3": "#d5bd94" if royal else "#aeb8c8",
+    }
+    if value in colors:
+        return colors[value]
+    if isinstance(value, str) and len(value) == 7 and value.startswith("#"):
         try:
-            rgb=tuple(int(value[i:i+2],16) for i in (1,3,5))
-            if max(rgb)-min(rgb)<=2:
-                level=sum(rgb)//3
-                if level<=35:return "#24160E" if ACTIVE_THEME=="Royal" else "#000412"
-                if level<=65:return "#75512D" if ACTIVE_THEME=="Royal" else "#29364A"
-                if level<=125:return "#C5A978" if ACTIVE_THEME=="Royal" else "#AAB4C2"
-                if level<=185:return "#75512D" if ACTIVE_THEME=="Royal" else "#29364A"
-                if level<=225:return "#52351F" if ACTIVE_THEME=="Royal" else "#18243A"
-                return "#F1D9A8" if ACTIVE_THEME=="Royal" else "#EBEEF2"
+            rgb = tuple(int(value[i:i + 2], 16) for i in (1, 3, 5))
+            if max(rgb) - min(rgb) <= 2:
+                level = sum(rgb) // 3
+                if level < 40: return "#241407" if royal else "#000412"
+                if level < 90: return "#4a2e18" if royal else "#101d32"
+                if level < 150: return "#d5bd94" if royal else "#aeb8c8"
+                if level < 215: return "#382313" if royal else "#081225"
+                return "#fff3d9" if royal else "#EBEEF2"
         except ValueError:
             pass
     return value
-
 def apply_windows_glass_backdrop(window, transparency=8, light=False):
     """Expose a Windows acrylic backdrop through transparent Tk root pixels."""
     if sys.platform != "win32":
@@ -164,7 +190,7 @@ except ImportError:
     raise SystemExit("DayFlow needs CustomTkinter. Run: pip install -r requirements.txt")
 
 APP_NAME = "DayFlow"
-APP_VERSION = "1.8"
+APP_VERSION = "1.9"
 GITHUB_RELEASES_API = "https://api.github.com/repos/adrianvaleitl-debug/DayFlow/releases/latest"
 PERSONAL_SITE = "https://adrianvaleitl-debug.github.io/"
 KOFI = "https://ko-fi.com/marketinsight"
@@ -383,7 +409,7 @@ class DayFlow(ctk.CTk):
 
     def ui_font(self, size=12, force_bold=False):
         settings = self.data.get("settings", {})
-        return ctk.CTkFont(family=settings.get("font", "Segoe UI"), size=size,
+        return ctk.CTkFont(family="Georgia" if str(settings.get("accent", "classy")).lower() == "royal" else "Manrope", size=size,
                            weight="bold" if force_bold or settings.get("bold", True) else "normal")
 
     def save(self):
@@ -393,12 +419,12 @@ class DayFlow(ctk.CTk):
     def build_shell(self):
         install_accent_spotlight(self, self.accent_colors()[str(self.data["settings"].get("accent", "classy")).lower()][0], GLASS_KEY if sys.platform=="win32" else palette_color(palette_color("#101012")))
         # Right-side navigation rail keeps the working canvas broad and uncluttered.
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=0)
+        self.grid_columnconfigure(0, weight=0)
+        self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=1)
-        self.sidebar = ctk.CTkFrame(self, width=224, corner_radius=27, fg_color=(palette_color("#202024"), palette_color("#202024")), border_width=1, border_color=(palette_color("#38383E"), palette_color("#38383E")))
-        self.sidebar.grid(row=0, column=1, rowspan=2, sticky="nsew", padx=(8, 14), pady=14)
+        self.sidebar = ctk.CTkFrame(self, width=224, corner_radius=20, fg_color=(palette_color("#202024"), palette_color("#202024")), border_width=1, border_color=(palette_color("#38383E"), palette_color("#38383E")))
+        self.sidebar.grid(row=0, column=0, rowspan=2, sticky="nsew", padx=(14, 8), pady=14)
         self.sidebar.grid_propagate(False)
         brand = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         brand.pack(fill="x", padx=20, pady=(25, 28))
@@ -428,14 +454,14 @@ class DayFlow(ctk.CTk):
         ctk.CTkButton(side_footer, text="My website ↗", height=30, corner_radius=10, fg_color="transparent", hover_color=(palette_color("#E9E9E9"),palette_color("#383838")), text_color=self.accent_colors()[str(self.data["settings"].get("accent","classy")).lower()][0], command=lambda:webbrowser.open(PERSONAL_SITE)).pack(fill="x", padx=9, pady=2)
         ctk.CTkButton(side_footer, text="Optional support · Ko-fi ↗", height=30, corner_radius=10, fg_color=self.accent_colors()[str(self.data["settings"].get("accent","classy")).lower()][0], hover_color=self.accent_colors()[str(self.data["settings"].get("accent","classy")).lower()][1], text_color=palette_color("#202020"), command=lambda:webbrowser.open(KOFI)).pack(fill="x", padx=9, pady=(2,10))
         self.topbar = ctk.CTkFrame(self, height=68, corner_radius=25, fg_color=(palette_color("#202024"), palette_color("#202024")), border_width=1, border_color=(palette_color("#38383E"), palette_color("#38383E")))
-        self.topbar.grid(row=0, column=0, sticky="ew", padx=(14, 8), pady=(14, 8))
+        self.topbar.grid(row=0, column=1, sticky="ew", padx=(8, 14), pady=(14, 8))
         self.topbar.grid_propagate(False)
         self.page_title = ctk.CTkLabel(self.topbar, text="Overview", font=self.ui_font(16, True))
         self.page_title.pack(side="left", padx=27)
         self.date_label = ctk.CTkLabel(self.topbar, text=date.today().strftime("%A  ·  %d %B %Y"), font=ctk.CTkFont(size=11), text_color=("gray55","gray65"))
         self.date_label.pack(side="right", padx=28)
         self.main = ctk.CTkFrame(self, fg_color="transparent", corner_radius=18)
-        self.main.grid(row=1, column=0, sticky="nsew", padx=(16, 8), pady=(10, 14))
+        self.main.grid(row=1, column=1, sticky="nsew", padx=(16, 14), pady=(10, 14))
         self.main.grid_columnconfigure(0, weight=1)
         self.main.grid_rowconfigure(1, weight=1)
 
@@ -446,7 +472,7 @@ class DayFlow(ctk.CTk):
     def header(self, title, subtitle):
         top = ctk.CTkFrame(self.main, fg_color="transparent")
         top.grid(row=0, column=0, sticky="ew", pady=(0, 20))
-        ctk.CTkLabel(top, text=title, font=self.ui_font(28, True)).pack(anchor="w")
+        ctk.CTkLabel(top, text=title, font=ctk.CTkFont(family="Cormorant Garamond" if str(self.data.get("settings", {}).get("accent","classy")).lower()=="royal" else "Manrope", size=32, weight="bold")).pack(anchor="w")
         ctk.CTkLabel(top, text=subtitle, font=ctk.CTkFont(size=12), text_color=("gray55", "gray65")).pack(anchor="w", pady=(4, 0))
         return top
 
@@ -456,7 +482,7 @@ class DayFlow(ctk.CTk):
         return body
 
     def panel(self, parent, title=None):
-        frame = ctk.CTkFrame(parent, corner_radius=24, fg_color=(palette_color("#202024"), palette_color("#202024")), border_width=0)
+        frame = ctk.CTkFrame(parent, corner_radius=17, fg_color=(palette_color("#202024"), palette_color("#202024")), border_width=1, border_color=(palette_color("#38383E"), palette_color("#38383E")))
         if title:
             ctk.CTkLabel(frame, text=title, font=self.ui_font(15, True)).pack(anchor="w", padx=24, pady=(20, 12))
         return frame
