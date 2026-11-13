@@ -1,4 +1,4 @@
-# DayFlow 2.0 — Adrian Vale
+# Daymark 2.2 2.0 — Adrian Vale
 
 A calm personal planning workspace, rebuilt with React, TypeScript and Tauri 2. The previous Python UI and application implementation are not included.
 
@@ -28,9 +28,14 @@ npm run tauri build
 ```
 
 ## Data and limitations
-Tasks, notes, habits, goals and focus history are saved in local app storage on this device. No hosted account or cloud sync is required. Export a backup regularly. In-app reminders are not guaranteed; use a separate dependable reminder for critical commitments.
+Tasks, notes, habits, goals and focus history are saved in local app storage on this device. No hosted account or cloud sync is required. Export a backup regularly. Daymark reminders are not guaranteed; use a separate dependable reminder for critical commitments.
 
 ## Technology
 React 18 · TypeScript · Vite · Tauri 2 · Rust
 
 Website: https://adrianvaleitl-debug.github.io/
+
+## Daymark 2.2.0
+
+- Added a first-launch reminder reliability and data-loss acknowledgement.
+- Renamed the product Daymark and introduced a matching royal-gold D app icon.
