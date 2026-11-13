@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7 — 13 November 2026
+- Added a Settings option to permanently delete local tasks, notes, habits, goals, focus sessions and preferences after an explicit confirmation.
+- Added a website browser-storage choice banner so visitors can opt out of saving appearance preferences.
+
+
 ## 1.6 — 12 November 2026
 - Added a required first-launch legal and liability acknowledgement before app access.
 - Added a Legal & Important Information section to Settings for reopening the notice.
