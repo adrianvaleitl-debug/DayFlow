@@ -823,19 +823,19 @@ class DayFlow(ctk.CTk):
                      text_color=self.accent_colors()[self.data["settings"].get("accent", "classy")][0]).pack(side="left")
         ctk.CTkLabel(top, text="LATEST RELEASE", font=self.ui_font(10, True),
                      text_color=("gray55", "gray65")).pack(side="right")
-        ctk.CTkLabel(latest, text="Legal safeguards and reminder limitations",
+        ctk.CTkLabel(latest, text="Two complete Classy and Royal themes",
                      font=self.ui_font(19, True)).pack(anchor="w", padx=22, pady=(0, 5))
-        ctk.CTkLabel(latest, text="12 November 2026  ·  Windows desktop",
+        ctk.CTkLabel(latest, text="13 November 2026  ·  Windows desktop",
                      font=self.ui_font(10), text_color=("gray55", "gray65")).pack(anchor="w", padx=22)
         ctk.CTkLabel(latest,
-            text="This release adds a first-launch legal and liability notice, plus a Legal & Important Information section in Settings. It explains reminder limitations, critical commitments and local data backups.",
+            text="This release replaces the old accent-colour list and Light/Dark/System choices with two complete themes: Classy in midnight navy and ice white, and Royal in dark chocolate brown and pale metallic gold. The selected palette updates the entire workspace while keeping your saved data intact.",
             font=self.ui_font(11), justify="left", anchor="w", wraplength=900,
             text_color=("gray40", "gray75")).pack(fill="x", padx=22, pady=(12, 15))
         for item in [
-            "A risk and liability notice appears before first use and must be acknowledged.",
-            "The full notice can be reopened from Settings at any time.",
-            "In-app reminders are not guaranteed and should not be the only alert for critical commitments.",
-            "Your tasks, notes, habits, goals and settings remain stored locally; keep separate backups."]:
+            "Choose Classy for midnight navy, ice white and subtle silver.",
+            "Choose Royal for dark chocolate brown, pale gold and metallic gold.",
+            "The selected theme updates navigation, panels, controls, focus tools and settings.",
+            "Your tasks, notes, habits, goals, focus sessions and settings remain stored locally."]:
             ctk.CTkLabel(latest, text="✓   " + item, font=self.ui_font(11),
                          anchor="w", justify="left", wraplength=900).pack(fill="x", padx=24, pady=3)
         history = self.panel(body, "Previous release")
