@@ -908,14 +908,6 @@ class DayFlow(ctk.CTk):
             except ValueError: messagebox.showerror("Invalid value","Enter a number from 1 to 180."); return
             self.data["settings"]["focus_minutes"]=n; self.save(); messagebox.showinfo("Saved","Your settings have been saved.")
         ctk.CTkButton(focus,text="Save settings",command=save_settings).pack(anchor="w",padx=18,pady=(0,16))
-        appearance_card=self.panel(body,"Personalisation"); appearance_card.pack(fill="x",pady=12)
-        ctk.CTkLabel(appearance_card,text="Font").pack(anchor="w",padx=18,pady=(0,5))
-        font_choice=ctk.CTkOptionMenu(appearance_card,values=["Segoe UI","Arial","Calibri","Georgia","Consolas"],
-            command=lambda v:self.update_setting("font",v))
-        font_choice.set(self.data["settings"].get("font","Segoe UI")); font_choice.pack(anchor="w",padx=18,pady=(0,10))
-        bold_var=ctk.BooleanVar(value=self.data["settings"].get("bold",True))
-        ctk.CTkSwitch(appearance_card,text="Bold text",variable=bold_var,
-            command=lambda:self.update_setting("bold",bold_var.get())).pack(anchor="w",padx=18,pady=(0,14))
         updates_card=self.panel(body,"Updates & onboarding"); updates_card.pack(fill="x",pady=(0,12))
         auto_var=ctk.BooleanVar(value=self.data["settings"].get("auto_updates",True))
         ctk.CTkSwitch(updates_card,text="Automatically check for updates",variable=auto_var,
