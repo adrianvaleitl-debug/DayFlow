@@ -1,6 +1,10 @@
 # DayFlow
 
-**Version 1.6 — Your day, under control.**
+**Version 1.7 — Your day, under control.**
+
+## What's new in 1.7
+- Added a confirmed Settings action to delete the local DayFlow data file.
+- Added a browser-storage choice banner to the website, with an option not to save appearance preferences.
 
 ## What's new in 1.6
 - Added a required first-launch legal and liability acknowledgement before app access.
