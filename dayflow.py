@@ -368,7 +368,7 @@ class DayFlow(ctk.CTk):
     def header(self, title, subtitle):
         top = ctk.CTkFrame(self.main, fg_color="transparent")
         top.grid(row=0, column=0, sticky="ew", pady=(0, 20))
-        ctk.CTkLabel(top, text=title, font=ctk.CTkFont(family="Cormorant Garamond" if str(self.data.get("settings", {}).get("accent","classy")).lower()=="royal" else "Manrope", size=32, weight="bold")).pack(anchor="w")
+        ctk.CTkLabel(top, text=title, font=ctk.CTkFont(family="Cormorant Garamond", size=32, weight="bold")).pack(anchor="w")
         ctk.CTkLabel(top, text=subtitle, font=ctk.CTkFont(size=12), text_color=("gray55", "gray65")).pack(anchor="w", pady=(4, 0))
         return top
 
