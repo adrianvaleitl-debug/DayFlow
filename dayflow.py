@@ -403,8 +403,8 @@ class DayFlow(ctk.CTk):
         side_footer.pack(fill="x", padx=14, pady=15)
         ctk.CTkLabel(side_footer, text="MAKE ROOM FOR WHAT MATTERS", font=ctk.CTkFont(size=8, weight="bold"), text_color=("gray55","gray65")).pack(anchor="w", padx=12, pady=(11,3))
         ctk.CTkLabel(side_footer, text="A little progress, every day.", font=self.ui_font(10)).pack(anchor="w", padx=12, pady=(0,7))
-        ctk.CTkButton(side_footer, text="My website ↗", height=30, corner_radius=10, fg_color="transparent", hover_color=(palette_color("#E9E9E9"),palette_color("#383838")), text_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][0], command=lambda:webbrowser.open(PERSONAL_SITE)).pack(fill="x", padx=9, pady=2)
-        ctk.CTkButton(side_footer, text="Optional support · Ko-fi ↗", height=30, corner_radius=10, fg_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][0], hover_color=self.accent_colors()[str(self.data["settings"].get("accent","black")).lower()][1], text_color=palette_color("#202020"), command=lambda:webbrowser.open(KOFI)).pack(fill="x", padx=9, pady=(2,10))
+        ctk.CTkButton(side_footer, text="My website ↗", height=30, corner_radius=10, fg_color="transparent", hover_color=(palette_color("#E9E9E9"),palette_color("#383838")), text_color=self.accent_colors()[str(self.data["settings"].get("accent","classy")).lower()][0], command=lambda:webbrowser.open(PERSONAL_SITE)).pack(fill="x", padx=9, pady=2)
+        ctk.CTkButton(side_footer, text="Optional support · Ko-fi ↗", height=30, corner_radius=10, fg_color=self.accent_colors()[str(self.data["settings"].get("accent","classy")).lower()][0], hover_color=self.accent_colors()[str(self.data["settings"].get("accent","classy")).lower()][1], text_color=palette_color("#202020"), command=lambda:webbrowser.open(KOFI)).pack(fill="x", padx=9, pady=(2,10))
         self.topbar = ctk.CTkFrame(self, height=68, corner_radius=25, fg_color=(palette_color("#202024"), palette_color("#202024")), border_width=1, border_color=(palette_color("#38383E"), palette_color("#38383E")))
         self.topbar.grid(row=0, column=0, sticky="ew", padx=(14, 8), pady=(14, 8))
         self.topbar.grid_propagate(False)
@@ -441,7 +441,7 @@ class DayFlow(ctk.CTk):
 
     def show_page(self, name):
         self.active_page = name
-        accent_color = self.accent_colors().get(self.data.get("settings", {}).get("accent", "black"), self.accent_colors()["euro"])[0]
+        accent_color = self.accent_colors().get(self.data.get("settings", {}).get("accent", "classy"), self.accent_colors()["classy"])[0]
         self.page_title.configure(text=name)
         for nav_name, button in self.nav_buttons.items():
             active = nav_name == name
@@ -798,7 +798,7 @@ class DayFlow(ctk.CTk):
         top = ctk.CTkFrame(latest, fg_color="transparent")
         top.pack(fill="x", padx=22, pady=(20, 8))
         ctk.CTkLabel(top, text="1.6", font=self.ui_font(25, True),
-                     text_color=self.accent_colors()[self.data["settings"].get("accent", "black")][0]).pack(side="left")
+                     text_color=self.accent_colors()[self.data["settings"].get("accent", "classy")][0]).pack(side="left")
         ctk.CTkLabel(top, text="LATEST RELEASE", font=self.ui_font(10, True),
                      text_color=("gray55", "gray65")).pack(side="right")
         ctk.CTkLabel(latest, text="Legal safeguards and reminder limitations",
@@ -833,7 +833,7 @@ class DayFlow(ctk.CTk):
             row = ctk.CTkFrame(earlier, fg_color="transparent")
             row.pack(fill="x", padx=18, pady=(8, 2))
             ctk.CTkLabel(row, text=version, font=self.ui_font(12, True),
-                         text_color=self.accent_colors()[self.data["settings"].get("accent", "black")][0]).pack(side="left")
+                         text_color=self.accent_colors()[self.data["settings"].get("accent", "classy")][0]).pack(side="left")
             ctk.CTkLabel(row, text=title, font=self.ui_font(12, True)).pack(side="left", padx=12)
             ctk.CTkLabel(earlier, text=detail, font=self.ui_font(10),
                          text_color=("gray45", "gray70"), anchor="w", justify="left",
@@ -942,7 +942,7 @@ class DayFlow(ctk.CTk):
             messagebox.showerror("Startup setting", str(exc))
 
     def set_appearance(self, value):
-        self.data["settings"]["appearance"]=value; self.save(); ctk.set_appearance_mode(value)
+        self.data["settings"]["appearance"]="dark"; self.save(); ctk.set_appearance_mode("dark")
 
     def set_transparency(self,value,label=None):
         value=round(max(0,min(35,float(value))))
