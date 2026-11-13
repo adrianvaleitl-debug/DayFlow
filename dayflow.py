@@ -23,7 +23,25 @@ ACTIVE_THEME = "Classy"
 def palette_color(value):
     royal = {"#101012":"#24160E","#202024":"#432C1B","#29292E":"#52351F","#38383E":"#75512D","#404040":"#75512D","#363636":"#694523","#36363D":"#694523","#1A1A1A":"#2C1C11","#1B1B20":"#2C1C11","#F2F2F2":"#F1D9A8","#EBEEF2":"#F1D9A8","#EDEDED":"#24160E","#E9E9E9":"#52351F","#FFFFFF":"#F1D9A8","#F4F4F4":"#F1D9A8","#292929":"#52351F","#343434":"#52351F","#414141":"#C5A978","#B5B5B5":"#C5A978","#696969":"#C5A978","#C3C3C3":"#C5A978","#E4E4E4":"#694523"}
     classy = {"#101012":"#000412","#202024":"#111B2B","#29292E":"#18243A","#38383E":"#29364A","#404040":"#29364A","#363636":"#24334A","#36363D":"#24334A","#1A1A1A":"#0B1424","#1B1B20":"#0B1424","#F2F2F2":"#EBEEF2","#EBEEF2":"#EBEEF2","#EDEDED":"#000412","#E9E9E9":"#18243A","#FFFFFF":"#EBEEF2","#F4F4F4":"#EBEEF2","#292929":"#18243A","#343434":"#18243A","#414141":"#AAB4C2","#B5B5B5":"#AAB4C2","#696969":"#AAB4C2","#C3C3C3":"#AAB4C2","#E4E4E4":"#24334A"}
-    return (royal if ACTIVE_THEME=="Royal" else classy).get(value, value)
+    palette = royal if ACTIVE_THEME=="Royal" else classy
+    if value in palette:
+        return palette[value]
+    if value in ("#202020","#1A1A1A","#1F1F1F","#363636"):
+        return "#24160E" if ACTIVE_THEME=="Royal" else "#000412"
+    if len(value)==7 and value.startswith("#"):
+        try:
+            rgb=tuple(int(value[i:i+2],16) for i in (1,3,5))
+            if max(rgb)-min(rgb)<=2:
+                level=sum(rgb)//3
+                if level<=35:return "#24160E" if ACTIVE_THEME=="Royal" else "#000412"
+                if level<=65:return "#75512D" if ACTIVE_THEME=="Royal" else "#29364A"
+                if level<=125:return "#C5A978" if ACTIVE_THEME=="Royal" else "#AAB4C2"
+                if level<=185:return "#75512D" if ACTIVE_THEME=="Royal" else "#29364A"
+                if level<=225:return "#52351F" if ACTIVE_THEME=="Royal" else "#18243A"
+                return "#F1D9A8" if ACTIVE_THEME=="Royal" else "#EBEEF2"
+        except ValueError:
+            pass
+    return value
 
 def apply_windows_glass_backdrop(window, transparency=8, light=False):
     """Expose a Windows acrylic backdrop through transparent Tk root pixels."""
