@@ -1,16 +1,18 @@
-# DayFlow 2.0 — clean rebuild
+# DayFlow 2.0 — Adrian Vale
 
-A calm personal planning workspace by Adrian Vale, rebuilt with React, TypeScript and Tauri 2. The previous application UI and Python application code are not carried forward.
+A calm personal planning workspace, rebuilt with React, TypeScript and Tauri 2. The previous Python UI and application implementation are not included.
 
-## Core workspace
-- Tasks with due dates, priority and completion tracking
-- Calendar-style upcoming task view
-- Notes with tags
-- Habit list with daily check-ins
-- Goals with target dates and next steps
+## Core features
+- Tasks with due dates, priorities, completion and search
+- Monthly calendar view for upcoming tasks
+- Notes with tags and longer-form content
+- Habit list with daily check-ins and consecutive-day streaks
+- Goals with target dates, categories and progress
 - Focus timer with 15, 25, 45 and 60 minute sessions
-- Weekly review with saved reflection
-- Classy blue and Royal gold appearance modes
+- Completed focus-session history
+- Weekly review for tasks completed, focus minutes and habit check-ins, plus a saved reflection
+- Classy blue and Royal gold appearance themes
+- Full JSON backup export, CSV export and a confirmed local-data deletion option
 
 ## Run locally
 ```bash
@@ -25,10 +27,10 @@ npm run build
 npm run tauri build
 ```
 
-## Data and privacy
-Your tasks, notes, habits and goals are saved in local app storage on this device. No hosted account is required and no data is uploaded. Export or back up your device data separately if you need to retain it.
+## Data and limitations
+Tasks, notes, habits, goals and focus history are saved in local app storage on this device. No hosted account or cloud sync is required. Export a backup regularly. In-app reminders are not guaranteed; use a separate dependable reminder for critical commitments.
 
-## Stack
+## Technology
 React 18 · TypeScript · Vite · Tauri 2 · Rust
 
 Website: https://adrianvaleitl-debug.github.io/
