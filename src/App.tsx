@@ -31,7 +31,8 @@ export default function App(){
  const [mobileNav,setMobileNav]=useState(false);
  useEffect(()=>{localStorage.setItem(STORE,JSON.stringify(data))},[data]);
  useEffect(()=>{document.documentElement.dataset.theme=theme;localStorage.setItem("adrianvale.theme",theme)},[theme]);
- useEffect(()=>{if(!timerRunning)return;const id=window.setInterval(()=>setSecondsLeft(s=>{if(s<=1){if(!sessionRecorded.current){sessionRecorded.current=true;setData(p=>({...p,"Focus sessions":[{id:crypto.randomUUID(),created:new Date().toISOString(),title:"Focus session",durationMinutes:focusMinutes},...(p["Focus sessions"]||[])]}))}setTimerRunning(false);notify("Focus session complete · "+focusMinutes+" minutes saved");return 0}return s-1}),1000);return()=>window.clearInterval(id)},[timerRunning,focusMinutes]);
+ useEffect(()=>{if(!timerRunning)return;const id=window.setInterval(()=>setSecondsLeft(s=>Math.max(0,s-1)),1000);return()=>window.clearInterval(id)},[timerRunning]);
+ useEffect(()=>{if(timerRunning&&secondsLeft===0&&!sessionRecorded.current){sessionRecorded.current=true;setTimerRunning(false);setData(p=>({...p,"Focus sessions":[{id:crypto.randomUUID(),created:new Date().toISOString(),title:"Focus session",durationMinutes:focusMinutes},...(p["Focus sessions"]||[])]}));notify("Focus session complete · "+focusMinutes+" minutes saved")}},[timerRunning,secondsLeft,focusMinutes]);
  const notify=(s:string)=>{setToast(s);window.setTimeout(()=>setToast(""),2400)};
  const rows=data[page]||[];
  const all=Object.values(data).flat();
