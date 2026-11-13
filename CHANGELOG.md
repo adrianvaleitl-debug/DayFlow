@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8 — 13 November 2026
+- Replaced the old accent-colour list and Light/Dark/System choices with two complete themes: Classy (midnight navy and ice white) and Royal (dark chocolate brown, pale gold and metallic gold).
+- Applied the selected palette throughout navigation, cards, controls, focus tools and settings.
+- Preserved locally stored tasks, notes, habits, goals, focus sessions and preferences while migrating previous colour choices.
+
+
 ## 1.7 — 13 November 2026
 - Added a Settings option to permanently delete local tasks, notes, habits, goals, focus sessions and preferences after an explicit confirmation.
 - Added a website browser-storage choice banner so visitors can opt out of saving appearance preferences.
