@@ -815,7 +815,7 @@ class DayFlow(ctk.CTk):
         ctk.CTkLabel(info,text=f"Your tasks, notes, habits, goals, focus sessions and settings are stored locally on this device:\n{DATA_FILE}",justify="left",text_color=("gray55","gray65"),wraplength=760).pack(anchor="w",padx=18,pady=(16,8))
         ctk.CTkButton(info,text="Delete all DayFlow data…",fg_color=palette_color("#9B3434"),hover_color=palette_color("#7E2929"),command=self.delete_all_local_data).pack(anchor="w",padx=18,pady=(0,16))
 
-        legal = ctk.CTkFrame(scroll, fg_color=(palette_color("#FFFFFF"), palette_color("#202622")), corner_radius=18)
+        legal = ctk.CTkFrame(body, fg_color=(palette_color("#FFFFFF"), palette_color("#202622")), corner_radius=18)
         legal.pack(fill="x", padx=12, pady=8)
         ctk.CTkLabel(legal, text="Legal & important information", font=self.ui_font(16, True), anchor="w").pack(fill="x", padx=18, pady=(14, 5))
         ctk.CTkLabel(legal, text="Reminders are not guaranteed. Keep separate backups of important personal planning information.", font=self.ui_font(11), text_color=("gray35", "gray70"), wraplength=700, justify="left", anchor="w").pack(fill="x", padx=18, pady=(0, 8))
