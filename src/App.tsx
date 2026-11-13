@@ -43,8 +43,9 @@ export default function App(){
  const toggle=(id:string)=>{if(page==="Habits"){setCompletedToday(p=>{const next=p.includes(id)?p.filter(x=>x!==id):[...p,id];localStorage.setItem(STORE+".habitChecks."+new Date().toISOString().slice(0,10),JSON.stringify(next));return next});return}setData(p=>({...p,[page]:(p[page]||[]).map(r=>r.id===id?{...r,done:!r.done}:r)}))};
  const exportCsv=()=>{const list=data[page]||[];if(!list.length){notify("There is nothing to export yet");return}const cols=[...new Set(list.flatMap(r=>Object.keys(r).filter(k=>k!=="id"&&k!=="created")))];const csv=[cols.join(","),...list.map(r=>cols.map(k=>JSON.stringify(String(r[k]??""))).join(","))].join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download=APP.toLowerCase().replace(/ /g,"-")+"-"+page.toLowerCase().replace(/ /g,"-")+".csv";a.click();URL.revokeObjectURL(a.href);notify("CSV exported")};
  const go=(n:string)=>{setPage(n);setQuery("");setMobileNav(false)};
- const totalTasks=(data.Tasks||[]).length;
- const doneTasks=(data.Tasks||[]).filter(r=>r.done).length;
+ const taskStats=taskProgress(data.Tasks||[]);
+ const totalTasks=taskStats.total;
+ const doneTasks=taskStats.completed;
  const marketHours=[{name:"Tokyo",open:"00:00",close:"09:00"},{name:"London",open:"08:00",close:"16:30"},{name:"New York",open:"14:30",close:"21:00"}];
  const isSessionOpen=(open:string,close:string)=>{const now=new Date();const mins=now.getHours()*60+now.getMinutes();const [oh,om]=open.split(":").map(Number);const [ch,cm]=close.split(":").map(Number);return mins>=oh*60+om&&mins<ch*60+cm};
  const marketRisk=()=>{const p=data["Trade planner"]?.[0];if(!p)return 0;const distance=Math.abs(num(p.entry)-num(p.stop));return distance>0?num(p.account)*num(p.risk)/100/distance:0};
