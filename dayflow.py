@@ -219,7 +219,7 @@ class DayFlow(ctk.CTk):
         self.after(500, self.show_legal_notice)
 
     def show_legal_notice(self, force=False):
-        version = "2026-11-12"
+        version = "2026-11-13"
         if not force and self.data["settings"].get("legal_notice_version") == version:
             self.continue_after_legal_notice()
             return
@@ -247,7 +247,7 @@ class DayFlow(ctk.CTk):
             "TASKS, DATES AND REMINDERS\n\n"
             "You are responsible for checking task details, due dates, priorities and plans. DayFlow reminders are in-app prompts and are not guaranteed to appear at a particular time or at all. They can be affected by whether the app is running, device settings, sleep or shutdown, software errors and other interruptions. Do not rely on DayFlow as the sole reminder for medical appointments, safety matters, legal deadlines, payments, travel or other critical commitments. Use an additional dependable reminder where missing an event could have serious consequences.\n\n"
             "YOUR DATA AND BACKUPS\n\n"
-            "Your tasks, notes, habits, goals and progress are stored locally on this device. Device failure, accidental deletion, corrupted files, operating-system problems or user actions may cause data loss. You are responsible for keeping separate backups of information you need.\n\n"
+            "Your tasks, notes, habits, goals and progress are stored locally on this device. Device failure, accidental deletion, corrupted files, operating-system problems or user actions may cause data loss. You are responsible for keeping separate backups of information you need. Use Delete all DayFlow data in Settings to remove the local data file; this cannot remove copies you exported or backed up elsewhere.\n\n"
             "NO GUARANTEE OF RESULTS OR AVAILABILITY\n\n"
             "DayFlow does not guarantee increased productivity, completion of goals, improved habits or any particular outcome. Features may change, become unavailable or contain defects. Update checks and downloads rely on third-party services, including GitHub, outside the developer's control.\n\n"
             "LIMITATION OF LIABILITY\n\n"
