@@ -43,15 +43,15 @@ jobs:
           $exe = Get-ChildItem -Path "src-tauri/target/release/bundle/nsis" -Filter "*.exe" | Select-Object -First 1
           $msi = Get-ChildItem -Path "src-tauri/target/release/bundle/msi" -Filter "*.msi" | Select-Object -First 1
           if (-not $exe -or -not $msi) { throw "Expected NSIS EXE and MSI installers were not produced." }
-          Copy-Item $exe.FullName "release-assets/DayFlow-Setup-2.0.exe"
-          Copy-Item $msi.FullName "release-assets/DayFlow-2.0.msi"
+          Copy-Item $exe.FullName "release-assets/DayFlow-Setup-2.1.exe"
+          Copy-Item $msi.FullName "release-assets/DayFlow-2.1.msi"
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "v2.0"
-          name: "DayFlow 2.0 — Windows"
+          tag_name: "v2.1"
+          name: "DayFlow 2.1 — Windows"
           body: |
-            Fresh React + TypeScript + Tauri 2 rebuild. Tasks, calendar, notes, habits and streaks, goals, focus sessions and weekly review. Local data is not migrated from the previous app; export any old records before replacing it.
+            Fresh React + TypeScript + Tauri 2 rebuild with personal settings, accessibility options and expanded legal and privacy information.
           files: release-assets/*
           overwrite_files: true
           fail_on_unmatched_files: true
