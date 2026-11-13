@@ -727,7 +727,7 @@ class DayFlow(ctk.CTk):
                     self.after(0, lambda: messagebox.showinfo("DayFlow", "You're already using the latest version."))
             except Exception as exc:
                 if not silent:
-                    self.after(0, lambda: messagebox.showwarning("Update check", f"Couldn't check for updates.\\n{exc}"))
+                    self.after(0, lambda: messagebox.showwarning("Update check", f"Couldn't check for updates.\n{exc}"))
         threading.Thread(target=worker, daemon=True).start()
 
     def install_update(self, url):
@@ -971,7 +971,7 @@ class DayFlow(ctk.CTk):
     def delete_all_local_data(self):
         if not messagebox.askyesno(
             "Delete all DayFlow data",
-            "This permanently deletes your locally stored tasks, notes, habits, goals, focus sessions and settings from this device. Back up anything you want to keep first. This cannot be undone.\\n\\nContinue?"
+            "This permanently deletes your locally stored tasks, notes, habits, goals, focus sessions and settings from this device. Back up anything you want to keep first. This cannot be undone.\n\nContinue?"
         ):
             return
         try:
@@ -980,7 +980,7 @@ class DayFlow(ctk.CTk):
         except OSError as exc:
             messagebox.showerror(
                 "Data deletion failed",
-                f"DayFlow could not delete its data file. Close the app and remove it manually:\\n{DATA_FILE}\\n\\nDetails: {exc}"
+                f"DayFlow could not delete its data file. Close the app and remove it manually:\n{DATA_FILE}\n\nDetails: {exc}"
             )
             return
         messagebox.showinfo("Local data deleted", "Your DayFlow data file has been deleted from this device.")
