@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Activity, ArrowDownRight, ArrowUpRight, BarChart3, CalendarDays, Check, CheckCircle2, ChevronRight, CircleDollarSign, Clock3, Download, FileText, Filter, LayoutDashboard, Menu, MoreHorizontal, Plus, Search, Settings2, ShieldCheck, Sparkles, Target, Trash2, TrendingUp, Wallet, X } from "lucide-react";
+import { taskProgress } from "./domain";
 import "./styles.css";
 
 type Row = { id:string; created:string; done?:boolean; [key:string]:string|number|boolean|undefined };
