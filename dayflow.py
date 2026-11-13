@@ -380,7 +380,7 @@ class DayFlow(ctk.CTk):
         self.sidebar.grid_propagate(False)
         brand = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         brand.pack(fill="x", padx=20, pady=(25, 28))
-        ctk.CTkLabel(brand, text="◈", font=self.ui_font(30, True), text_color=self.accent_colors()[self.data["settings"].get("accent","euro")][0]).pack(side="left", padx=(0,10))
+        ctk.CTkLabel(brand, text="◈", font=self.ui_font(30, True), text_color=self.accent_colors()[self.data["settings"].get("accent","classy")][0]).pack(side="left", padx=(0,10))
         brand_text = ctk.CTkFrame(brand, fg_color="transparent")
         brand_text.pack(side="left")
         ctk.CTkLabel(brand_text, text="DayFlow", font=self.ui_font(20, True)).pack(anchor="w")
