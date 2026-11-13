@@ -8,6 +8,7 @@ const APP: string = "DayFlow";
 const NAV = ["Overview","Tasks","Calendar","Notes","Habits","Goals","Focus","Weekly review","Settings"] as string[];
 const FIELDS = {"Tasks":[["title","Task","text"],["due","Due date","date"],["priority","Priority","select","Low|Normal|High"],["notes","Notes","textarea"]],"Notes":[["title","Note title","text"],["body","Write your note","textarea"],["tag","Tag","text"]],"Habits":[["title","Habit","text"],["cadence","Frequency","select","Daily|Weekdays|Weekly"],["notes","Why it matters","text"]],"Goals":[["title","Goal","text"],["target","Target date","date"],["category","Area","select","Personal|Work|Health|Learning|Other"],["progress","Progress (%)","number"],["notes","Next step","textarea"]],"Focus sessions":[["title","Session","text"],["durationMinutes","Minutes","number"],["created","Completed","text"]]} as Record<string, [string,string,string,string?][]>;
 const PREFS_STORE = "adrianvale.preferences." + APP.toLowerCase().replace(/ /g,"-");
+const THEME_STORE = PREFS_STORE + ".theme";
 const DEFAULT_PREFERENCES = {font:"modern" as "modern"|"royal",textSize:"normal" as "normal"|"large"|"larger",reduceMotion:false,highContrast:false,enhancedFocus:true};
 const STORE = "adrianvale.rebuild." + APP.toLowerCase().replace(/ /g,"-") + ".v2";
 const money = (n:number) => new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP",maximumFractionDigits:2}).format(n||0);
@@ -18,7 +19,7 @@ const emptyData = () => Object.fromEntries(Object.keys(FIELDS).map(k=>[k,[]])) a
 export default function App(){
  const [page,setPage]=useState("Overview");
  const [data,setData]=useState<Record<string,Row[]>>(()=>{try{return {...emptyData(),...JSON.parse(localStorage.getItem(STORE)||"{}")}}catch{return emptyData()}});
- const [theme,setTheme]=useState<"classy"|"royal">(()=>localStorage.getItem("adrianvale.theme")==="royal"?"royal":"classy");
+ const [theme,setTheme]=useState<"classy"|"royal">(()=>localStorage.getItem(THEME_STORE)==="royal"?"royal":"classy");
  const [preferences,setPreferences]=useState(()=>{try{return {...DEFAULT_PREFERENCES,...JSON.parse(localStorage.getItem(PREFS_STORE)||"{}")}}catch{return DEFAULT_PREFERENCES}});
  const [displayName,setDisplayName]=useState(()=>localStorage.getItem(PREFS_STORE+".name")||"");
  const [query,setQuery]=useState("");
@@ -34,7 +35,7 @@ export default function App(){
  const [completedToday,setCompletedToday]=useState<string[]>(()=>{try{return JSON.parse(localStorage.getItem(STORE+".habitChecks."+new Date().toISOString().slice(0,10))||"[]")}catch{return[]}});
  const [mobileNav,setMobileNav]=useState(false);
  useEffect(()=>{localStorage.setItem(STORE,JSON.stringify(data))},[data]);
- useEffect(()=>{document.documentElement.dataset.theme=theme;localStorage.setItem("adrianvale.theme",theme)},[theme]);
+ useEffect(()=>{document.documentElement.dataset.theme=theme;localStorage.setItem(THEME_STORE,theme)},[theme]);
  useEffect(()=>{localStorage.setItem(PREFS_STORE,JSON.stringify(preferences));document.documentElement.dataset.font=preferences.font;document.documentElement.dataset.textSize=preferences.textSize;document.documentElement.dataset.reduceMotion=String(preferences.reduceMotion);document.documentElement.dataset.highContrast=String(preferences.highContrast);document.documentElement.dataset.enhancedFocus=String(preferences.enhancedFocus)},[preferences]);
  useEffect(()=>{if(!timerRunning)return;const id=window.setInterval(()=>setSecondsLeft(s=>Math.max(0,s-1)),1000);return()=>window.clearInterval(id)},[timerRunning]);
  useEffect(()=>{if(timerRunning&&secondsLeft===0&&!sessionRecorded.current){sessionRecorded.current=true;setTimerRunning(false);setData(p=>({...p,"Focus sessions":[{id:crypto.randomUUID(),created:new Date().toISOString(),title:"Focus session",durationMinutes:focusMinutes},...(p["Focus sessions"]||[])]}));notify("Focus session complete · "+focusMinutes+" minutes saved")}},[timerRunning,secondsLeft,focusMinutes]);
@@ -51,7 +52,7 @@ export default function App(){
  const remove=(id:string)=>{if(!window.confirm("Delete this item? This cannot be undone."))return;setData(p=>({...p,[page]:(p[page]||[]).filter(r=>r.id!==id)}));notify("Item deleted")};
  const toggle=(id:string)=>{if(page==="Habits"){setCompletedToday(p=>{const next=p.includes(id)?p.filter(x=>x!==id):[...p,id];localStorage.setItem(STORE+".habitChecks."+new Date().toISOString().slice(0,10),JSON.stringify(next));return next});return}setData(p=>({...p,[page]:(p[page]||[]).map(r=>r.id===id?{...r,done:!r.done,completedAt:!r.done?new Date().toISOString():""}:r)}))};
  const exportBackup=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({application:APP,version:2,exportedAt:new Date().toISOString(),data,weeklyReview:localStorage.getItem(STORE+".weeklyReview")||"",habitChecks:Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith(STORE+".habitChecks.")).map(k=>[k,JSON.parse(localStorage.getItem(k)||"[]")]))},null,2)],{type:"application/json"}));a.download="dayflow-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();window.setTimeout(()=>URL.revokeObjectURL(a.href),1000);notify("Backup exported")};
- const clearLocalData=()=>{if(!window.confirm("Delete all DayFlow data stored on this device? This cannot be undone. Export a backup first if you need one."))return;localStorage.removeItem(STORE);localStorage.removeItem(STORE+".weeklyReview");Object.keys(localStorage).filter(k=>k.startsWith(STORE+".habitChecks.")).forEach(k=>localStorage.removeItem(k));setData(emptyData());setCompletedToday([]);notify("Local DayFlow data cleared")};
+ const clearLocalData=()=>{if(!window.confirm("Delete all DayFlow data stored on this device? This cannot be undone. Export a backup first if you need one."))return;localStorage.removeItem(STORE);localStorage.removeItem(PREFS_STORE);localStorage.removeItem(PREFS_STORE+".name");localStorage.removeItem(THEME_STORE);setPreferences(DEFAULT_PREFERENCES);setTheme("classy");localStorage.removeItem(STORE+".weeklyReview");Object.keys(localStorage).filter(k=>k.startsWith(STORE+".habitChecks.")).forEach(k=>localStorage.removeItem(k));setData(emptyData());setCompletedToday([]);notify("Local DayFlow data cleared")};
  const exportCsv=()=>{const list=data[page]||[];if(!list.length){notify("There is nothing to export yet");return}const cols=[...new Set(list.flatMap(r=>Object.keys(r).filter(k=>k!=="id"&&k!=="created")))];const csv=[cols.join(","),...list.map(r=>cols.map(k=>JSON.stringify(String(r[k]??""))).join(","))].join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download=APP.toLowerCase().replace(/ /g,"-")+"-"+page.toLowerCase().replace(/ /g,"-")+".csv";a.click();window.setTimeout(()=>URL.revokeObjectURL(a.href),1000);notify("CSV exported")};
  const go=(n:string)=>{setPage(n);setQuery("");setMobileNav(false)};
  const taskStats=taskProgress(data.Tasks||[]);
