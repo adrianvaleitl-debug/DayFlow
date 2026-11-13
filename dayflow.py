@@ -877,7 +877,8 @@ class DayFlow(ctk.CTk):
         startup_var=ctk.BooleanVar(value=self.data["settings"].get("launch_at_startup",False))
         ctk.CTkSwitch(shortcuts,text="Launch DayFlow when Windows starts",variable=startup_var,command=lambda:self.set_startup(startup_var.get())).pack(anchor="w",padx=18,pady=(0,14))
         info=self.panel(body,"Your data"); info.pack(fill="x",pady=12)
-        ctk.CTkLabel(info,text=f"Your information is stored locally on this device:\n{DATA_FILE}",justify="left",text_color=("gray55","gray65")).pack(anchor="w",padx=18,pady=16)
+        ctk.CTkLabel(info,text=f"Your tasks, notes, habits, goals, focus sessions and settings are stored locally on this device:\n{DATA_FILE}",justify="left",text_color=("gray55","gray65"),wraplength=760).pack(anchor="w",padx=18,pady=(16,8))
+        ctk.CTkButton(info,text="Delete all DayFlow data…",fg_color="#9B3434",hover_color="#7E2929",command=self.delete_all_local_data).pack(anchor="w",padx=18,pady=(0,16))
 
         legal = ctk.CTkFrame(scroll, fg_color=("#FFFFFF", "#202622"), corner_radius=18)
         legal.pack(fill="x", padx=12, pady=8)
@@ -966,6 +967,25 @@ class DayFlow(ctk.CTk):
         self.apply_glass_effect()
         install_accent_spotlight(self, self.accent_colors()[value][0],
             GLASS_KEY if sys.platform=="win32" else ("#EDEDED" if ctk.get_appearance_mode()=="Light" else "#101012"))
+
+    def delete_all_local_data(self):
+        if not messagebox.askyesno(
+            "Delete all DayFlow data",
+            "This permanently deletes your locally stored tasks, notes, habits, goals, focus sessions and settings from this device. Back up anything you want to keep first. This cannot be undone.\\n\\nContinue?"
+        ):
+            return
+        try:
+            if DATA_FILE.exists():
+                DATA_FILE.unlink()
+        except OSError as exc:
+            messagebox.showerror(
+                "Data deletion failed",
+                f"DayFlow could not delete its data file. Close the app and remove it manually:\\n{DATA_FILE}\\n\\nDetails: {exc}"
+            )
+            return
+        messagebox.showinfo("Local data deleted", "Your DayFlow data file has been deleted from this device.")
+        # Do not call close_app here: it saves the in-memory data again.
+        self.destroy()
 
     def delete_item(self, key, item, page):
         if messagebox.askyesno("Delete item","Are you sure you want to delete this?"):
