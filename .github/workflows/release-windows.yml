@@ -47,13 +47,13 @@ jobs:
           $exe = Get-ChildItem -Path "src-tauri/target/release/bundle/nsis" -Filter "*.exe" | Select-Object -First 1
           $msi = Get-ChildItem -Path "src-tauri/target/release/bundle/msi" -Filter "*.msi" | Select-Object -First 1
           if (-not $exe -or -not $msi) { throw "Expected NSIS EXE and MSI installers were not produced." }
-          Copy-Item $exe.FullName "release-assets/Daymark-Setup-2.4.exe"
-          Copy-Item $msi.FullName "release-assets/Daymark-2.4.msi"
+          Copy-Item $exe.FullName "release-assets/Daymark-Setup-2.5.exe"
+          Copy-Item $msi.FullName "release-assets/Daymark-2.5.msi"
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "v2.4"
-          name: "Daymark 2.4 — Windows"
+          tag_name: "v2.5"
+          name: "Daymark 2.5 — Windows"
           body: |
             New Daymark 2.4 release with personalised greetings, expanded workspace settings and the royal typography default.
           files: release-assets/*
