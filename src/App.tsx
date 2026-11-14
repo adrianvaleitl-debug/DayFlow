@@ -18,6 +18,7 @@ const num = (v:unknown) => Number(v)||0;
 const safeDate = (v:unknown) => v ? new Date(String(v)+"T12:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}) : "—";
 const emptyData = () => Object.fromEntries(Object.keys(FIELDS).map(k=>[k,[]])) as Record<string,Row[]>;
 
+// Build trigger: release settings, accessibility and legal information
 export default function App(){
  const [page,setPage]=useState("Overview");
  const [data,setData]=useState<Record<string,Row[]>>(()=>{try{return {...emptyData(),...JSON.parse(localStorage.getItem(STORE)||"{}")}}catch{return emptyData()}});
