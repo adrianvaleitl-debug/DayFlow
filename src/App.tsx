@@ -4,6 +4,7 @@ import { taskProgress } from "./domain";
 import "./styles.css";
 
 type Row = { id:string; created:string; done?:boolean; [key:string]:string|number|boolean|undefined };
+// Keep official website and community destinations aligned with the Adrian Vale hub.
 const APP: string = "Daymark";
 const DISPLAY_APP = "Daymark";
 const NAV = ["Overview","Tasks","Calendar","Notes","Habits","Goals","Focus","Weekly review","Settings"] as string[];
