@@ -10,7 +10,7 @@ const NAV = ["Overview","Tasks","Calendar","Notes","Habits","Goals","Focus","Wee
 const FIELDS = {"Tasks":[["title","Task","text"],["due","Due date","date"],["priority","Priority","select","Low|Normal|High"],["notes","Notes","textarea"]],"Notes":[["title","Note title","text"],["body","Write your note","textarea"],["tag","Tag","text"]],"Habits":[["title","Habit","text"],["cadence","Frequency","select","Daily|Weekdays|Weekly"],["notes","Why it matters","text"]],"Goals":[["title","Goal","text"],["target","Target date","date"],["category","Area","select","Personal|Work|Health|Learning|Other"],["progress","Progress (%)","number"],["notes","Next step","textarea"]],"Focus sessions":[["title","Session","text"],["durationMinutes","Minutes","number"],["created","Completed","text"]]} as Record<string, [string,string,string,string?][]>;
 const PREFS_STORE = "adrianvale.preferences." + APP.toLowerCase().replace(/ /g,"-");
 const THEME_STORE = PREFS_STORE + ".theme";
-const DEFAULT_PREFERENCES = {font:"royal" as "modern"|"royal",textSize:"normal" as "normal"|"large"|"larger",reduceMotion:false,highContrast:false,enhancedFocus:true,compactMode:false,confirmDeletes:true,showWelcomePanel:true,showMetrics:true,showRecordMetadata:true,showSectionDescriptions:true,showHints:true,confirmExports:true,stickyTopbar:true,showFooter:true,roundedPanels:true,subtleAnimations:true,showPersonalGreeting:true};
+const DEFAULT_PREFERENCES = {font:"royal" as "modern"|"royal",textSize:"normal" as "normal"|"large"|"larger",reduceMotion:false,highContrast:false,enhancedFocus:true,compactMode:false,confirmDeletes:true,showWelcomePanel:true,showMetrics:true,showRecordMetadata:true,showSectionDescriptions:true,showHints:true,confirmExports:true,stickyTopbar:true,showFooter:true,roundedPanels:true,subtleAnimations:true,showPersonalGreeting:true,settingsVersion:2};
 type AppPreferences = typeof DEFAULT_PREFERENCES;
 const STORE = "adrianvale.rebuild." + APP.toLowerCase().replace(/ /g,"-") + ".v2";
 const money = (n:number) => new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP",maximumFractionDigits:2}).format(n||0);
@@ -23,7 +23,7 @@ export default function App(){
  const [page,setPage]=useState("Overview");
  const [data,setData]=useState<Record<string,Row[]>>(()=>{try{return {...emptyData(),...JSON.parse(localStorage.getItem(STORE)||"{}")}}catch{return emptyData()}});
  const [theme,setTheme]=useState<"classy"|"royal">(()=>localStorage.getItem(THEME_STORE)==="royal"?"royal":"classy");
- const [preferences,setPreferences]=useState<AppPreferences>(()=>{try{return {...DEFAULT_PREFERENCES,...JSON.parse(localStorage.getItem(PREFS_STORE)||"{}")}}catch{return DEFAULT_PREFERENCES}});
+ const [preferences,setPreferences]=useState<AppPreferences>(()=>{try{const saved=JSON.parse(localStorage.getItem(PREFS_STORE)||"{}");return {...DEFAULT_PREFERENCES,...saved,font:saved.settingsVersion>=2?saved.font:"royal",settingsVersion:2}}catch{return DEFAULT_PREFERENCES}});
  const [displayName,setDisplayName]=useState(()=>localStorage.getItem(PREFS_STORE+".name")||"");
  const [query,setQuery]=useState("");
  const [modal,setModal]=useState(false);
