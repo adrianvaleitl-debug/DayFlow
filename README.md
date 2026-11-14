@@ -34,6 +34,7 @@ Tasks, notes, habits, goals and focus history are saved in local app storage on 
 React 18 · TypeScript · Vite · Tauri 2 · Rust
 
 Website: https://adrianvaleitl-debug.github.io/Adrian-Vales-Projects/
+Discord: https://discord.gg/3TQcf6DwvT
 
 ## Daymark 2.2.0
 
